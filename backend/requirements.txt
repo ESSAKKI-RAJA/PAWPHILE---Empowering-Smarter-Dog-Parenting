@@ -14,3 +14,4 @@ supabase
 reportlab
 sse-starlette
 resend
+pytz
