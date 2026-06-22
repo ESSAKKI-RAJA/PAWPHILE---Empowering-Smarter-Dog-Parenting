@@ -53,7 +53,7 @@ self.addEventListener('notificationclick', (event) => {
         for (let i = 0; i < clientList.length; i++) {
           const client = clientList[i];
           if (client.url === urlToOpen && 'focus' in client) {
-            return (client as any).focus();
+            return client.focus();
           }
         }
         // Open new window if app is not already open

@@ -105,7 +105,7 @@ export default function Dashboard() {
     else if (res.label === 'Overweight') color = "#f59e0b";
     else if (res.label === 'Obese') color = "#ef4444";
 
-    const heightCm = selectedDog.heightCm || (selectedDog as any).height || 0;
+    const heightCm = (selectedDog as any).heightCm || (selectedDog as any).height || 0;
     const weight = selectedDog.weight || (selectedDog as any).weightKg || 0;
     let bmi = 0;
     if (heightCm > 0 && weight > 0) {
@@ -227,6 +227,47 @@ export default function Dashboard() {
     }
     return alerts;
   }, [selectedDog, vaccineRecords, dewormingRecords]);
+
+  const latestArticles = useMemo(() => {
+    if (!selectedDog) return [];
+    // Get current season
+    const currentMonth = new Date().getMonth() + 1;
+    let currentSeason = "winter";
+    if (currentMonth >= 3 && currentMonth <= 5) currentSeason = "summer";
+    else if (currentMonth >= 6 && currentMonth <= 9)
+      currentSeason = "monsoon";
+    else if (currentMonth >= 10 && currentMonth <= 11)
+      currentSeason = "postMonsoon";
+
+    // Get dog's breed
+    const dogBreed = selectedDog.breed || "";
+
+    // Sort articles by relevance
+    return [...pawNewsArticles]
+      .map((a) => {
+        let score = 0;
+        // Priority: critical > warning > info
+        if (a.severity === "critical") score += 1000;
+        else if (a.severity === "warning") score += 500;
+
+        // Second priority: matches current season
+        if (a.seasons?.includes(currentSeason as any)) score += 100;
+
+        // Third priority: matches dog's breed
+        if (
+          dogBreed &&
+          a.breeds?.some(
+            (b) => b.toLowerCase() === dogBreed.toLowerCase(),
+          )
+        )
+          score += 50;
+
+        return { article: a, score };
+      })
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 3)
+      .map((x) => x.article);
+  }, [selectedDog]);
 
   /* ── No dog ──────────────────────────────────────────── */
   if (!selectedDog) {
@@ -600,115 +641,73 @@ export default function Dashboard() {
         </button>
 
         {/* ── 3.5. Latest Articles ──────────────────────── */}
-        {useMemo(() => {
-          // Get current season
-          const currentMonth = new Date().getMonth() + 1;
-          let currentSeason = "winter";
-          if (currentMonth >= 3 && currentMonth <= 5) currentSeason = "summer";
-          else if (currentMonth >= 6 && currentMonth <= 9)
-            currentSeason = "monsoon";
-          else if (currentMonth >= 10 && currentMonth <= 11)
-            currentSeason = "postMonsoon";
-
-          // Get dog's breed
-          const dogBreed = selectedDog?.breed || "";
-
-          // Sort articles by relevance
-          const sorted = [...pawNewsArticles]
-            .map((a) => {
-              let score = 0;
-              // Priority: critical > warning > info
-              if (a.severity === "critical") score += 1000;
-              else if (a.severity === "warning") score += 500;
-
-              // Second priority: matches current season
-              if (a.seasons?.includes(currentSeason as any)) score += 100;
-
-              // Third priority: matches dog's breed
-              if (
-                dogBreed &&
-                a.breeds?.some(
-                  (b) => b.toLowerCase() === dogBreed.toLowerCase(),
-                )
-              )
-                score += 50;
-
-              return { article: a, score };
-            })
-            .sort((a, b) => b.score - a.score)
-            .slice(0, 3)
-            .map((x) => x.article);
-
-          return (
-            <button
-              onClick={() => navigate("/pawnews")}
-              className="pw-card w-full p-5"
-            >
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <span className="text-lg">📰</span>
-                  <span className="font-black" style={{ color: "var(--text)" }}>
-                    Latest for {selectedDog?.name || "Your Dog"}
+        <button
+          onClick={() => navigate("/pawnews")}
+          className="pw-card w-full p-5"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <span className="text-lg">📰</span>
+              <span className="font-black" style={{ color: "var(--text)" }}>
+                Latest for {selectedDog.name}
+              </span>
+            </div>
+            <ChevronRight
+              className="w-5 h-5"
+              style={{ color: "var(--text-2)" }}
+            />
+          </div>
+          <div className="space-y-2">
+            {latestArticles.map((article) => (
+              <div
+                key={article.id}
+                className="rounded-lg p-3"
+                style={{
+                  background: "var(--card-2)",
+                  border: "1px solid var(--border)",
+                }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate("/pawnews");
+                }}
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0 flex-1">
+                    <p
+                      className="text-sm font-bold text-left line-clamp-2"
+                      style={{ color: "var(--text)" }}
+                    >
+                      {article.title}
+                    </p>
+                    <p
+                      className="text-xs mt-1"
+                      style={{ color: "var(--text-2)" }}
+                    >
+                      {article.readTimeMinutes} min read
+                    </p>
+                  </div>
+                  <span
+                    className={`text-xs px-2 py-1 rounded-full font-semibold flex-shrink-0 ${
+                      article.severity === "critical"
+                        ? "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200"
+                        : article.severity === "warning"
+                          ? "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-200"
+                          : "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-200"
+                    }`}
+                  >
+                    {article.severity}
                   </span>
                 </div>
-                <ChevronRight
-                  className="w-5 h-5"
-                  style={{ color: "var(--text-2)" }}
-                />
               </div>
-              <div className="space-y-2">
-                {sorted.map((article) => (
-                  <div
-                    key={article.id}
-                    className="rounded-lg p-3"
-                    style={{
-                      background: "var(--card-2)",
-                      border: "1px solid var(--border)",
-                    }}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      navigate("/pawnews");
-                    }}
-                  >
-                    <div className="flex items-start justify-between gap-2">
-                      <div className="min-w-0 flex-1">
-                        <p
-                          className="text-sm font-bold text-left line-clamp-2"
-                          style={{ color: "var(--text)" }}
-                        >
-                          {article.title}
-                        </p>
-                        <p
-                          className="text-xs mt-1"
-                          style={{ color: "var(--text-2)" }}
-                        >
-                          {article.readTimeMinutes} min read
-                        </p>
-                      </div>
-                      <span
-                        className={`text-xs px-2 py-1 rounded-full font-semibold flex-shrink-0 ${
-                          article.severity === "critical"
-                            ? "bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200"
-                            : article.severity === "warning"
-                              ? "bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-200"
-                              : "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-200"
-                        }`}
-                      >
-                        {article.severity}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <p
-                className="text-xs font-semibold text-center mt-3"
-                style={{ color: "var(--text-2)" }}
-              >
-                View all →
-              </p>
-            </button>
-          );
-        }, [selectedDog, navigate])}
+            ))}
+          </div>
+          <p
+            className="text-xs font-semibold text-center mt-3"
+            style={{ color: "var(--text-2)" }}
+          >
+            View all →
+          </p>
+        </button>
 
         {/* ── 4. Vision AI Scan ────────────────────────── */}
         <button

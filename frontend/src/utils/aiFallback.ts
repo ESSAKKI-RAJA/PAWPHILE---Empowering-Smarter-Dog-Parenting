@@ -129,19 +129,7 @@ export function enhancedLocalFallback(
         m.content.toLowerCase().includes("appetite"),
     ) && !userHistory[userHistory.length - 1]?.includes("eating");
 
-  const isAskingAboutDrinking =
-    assistantHistory.some(
-      (m) =>
-        m.content.toLowerCase().includes("water") ||
-        m.content.toLowerCase().includes("drinking"),
-    ) && !userHistory[userHistory.length - 1]?.includes("drinking");
 
-  const isAskingAboutDiarrhea =
-    assistantHistory.some(
-      (m) =>
-        m.content.toLowerCase().includes("stool") ||
-        m.content.toLowerCase().includes("diarrhea"),
-    ) && !userHistory[userHistory.length - 1]?.includes("stool");
 
   // Breed-specific context
   let breedInfo = "";

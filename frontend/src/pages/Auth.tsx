@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { SignIn, SignUp } from '@clerk/clerk-react';
 import { ArrowRight, Sparkles, HeartPulse, Stethoscope, ClipboardList, MapPin } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';

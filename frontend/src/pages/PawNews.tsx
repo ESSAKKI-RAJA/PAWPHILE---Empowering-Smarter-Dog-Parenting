@@ -5,9 +5,6 @@ import {
   Bookmark,
   Share2,
   ExternalLink,
-  AlertTriangle,
-  Star,
-  CheckCircle,
 } from "lucide-react";
 import { usePawphileData } from "../context/PawphileDataContext";
 import breedSeasonalRules, { FALLBACK_RULE } from "../data/breedSeasonalRules";
@@ -17,7 +14,7 @@ import SeasonalAlertCard from "../components/pawnews/SeasonalAlertCard";
 import GuideGrid from "../components/pawnews/GuideGrid";
 
 const PawNewsPage: React.FC = () => {
-  const { dogProfile, selectedDog } = usePawphileData();
+  const { dogProfile } = usePawphileData();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedSeverity, setSelectedSeverity] = useState<string | null>(null);
@@ -59,8 +56,7 @@ const PawNewsPage: React.FC = () => {
     return rule;
   }, [dogProfile, seasonKey]);
 
-  // Get dog's breed for filtering
-  const dogBreed = dogProfile?.breed || "";
+
 
   // Filter and sort articles
   const filteredArticles = useMemo(() => {

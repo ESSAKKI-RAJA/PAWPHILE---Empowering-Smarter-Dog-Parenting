@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Plus, ClipboardList, Paperclip, Calendar, Activity } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import { usePawphileData } from '../context/PawphileDataContext';
@@ -161,7 +161,7 @@ export default function VetVisitSummary() {
               <p className="font-bold text-slate-500">No vet visits logged yet.</p>
             </div>
           ) : (
-            visits.map((v, i) => {
+            visits.map((v) => {
               const isExpanded = expandedId === v.id;
               return (
                 <div key={v.id} className="relative ml-6">

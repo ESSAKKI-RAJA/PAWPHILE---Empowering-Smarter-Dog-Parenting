@@ -3,7 +3,6 @@ import { enhancedLocalFallback } from "../utils/aiFallback";
 import {
   buildChatContext,
   getRecentMessages,
-  extractMainConcern,
   generateFollowUpQuestions,
 } from "../utils/chatHelpers";
 
@@ -27,7 +26,7 @@ export async function sendMessage(
   dogProfile: any,
   options: SendMessageOptions = {},
 ): Promise<ChatMessage> {
-  const { includeContext = true, maxHistoryMessages = 10 } = options;
+  const { maxHistoryMessages = 10 } = options;
 
   if (!userInput.trim()) {
     throw new Error("User input cannot be empty");
