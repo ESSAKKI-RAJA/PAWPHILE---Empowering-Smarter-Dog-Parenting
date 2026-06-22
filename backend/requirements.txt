@@ -1,0 +1,16 @@
+fastapi
+uvicorn
+sqlalchemy
+psycopg2-binary
+pydantic[email]
+pydantic-settings
+python-dotenv
+httpx
+python-jose[cryptography]
+cloudinary
+python-multipart
+alembic
+supabase
+reportlab
+sse-starlette
+resend
