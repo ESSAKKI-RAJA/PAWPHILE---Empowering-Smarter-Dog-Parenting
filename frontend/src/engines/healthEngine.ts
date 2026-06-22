@@ -125,7 +125,7 @@ export function calculateWellnessScore(
   // 5. Vet Follow-up (10%)
   const recentVisit = vetVisits.length > 0 ? vetVisits[vetVisits.length - 1] : null;
   if (recentVisit) {
-    if (recentVisit.followUpDate && daysUntil(recentVisit.followUpDate) < 0) {
+    if (recentVisit.nextVisitDate && daysUntil(recentVisit.nextVisitDate) < 0) {
       vetFollowUp = 3;
       reasons.push('Vet follow-up visit is overdue.');
     } else {
