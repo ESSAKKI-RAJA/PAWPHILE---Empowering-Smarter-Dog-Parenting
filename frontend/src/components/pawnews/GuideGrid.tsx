@@ -1,4 +1,4 @@
-import React from "react";
+
 import GuideCard from "./GuideCard";
 import type { CareGuide } from "../../data/careGuides";
 

@@ -1,7 +1,6 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Newspaper, ChevronRight } from 'lucide-react';
-import { CHENNAI_TODAY, ALL_PAWNEWS } from './pawNewsData';
+import { ALL_PAWNEWS } from './pawNewsData';
 
 export default function PawNewsDashboardCard() {
   const navigate = useNavigate();

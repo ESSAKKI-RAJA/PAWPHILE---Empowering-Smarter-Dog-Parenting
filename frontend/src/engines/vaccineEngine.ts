@@ -1,9 +1,9 @@
 import { VaccineRecord, DogProfile } from '../types/pawphile';
 import { daysUntil } from '../lib/dateUtils';
 
-export function analyzeVaccines(records: VaccineRecord[], profile: DogProfile) {
-  const nextDueVaccines = [];
-  const overdueVaccines = [];
+export function analyzeVaccines(records: VaccineRecord[], _profile: DogProfile) {
+  const nextDueVaccines: VaccineRecord[] = [];
+  const overdueVaccines: VaccineRecord[] = [];
 
   records.forEach(record => {
     const days = daysUntil(record.nextDueDate);

@@ -1,4 +1,4 @@
-import { DogProfile, EngineSourceMetadata } from '../types';
+import { EngineSourceMetadata } from '../types';
 
 export interface BCSResult extends EngineSourceMetadata {
   score: number;
@@ -23,7 +23,7 @@ function getNormalizedProfile(profile: any) {
   };
 }
 
-export function calculateBCS(rawProfile: DogProfile): BCSResult {
+export function calculateBCS(rawProfile: any): BCSResult {
   const profile = getNormalizedProfile(rawProfile);
   if (!profile.weightKg || profile.weightKg <= 0) {
     return {
@@ -71,7 +71,7 @@ export function calculateBCS(rawProfile: DogProfile): BCSResult {
   else if (pct_over >= 0.30 && pct_over < 0.40) baseBcs = 8;
   else baseBcs = 9;
 
-  const isNeutered = profile.neutered === true || profile.neutered === 'Yes';
+  const isNeutered = profile.neutered;
   if (isNeutered) baseBcs += 0.5;
 
   const act = (profile.activityLevel || 'medium').toLowerCase();
@@ -128,7 +128,7 @@ export function calculateBCS(rawProfile: DogProfile): BCSResult {
  * Formula: RER = 70 × (bodyweight_kg ^ 0.75), then multiplied by life-stage factor.
  * Sources: MSD/Merck Veterinary Manual, WSAVA, AAHA Nutrition Guidelines.
  */
-export function calculateMER(rawProfile: DogProfile): number {
+export function calculateMER(rawProfile: any): number {
   const profile = getNormalizedProfile(rawProfile);
   if (!profile.weightKg || profile.weightKg <= 0) return 0;
 

@@ -1,6 +1,5 @@
 import { useEffect, useCallback } from "react";
 import {
-  messaging,
   requestNotificationPermission,
   setupForegroundMessageHandler,
 } from "../lib/firebase";

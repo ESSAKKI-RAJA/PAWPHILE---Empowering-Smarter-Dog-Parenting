@@ -1,4 +1,4 @@
-import React from 'react';
+
 
 export default function PawphileLoader({ message = 'Loading...', fullScreen = false }: { message?: string, fullScreen?: boolean }) {
   const content = (

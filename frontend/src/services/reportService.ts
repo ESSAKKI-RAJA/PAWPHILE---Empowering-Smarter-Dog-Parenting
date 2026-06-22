@@ -24,7 +24,7 @@ export async function uploadPdfReportToStorage(
     const reportId = crypto.randomUUID();
     const filePath = `reports/${profileId}/${dogId}/${reportId}.pdf`;
 
-    const { data, error } = await supabase.storage
+    const { error } = await supabase.storage
       .from('reports')
       .upload(filePath, file, { contentType: 'application/pdf', upsert: true });
 

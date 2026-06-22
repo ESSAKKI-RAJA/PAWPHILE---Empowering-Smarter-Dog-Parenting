@@ -1,4 +1,4 @@
-import React from "react";
+
 import { FileText, ExternalLink } from "lucide-react";
 import type { CareGuide } from "../../data/careGuides";
 

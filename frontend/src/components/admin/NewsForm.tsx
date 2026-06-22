@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { X, Plus, Trash2 } from "lucide-react";
+import React, { useState } from "react";
+import { X, Plus } from "lucide-react";
 import {
   PawNewsArticle,
   ArticleCategory,
