@@ -1,0 +1,268 @@
+@import 'leaflet/dist/leaflet.css';
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Nunito:wght@400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ══════════════════════════════════════════════════════════
+   PAWPHILE — Brand Design System
+   ══════════════════════════════════════════════════════════ */
+
+/* ── Dark mode tokens ─────────────────────────────────── */
+:root,
+html.dark {
+  --bg:          #070B14;   /* Midnight Navy */
+  --bg-2:        #0C1322;
+  --card:        #111827;   /* Deep Slate */
+  --card-2:      #1F2937;
+  --border:      rgba(255,255,255,0.07);
+  --border-2:    rgba(255,255,255,0.12);
+  --text:        #f1f5f9;
+  --text-2:      #94a3b8;
+  --text-3:      #475569;
+  --teal:        #14B8A6;   /* Calm Teal */
+  --teal-dim:    rgba(20,184,166,0.15);
+  --teal-glow:   rgba(20,184,166,0.30);
+  --amber:       #F4A261;   /* Amber for warnings */
+  --red:         #E63946;   /* Crimson for emergency */
+  --violet:      #6D28D9;   /* Deep Paw Purple */
+  --coral:       #FF6B6B;   /* Emotional Coral */
+  --shadow:      rgba(0,0,0,0.45);
+  --shadow-lg:   rgba(0,0,0,0.65);
+}
+
+/* ── Light mode tokens ────────────────────────────────── */
+html.light {
+  --bg:          #F9F7F3;   /* Oatmeal */
+  --bg-2:        #EFECE6;
+  --card:        #ffffff;
+  --card-2:      #F4F1EA;
+  --border:      rgba(0,0,0,0.09);
+  --border-2:    rgba(0,0,0,0.15);
+  --text:        #2D3142;   /* Charcoal */
+  --text-2:      #4A5568;
+  --text-3:      #718096;
+  --teal:        #2A9D8F;   /* Calm Teal (Light) */
+  --teal-dim:    rgba(42,157,143,0.10);
+  --teal-glow:   rgba(42,157,143,0.25);
+  --amber:       #E76F51;
+  --red:         #D62828;
+  --violet:      #5B21B6;
+  --coral:       #EE6055;
+  --shadow:      rgba(0,0,0,0.10);
+  --shadow-lg:   rgba(0,0,0,0.18);
+}
+
+/* ── Base ─────────────────────────────────────────────── */
+@layer base {
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Nunito', sans-serif;
+  }
+  
+  html {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    overscroll-behavior: none;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  html, body, #root {
+    background-color: var(--bg);
+    min-height: 100vh;
+  }
+
+  input, select, textarea {
+    font-family: inherit;
+  }
+
+  input[type="date"]::-webkit-calendar-picker-indicator,
+  input[type="time"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+  }
+
+  html.dark input[type="date"]::-webkit-calendar-picker-indicator,
+  html.dark input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: invert(0.7);
+  }
+}
+
+/* ── Component Classes ───────────────────────────────── */
+@layer components {
+
+  /* Page wrapper — picks up theme automatically */
+  .pw-page {
+    background-color: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* Card */
+  .pw-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: 0 2px 12px var(--shadow);
+    transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+  }
+  .pw-card:where(button, a):hover {
+    border-color: var(--border-2);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px var(--shadow);
+  }
+  .pw-card:where(button, a):active {
+    transform: scale(0.985);
+  }
+
+  /* Glow card (wellness / highlight cards) */
+  .pw-glow {
+    background: var(--card);
+    border: 1px solid var(--border-2);
+    border-radius: 18px;
+    box-shadow: 0 0 0 1px var(--teal-glow),
+                0 4px 28px var(--shadow-lg),
+                inset 0 1px 0 var(--border-2);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .pw-glow:where(button, a):hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0 0 2px var(--teal-glow),
+                0 8px 36px var(--shadow-lg),
+                inset 0 1px 0 var(--border-2);
+  }
+
+  /* Input / Select */
+  .pw-input {
+    background: var(--card-2);
+    border: 1px solid var(--border-2);
+    border-radius: 10px;
+    color: var(--text);
+    padding: 10px 14px;
+    font-weight: 600;
+    width: 100%;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    outline: none;
+  }
+  .pw-input:focus {
+    border-color: var(--teal);
+    box-shadow: 0 0 0 3px var(--teal-dim);
+  }
+
+  /* Button primary */
+  .pw-btn-teal {
+    background: var(--teal);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: filter 0.15s, transform 0.15s;
+  }
+  .pw-btn-teal:hover { filter: brightness(1.08); }
+  .pw-btn-teal:active { transform: scale(0.97); }
+
+  /* Chip / Symptom tag */
+  .pw-chip {
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--border-2);
+    background: var(--card-2);
+    color: var(--text-2);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.12s, border-color 0.12s, color 0.12s;
+    user-select: none;
+  }
+  .pw-chip:hover {
+    border-color: var(--teal);
+    color: var(--teal);
+  }
+  .pw-chip.selected {
+    background: var(--teal-dim);
+    border-color: var(--teal);
+    color: var(--teal);
+  }
+
+  /* Sidebar nav link */
+  .pw-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-2);
+    border: 1px solid transparent;
+    transition: background 0.12s, color 0.12s, border-color 0.12s;
+  }
+  .pw-nav-link:hover {
+    background: var(--teal-dim);
+    color: var(--text);
+  }
+  .pw-nav-link.active {
+    background: var(--teal-dim);
+    border-color: var(--teal-glow);
+    color: var(--teal);
+  }
+
+  /* Bottom nav item */
+  .pw-bottom-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    flex: 1;
+    padding: 10px 0;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-3);
+    transition: color 0.15s, background 0.15s;
+    cursor: pointer;
+  }
+  .pw-bottom-item.active {
+    color: var(--teal);
+    background: var(--teal-dim);
+  }
+}
+
+/* ── Utilities ───────────────────────────────────────── */
+@layer utilities {
+  .animate-fadeIn {
+    animation: fadeIn 0.3s ease-out;
+  }
+  .hide-scrollbar::-webkit-scrollbar { display: none; }
+  .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Leaflet dark overrides ──────────────────────────── */
+html.dark .leaflet-popup-content-wrapper {
+  background: var(--card) !important;
+  color: var(--text) !important;
+}
+html.dark .leaflet-container {
+  background: var(--bg) !important;
+}
+.custom-marker { background: none !important; border: none !important; }
+.leaflet-popup-content-wrapper {
+  border-radius: 12px !important;
+  box-shadow: 0 4px 12px var(--shadow) !important;
+}
+.leaflet-popup-content { margin: 10px 14px !important; font-size: 13px !important; line-height: 1.5 !important; }
+

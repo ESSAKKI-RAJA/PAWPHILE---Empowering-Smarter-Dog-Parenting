@@ -1,0 +1,128 @@
+# ============================================================
+# PAWPHILE — Monorepo .gitignore
+# Stack: Python (FastAPI) + React / Vite / TypeScript
+# ============================================================
+
+# ─── Environment & Secrets ──────────────────────────────────
+.env
+.env.*
+!.env.example          # keep example files
+backend/.env
+frontend/.env
+*.env.txt              # e.g. backend.env.txt
+
+# ─── Python ─────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+*.so
+
+# Virtual environments
+venv/
+.venv/
+env/
+.env/
+ENV/
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+*.egg
+.eggs/
+site/
+MANIFEST
+
+# pytest / coverage
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+*.cover
+nosetests.xml
+
+# mypy / pyright
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyright/
+
+# Alembic — keep ini and migration scripts, ignore local auto-gen
+# (uncomment if you want to ignore alembic versions folder)
+# migrations/versions/
+
+# SQLite database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Scratch / temp output files
+scratch.json
+test_outputs/
+backend/test_outputs/
+run_safety_tests_output*
+
+# ─── Node / JavaScript / TypeScript ─────────────────────────
+node_modules/
+frontend/node_modules/
+backend/node_modules/
+
+# Build outputs
+dist/
+dist-ssr/
+frontend/dist/
+.output/
+.nuxt/
+.next/
+
+# Vite / Rollup cache
+.vite/
+*.local
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+logs/
+*.log
+
+# Lint / build artefact text files created during development
+build_err.txt
+build_out.txt
+errors.txt
+eslint-output*.txt
+eslint_*.txt
+eslint.json
+lint_output.txt
+typecheck.log
+
+# ─── IDE & Editor ────────────────────────────────────────────
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.fleet/
+
+# ─── OS ──────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ─── Bolt (AI scaffolding artefacts) ─────────────────────────
+.bolt/
+
+# ─── Miscellaneous ───────────────────────────────────────────
+*.bak
+*.tmp
+*.temp
+archive/

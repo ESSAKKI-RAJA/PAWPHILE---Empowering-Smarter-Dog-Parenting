@@ -1,0 +1,9 @@
+{
+  "name": "pawphile-backend",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "supabase:start": "npx supabase start",
+    "supabase:stop": "npx supabase stop"
+  }
+}
