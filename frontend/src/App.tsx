@@ -8,7 +8,7 @@ import Dashboard from './pages/Dashboard';
 import DogHealthTriage from './pages/DogHealthTriage';
 import EmergencyClassifier from './pages/EmergencyClassifier';
 
-import VetVisitSummary from './pages/VetVisitSummary';
+import VetRecords from './pages/VetRecords';
 import Nutrition from './pages/Nutrition';
 import Behavior from './pages/Behavior';
 import VetLocator from './pages/VetFinder';
@@ -56,7 +56,8 @@ export default function App() {
                 <Route path="deworming" element={<Navigate to="/preventive-care" replace />} />
                 <Route path="symptoms" element={<Navigate to="/triage" replace />} />
                 <Route path="paw-ai" element={<PawAiCenter />} />
-                <Route path="vet-summary" element={<VetVisitSummary />} />
+                <Route path="vet-records" element={<VetRecords />} />
+                <Route path="vet-summary" element={<Navigate to="/vet-records" replace />} />
                 <Route path="nutrition" element={<Nutrition />} />
                 <Route path="behavior" element={<Behavior />} />
                 <Route path="vet-locator" element={<VetLocator />} />

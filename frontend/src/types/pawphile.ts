@@ -42,9 +42,9 @@ export type NotificationPermissionStatus = 'granted' | 'denied' | 'default' | 'u
 
 export interface BaseEntity {
   id: string;
-  createdAt: string; // ISO string
-  updatedAt: string; // ISO string
-  source: 'manual' | 'ai' | 'vet' | 'imported';
+  createdAt: string;
+  updatedAt?: string;
+  source: 'manual' | 'ai' | 'vet' | 'imported' | 'ai_food_scan' | 'ai_label_scan';
   syncStatus: 'local_only' | 'synced' | 'sync_failed';
 }
 
@@ -186,18 +186,31 @@ export interface DewormingRecord extends BaseEntity {
 
 export interface VetVisit extends BaseEntity {
   dogId: string;
-  visitDate: string; // ISO string
   vetName: string;
-  clinicName?: string;
-  reasonForVisit: string;
-  symptomsBeforeVisit?: string;
-  vetRemarks?: string;
-  diagnosisAsEntered?: string;
-  medicinesPrescribed?: string;
-  dosageNotesCopied?: string;
-  followUpDate?: string; // ISO string
+  clinicName: string;
+  contactNumber?: string;
+  visitDate: string; // YYYY-MM-DD
+  visitTime?: string; // HH:MM
+  visitType: string;
+  symptoms?: string;
+  diagnosis?: string;
+  treatmentPlan?: string;
+  clinicalNotes?: string;
+  followUpRequired: boolean;
+  nextVisitDate?: string; // YYYY-MM-DD
+  nextVisitTime?: string; // HH:MM
   attachmentUrls?: string[];
-  ownerNotes?: string;
+}
+
+export interface Medication extends BaseEntity {
+  dogId: string;
+  name: string;
+  dosage: string;
+  frequency: string;
+  duration: string;
+  instructions?: string;
+  startDate?: string;
+  endDate?: string;
 }
 
 // ─────────────────────────────────────────────
@@ -217,11 +230,25 @@ export interface FoodCheck extends BaseEntity {
 
 export interface NutritionLog extends BaseEntity {
   dogId: string;
-  mealDescription: string;
+  dogName?: string;
+  mealDescription?: string;
+  foodName?: string;
   calories?: number;
+  caloriesCal?: number;
   foodType?: string;
   portionNotes?: string;
+  portionGrams?: number;
+  proteinGrams?: number;
+  fatGrams?: number;
+  carbsGrams?: number;
   vetApproved?: boolean;
+  source: 'manual' | 'ai_food_scan' | 'ai_label_scan' | 'vet' | 'imported' | 'ai';
+  confidence?: number;
+  imageQuality?: 'excellent' | 'good' | 'poor';
+  mealType?: 'breakfast' | 'lunch' | 'dinner' | 'snack';
+  isTreat?: boolean;
+  notes?: string;
+  syncStatus: 'local_only' | 'synced' | 'sync_failed';
 }
 
 export interface BehaviorLog extends BaseEntity {

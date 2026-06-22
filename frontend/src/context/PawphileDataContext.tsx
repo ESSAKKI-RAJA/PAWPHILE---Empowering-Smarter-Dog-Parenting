@@ -3,7 +3,7 @@ import { loadFromStorage, saveToStorage, deleteFromStorage } from '../lib/storag
 import * as api from '../services/apiClient';
 import type {
   DogProfile, OwnerProfile, SymptomLog, TriageResult, VaccineRecord, DewormingRecord,
-  VetVisit, FoodCheck, NutritionLog, BehaviorLog, ImageScan, Report, ConsentLog, AuditLog
+  VetVisit, FoodCheck, NutritionLog, BehaviorLog, ImageScan, Report, ConsentLog, AuditLog, Medication
 } from '../types/pawphile';
 
 interface ThemeSettings {
@@ -20,6 +20,7 @@ interface PawphileDataContextType {
   vaccineRecords: VaccineRecord[];
   dewormingRecords: DewormingRecord[];
   vetVisits: VetVisit[];
+  medications: Medication[];
   foodChecks: FoodCheck[];
   nutritionLogs: NutritionLog[];
   behaviorLogs: BehaviorLog[];
@@ -37,10 +38,18 @@ interface PawphileDataContextType {
   addVaccineRecord: (record: VaccineRecord) => void;
   addDewormingRecord: (record: DewormingRecord) => void;
   addVetVisit: (visit: VetVisit) => void;
+  updateVetVisit: (id: string, updates: Partial<VetVisit>) => void;
+  deleteVetVisit: (id: string) => void;
+  addMedication: (med: Medication) => void;
+  updateMedication: (id: string, updates: Partial<Medication>) => void;
+  deleteMedication: (id: string) => void;
   addFoodCheck: (check: FoodCheck) => void;
   addBehaviorLog: (log: BehaviorLog) => void;
   addConsentLog: (log: ConsentLog) => void;
   addAuditLog: (log: AuditLog) => void;
+  addNutritionLog: (log: NutritionLog) => void;
+  updateNutritionLog: (id: string, updates: Partial<NutritionLog>) => void;
+  deleteNutritionLog: (id: string) => void;
   exportAllData: () => object;
   deleteAllData: () => void;
   setThemeSettings: (theme: ThemeSettings) => void;
@@ -65,6 +74,7 @@ const KEYS = {
   vaccineRecords: 'pawphile:v1:vaccineRecords',
   dewormingRecords: 'pawphile:v1:dewormingRecords',
   vetVisits: 'pawphile:v1:vetVisits',
+  medications: 'pawphile:v1:medications',
   foodChecks: 'pawphile:v1:foodChecks',
   nutritionLogs: 'pawphile:v1:nutritionLogs',
   behaviorLogs: 'pawphile:v1:behaviorLogs',
@@ -84,6 +94,7 @@ export function PawphileDataProvider({ children }: { children: ReactNode }) {
   const [vaccineRecords, setVaccineRecordsState] = useState<VaccineRecord[]>([]);
   const [dewormingRecords, setDewormingRecordsState] = useState<DewormingRecord[]>([]);
   const [vetVisits, setVetVisitsState] = useState<VetVisit[]>([]);
+  const [medications, setMedicationsState] = useState<Medication[]>([]);
   const [foodChecks, setFoodChecksState] = useState<FoodCheck[]>([]);
   const [nutritionLogs, setNutritionLogsState] = useState<NutritionLog[]>([]);
   const [behaviorLogs, setBehaviorLogsState] = useState<BehaviorLog[]>([]);
@@ -208,6 +219,46 @@ export function PawphileDataProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  const updateVetVisit = useCallback((id: string, updates: Partial<VetVisit>) => {
+    setVetVisitsState(prev => {
+      const next = prev.map(v => v.id === id ? { ...v, ...updates } : v);
+      saveToStorage(KEYS.vetVisits, next);
+      return next;
+    });
+  }, []);
+
+  const deleteVetVisit = useCallback((id: string) => {
+    setVetVisitsState(prev => {
+      const next = prev.filter(v => v.id !== id);
+      saveToStorage(KEYS.vetVisits, next);
+      return next;
+    });
+  }, []);
+
+  const addMedication = useCallback((med: Medication) => {
+    setMedicationsState(prev => {
+      const next = [...prev, med];
+      saveToStorage(KEYS.medications, next);
+      return next;
+    });
+  }, []);
+
+  const updateMedication = useCallback((id: string, updates: Partial<Medication>) => {
+    setMedicationsState(prev => {
+      const next = prev.map(m => m.id === id ? { ...m, ...updates } : m);
+      saveToStorage(KEYS.medications, next);
+      return next;
+    });
+  }, []);
+
+  const deleteMedication = useCallback((id: string) => {
+    setMedicationsState(prev => {
+      const next = prev.filter(m => m.id !== id);
+      saveToStorage(KEYS.medications, next);
+      return next;
+    });
+  }, []);
+
   const addFoodCheck = useCallback((check: FoodCheck) => {
     setFoodChecksState(prev => {
       const next = [...prev, check];
@@ -220,6 +271,30 @@ export function PawphileDataProvider({ children }: { children: ReactNode }) {
     setBehaviorLogsState(prev => {
       const next = [...prev, log];
       saveToStorage(KEYS.behaviorLogs, next);
+      return next;
+    });
+  }, []);
+
+  const addNutritionLog = useCallback((log: NutritionLog) => {
+    setNutritionLogsState(prev => {
+      const next = [...prev, log];
+      saveToStorage(KEYS.nutritionLogs, next);
+      return next;
+    });
+  }, []);
+
+  const updateNutritionLog = useCallback((id: string, updates: Partial<NutritionLog>) => {
+    setNutritionLogsState(prev => {
+      const next = prev.map(l => l.id === id ? { ...l, ...updates } : l);
+      saveToStorage(KEYS.nutritionLogs, next);
+      return next;
+    });
+  }, []);
+
+  const deleteNutritionLog = useCallback((id: string) => {
+    setNutritionLogsState(prev => {
+      const next = prev.filter(l => l.id !== id);
+      saveToStorage(KEYS.nutritionLogs, next);
       return next;
     });
   }, []);
@@ -248,10 +323,10 @@ export function PawphileDataProvider({ children }: { children: ReactNode }) {
   const exportAllData = useCallback(() => {
     return {
       dogProfiles, ownerProfile, symptomLogs, triageResults, vaccineRecords,
-      dewormingRecords, vetVisits, foodChecks, nutritionLogs, behaviorLogs,
+      dewormingRecords, vetVisits, medications, foodChecks, nutritionLogs, behaviorLogs,
       imageScans, reports, consentLogs, auditLogs, notificationPreferences, themeSettings
     };
-  }, [dogProfiles, ownerProfile, symptomLogs, triageResults, vaccineRecords, dewormingRecords, vetVisits, foodChecks, nutritionLogs, behaviorLogs, imageScans, reports, consentLogs, auditLogs, notificationPreferences, themeSettings]);
+  }, [dogProfiles, ownerProfile, symptomLogs, triageResults, vaccineRecords, dewormingRecords, vetVisits, medications, foodChecks, nutritionLogs, behaviorLogs, imageScans, reports, consentLogs, auditLogs, notificationPreferences, themeSettings]);
 
   const deleteAllData = useCallback(() => {
     Object.values(KEYS).forEach(k => deleteFromStorage(k));
@@ -263,6 +338,7 @@ export function PawphileDataProvider({ children }: { children: ReactNode }) {
     setVaccineRecordsState([]);
     setDewormingRecordsState([]);
     setVetVisitsState([]);
+    setMedicationsState([]);
     setFoodChecksState([]);
     setNutritionLogsState([]);
     setBehaviorLogsState([]);
@@ -279,10 +355,13 @@ export function PawphileDataProvider({ children }: { children: ReactNode }) {
   return (
     <PawphileDataContext.Provider value={{
       dogProfiles, selectedDog, setSelectedDog, ownerProfile, symptomLogs, triageResults,
-      vaccineRecords, dewormingRecords, vetVisits, foodChecks, nutritionLogs, behaviorLogs,
+      vaccineRecords, dewormingRecords, vetVisits, medications, foodChecks, nutritionLogs, behaviorLogs,
       imageScans, reports, consentLogs, auditLogs, notificationPreferences, themeSettings,
       addDogProfile, updateDogProfile, addSymptomLog, addTriageResult, addVaccineRecord,
-      addDewormingRecord, addVetVisit, addFoodCheck, addBehaviorLog, addConsentLog, addAuditLog,
+      addDewormingRecord, addVetVisit, updateVetVisit, deleteVetVisit,
+      addMedication, updateMedication, deleteMedication,
+      addFoodCheck, addBehaviorLog, addConsentLog, addAuditLog,
+      addNutritionLog, updateNutritionLog, deleteNutritionLog,
       exportAllData, deleteAllData, setThemeSettings,
       state: { petProfile: selectedDog, ownerProfile, vetProfile: null }, // Enhanced state fallback
       dogProfile: selectedDog,

@@ -6,7 +6,7 @@ import { usePawphileData } from '../context/PawphileDataContext';
 import { calculateMER } from '../utils/bcsUtils';
 import type { FoodScanLog } from '../types/pawphileCore';
 import { isoDate, nowIso } from '../types/pawphileCore';
-import { getNutritionLogs, saveNutritionLog, updateNutritionLog, deleteNutritionLog as storageDeleteNutritionLog, NutritionLog } from '../features/nutrition/nutritionStorage';
+import type { NutritionLog } from '../types/pawphile';
 
 type Period = '1W' | '1M' | '6M';
 
@@ -144,27 +144,22 @@ function estimateFromFallback(args: {
 }
 
 export default function Nutrition() {
-  const { dogProfile: profile, addFoodScanLog, securitySettings } = usePawphileData() as any;
+  const { dogProfile: profile, addFoodScanLog, securitySettings, nutritionLogs, addNutritionLog, updateNutritionLog, deleteNutritionLog } = usePawphileData() as any;
   const [period, setPeriod] = useState<Period>('1W');
   const [quickWindow, setQuickWindow] = useState<'Today' | '7D' | '30D'>('Today');
   const [showLogModal, setShowLogModal] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showScanModal, setShowScanModal] = useState(false);
-  const [nutritionLogs, setNutritionLogs] = useState<NutritionLog[]>([]);
-
-  // Load from unified storage
-  const loadLogs = () => setNutritionLogs(getNutritionLogs());
-  React.useEffect(() => { loadLogs(); }, []);
 
   const merTarget = useMemo(() => (profile ? calculateMER(profile) : 0), [profile]);
 
   const todayKey = isoDate(new Date());
 
   const todayLogs = useMemo(() => {
-    return nutritionLogs.filter((l) => l.createdAt.startsWith(todayKey));
+    return (nutritionLogs as NutritionLog[]).filter((l: NutritionLog) => l.createdAt.startsWith(todayKey));
   }, [nutritionLogs, todayKey]);
 
-  const todayCals = useMemo(() => sum(todayLogs.map((l) => l.caloriesCal)), [todayLogs]);
+  const todayCals = useMemo(() => sum(todayLogs.map((l: NutritionLog) => l.caloriesCal || l.calories || 0)), [todayLogs]);
 
   const days = period === '1W' ? 7 : period === '1M' ? 30 : 180;
 
@@ -235,7 +230,7 @@ export default function Nutrition() {
   const isOver = todayCals > merTarget;
   const isDanger = todayCals > merTarget * 1.1;
 
-  const editingLog = editingId ? nutritionLogs.find((l) => l.id === editingId) || null : null;
+  const editingLog = editingId ? (nutritionLogs as NutritionLog[]).find((l: NutritionLog) => l.id === editingId) || null : null;
 
   return (
     <PageWrapper className="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white relative">
@@ -268,7 +263,7 @@ export default function Nutrition() {
           <AlertTriangle className="w-6 h-6 text-indigo-600 dark:text-indigo-400 flex-shrink-0" />
           <p className="text-sm text-indigo-800 dark:text-indigo-200">
             {todayLogs.length === 0 ? "Start by logging today's meals." 
-              : todayLogs.filter(l => l.isTreat || l.mealType === 'Treat').reduce((sum, l) => sum + l.caloriesCal, 0) > merTarget * 0.1 ? "Treat calories add up. Keep treats limited to 10% of diet and ask your vet for advice." 
+              : todayLogs.filter((l: NutritionLog) => l.isTreat || l.mealType === 'snack').reduce((sum: number, l: NutritionLog) => sum + (l.caloriesCal || l.calories || 0), 0) > merTarget * 0.1 ? "Treat calories add up. Keep treats limited to 10% of diet and ask your vet for advice." 
               : isOver ? "Today is above the estimated target. Monitor portions and avoid extra treats." 
               : "Today's intake is close to the estimated daily target."}
           </p>
@@ -326,7 +321,7 @@ export default function Nutrition() {
             </div>
           ) : (
             <div className="space-y-3">
-              {todayLogs.map((l) => (
+              {todayLogs.map((l: NutritionLog) => (
                 <div key={l.id} className="rounded-2xl border border-slate-200 dark:border-slate-800 p-4 flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2 mb-1">
@@ -356,7 +351,7 @@ export default function Nutrition() {
                     <button
                       type="button"
                       onClick={() => {
-                        storageDeleteNutritionLog(l.id).then(loadLogs);
+                        deleteNutritionLog(l.id);
                       }}
                       className="p-2 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 hover:bg-red-100 dark:hover:bg-red-900/30 transition"
                       aria-label="Delete log"
@@ -464,14 +459,13 @@ export default function Nutrition() {
           onClose={() => { setShowLogModal(false); setEditingId(null); }}
           onSave={async (payload) => {
             if (editingLog) {
-              await updateNutritionLog(editingLog.id, payload);
+              updateNutritionLog(editingLog.id, payload);
             } else {
-              await saveNutritionLog({
+              addNutritionLog({
                 id: crypto.randomUUID(),
                 ...payload
               } as NutritionLog);
             }
-            loadLogs();
             setShowLogModal(false);
             setEditingId(null);
           }}
@@ -483,11 +477,9 @@ export default function Nutrition() {
           onClose={() => setShowScanModal(false)}
           onSaveToLog={async (estimate) => {
             const occurredAt = nowIso();
-            // 1. Write to localStorage synchronously (inside saveNutritionLog)
-            const logEntry: NutritionLog = {
+            const newLog: NutritionLog = {
               id: crypto.randomUUID(),
-              userId: undefined,
-              dogId: undefined,
+              dogId: profile?.id,
               dogName: profile?.name || 'Unassigned',
               source: 'ai_food_scan',
               foodName: estimate.foodName,
@@ -500,21 +492,15 @@ export default function Nutrition() {
               imageQuality: undefined,
               notes: `AI Food Scan (confidence: ${estimate.confidenceScore}%). ${estimate.safetyWarnings.length ? estimate.safetyWarnings.join(' | ') : ''}`.trim(),
               createdAt: occurredAt,
+              updatedAt: occurredAt,
+              syncStatus: 'local_only',
+              mealDescription: estimate.foodName,
             };
-            // Write to localStorage immediately (synchronous part of saveNutritionLog)
-            const existing = getNutritionLogs();
-            existing.unshift(logEntry);
-            localStorage.setItem('pawphile_nutrition_logs', JSON.stringify(existing));
-            // 2. Immediately refresh UI state — TODAY's logs updates before modal closes
-            loadLogs();
-            // 3. Close the modal
+            addNutritionLog(newLog);
             setShowScanModal(false);
-            // 4. Fire Backend sync in background (non-blocking)
-            saveNutritionLog(logEntry).catch(() => {});
-            // 5. Also track in food scan log history
             addFoodScanLog({
               userId: null,
-              petId: null,
+              petId: profile?.id,
               scannedAt: nowIso(),
               imageDataUrl: undefined,
               imageFileName: undefined,
