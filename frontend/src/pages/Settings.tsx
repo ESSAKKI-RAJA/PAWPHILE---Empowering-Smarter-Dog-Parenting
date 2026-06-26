@@ -110,7 +110,7 @@ export default function Settings() {
         });
       }
       showToast({ type: 'success', message: `${key} updated successfully.` });
-    } catch (_err) {
+    } catch {
       showToast({ type: 'error', message: `Failed to update ${key}. Connection error.` });
     } finally {
       setLoadingToggles(prev => ({ ...prev, [key]: false }));
