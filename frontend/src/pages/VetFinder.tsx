@@ -66,7 +66,7 @@ export default function VetFinder() {
               if (res.results && res.results.length > 0) {
                 setClinics(res.results);
               }
-            } catch (err) {
+            } catch {
               console.warn("Failed to fetch API clinics, using fallback");
             } finally {
               if (mounted) setLoading(false);
@@ -79,7 +79,7 @@ export default function VetFinder() {
               if (res.results && res.results.length > 0) {
                 setClinics(res.results);
               }
-            } catch (err) {
+            } catch {
               console.warn("Failed to fetch API clinics, using fallback");
             } finally {
               if (mounted) setLoading(false);
@@ -87,7 +87,7 @@ export default function VetFinder() {
           },
           { timeout: 5000 }
         );
-      } catch (e) {
+      } catch {
         setLoading(false);
       }
     };

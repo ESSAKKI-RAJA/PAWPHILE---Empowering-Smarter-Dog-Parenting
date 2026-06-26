@@ -176,7 +176,7 @@ export async function pawAiStreamChat(data: Record<string, any>, onToken: (token
               fullText += parsed.token;
               onToken(parsed.token);
             }
-          } catch (e) {
+          } catch {
             // Might be a full fallback object dumped as JSON if guardrails tripped
             try {
               const fullObj = JSON.parse(chunk);
@@ -185,7 +185,7 @@ export async function pawAiStreamChat(data: Record<string, any>, onToken: (token
                 onComplete(JSON.stringify(fullObj));
                 return;
               }
-            } catch (_err2) { /* ignore */ }
+            } catch { /* ignore */ }
           }
         }
       }

@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+﻿import { useMemo, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   SignedIn,
@@ -21,13 +21,7 @@ import {
   Flame,
   Info,
   Bell,
-  MapPin,
-  FileText,
-  Calendar,
-  History,
-  TrendingUp,
 } from "lucide-react";
-import NotificationBell from "../components/layout/NotificationBell";
 import { usePawphileData } from "../context/PawphileDataContext";
 import { calculateWellnessScore } from "../engines/healthEngine";
 import { daysUntil } from "../lib/dateUtils";
@@ -36,7 +30,7 @@ import { calculateBCS, calculateMER } from "../utils/bcsUtils";
 import { getWeatherAlert } from "../services/apiClient";
 import breedSeasonalRules, { FALLBACK_RULE } from "../data/breedSeasonalRules";
 
-/* ── Tiny helpers ──────────────────────────────────────── */
+/* ΓöÇΓöÇ Tiny helpers ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 // Deprecated: bcsFromProfile is replaced by calculateBCS from bcsUtils
 
 export default function Dashboard() {
@@ -50,7 +44,6 @@ export default function Dashboard() {
     vetVisits,
     triageResults,
     nutritionLogs,
-    medications,
   } = usePawphileData();
   const [tipDismissed, setTipDismissed] = useState(false);
   const [weatherAlert, setWeatherAlert] = useState<any>(null);
@@ -82,7 +75,7 @@ export default function Dashboard() {
     return () => { mounted = false; };
   }, []);
 
-  /* ── Computed values ─────────────────────────────────── */
+  /* ΓöÇΓöÇ Computed values ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
   const wellness = useMemo(() => {
     if (!selectedDog) return null;
     return calculateWellnessScore(
@@ -123,7 +116,7 @@ export default function Dashboard() {
       score: res.score,
       label: res.label,
       color,
-      idealRange: `${res.idealRange[0]} – ${res.idealRange[1]} kg`,
+      idealRange: `${res.idealRange[0]} ΓÇô ${res.idealRange[1]} kg`,
       advice: res.advice,
       bmi
     };
@@ -204,7 +197,7 @@ export default function Dashboard() {
     } else {
       alerts.push({
         label: "Vaccines",
-        sub: "No records yet — add your first",
+        sub: "No records yet ΓÇö add your first",
         color: "#94a3b8",
         path: "/preventive-care",
       });
@@ -220,7 +213,7 @@ export default function Dashboard() {
           sub:
             diff < 0
               ? "Overdue! Review schedule with your vet (every 3 months recommended)"
-              : `Due in ${diff} days — Review schedule with your vet`,
+              : `Due in ${diff} days ΓÇö Review schedule with your vet`,
           color: diff < 0 ? "#ef4444" : "#f59e0b",
           path: "/preventive-care",
         });
@@ -276,7 +269,7 @@ export default function Dashboard() {
       .map((x) => x.article);
   }, [selectedDog]);
 
-  /* ── No dog ──────────────────────────────────────────── */
+  /* ΓöÇΓöÇ No dog ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
   if (!selectedDog) {
     return (
       <div className="pw-page flex flex-col items-center justify-center min-h-screen px-6">
@@ -311,7 +304,7 @@ export default function Dashboard() {
     );
   }
 
-  /* ── Wellness ring calc ──────────────────────────────── */
+  /* ΓöÇΓöÇ Wellness ring calc ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
   const wsScore = wellness?.score ?? 72;
   const wsZone = wellness?.zone ?? "green";
   const ringColor =
@@ -337,7 +330,7 @@ export default function Dashboard() {
 
   return (
     <div className="pw-page pb-28" style={{ minHeight: "100vh" }}>
-      {/* ── Header ───────────────────────────────────────── */}
+      {/* ΓöÇΓöÇ Header ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */}
       <div
         className="sticky top-0 z-30 flex items-center gap-3 px-4 py-3"
         style={{
@@ -378,14 +371,13 @@ export default function Dashboard() {
             className="text-xs font-semibold truncate"
             style={{ color: "var(--text-2)" }}
           >
-            {selectedDog.breed} · {selectedDog.age || "?"} yrs ·{" "}
+            {selectedDog.breed} ┬╖ {selectedDog.age || "?"} yrs ┬╖{" "}
             {selectedDog.weight
               ? `${selectedDog.weight} ${selectedDog.weightUnit || "kg"}`
               : "?"}
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <NotificationBell />
           <SignedIn>
             <UserButton afterSignOutUrl="/" />
           </SignedIn>
@@ -410,13 +402,13 @@ export default function Dashboard() {
       </div>
 
       <div className="px-4 py-4 space-y-3 max-w-lg mx-auto">
-        {/* ── Weather / Monsoon Alert Banner ──────────────── */}
+        {/* ΓöÇΓöÇ Weather / Monsoon Alert Banner ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */}
         {weatherBanner && (
           <div className="pw-card p-4 border-l-4 border-amber-500 bg-amber-50 dark:bg-amber-950/20 flex flex-col gap-2 relative overflow-hidden">
             <div className="flex justify-between items-start">
               <div>
                 <p className="text-[10px] font-black tracking-widest text-amber-600 dark:text-amber-400 uppercase">
-                  ☔ Monsoon Alert: {weatherBanner.condition} ({weatherBanner.temp}°C, {weatherBanner.humidity}% Humidity)
+                  Γÿö Monsoon Alert: {weatherBanner.condition} ({weatherBanner.temp}┬░C, {weatherBanner.humidity}% Humidity)
                 </p>
                 <h3 className="font-bold text-sm text-slate-900 dark:text-white mt-1">
                   {weatherBanner.title}
@@ -432,14 +424,14 @@ export default function Dashboard() {
             {weatherBanner.recommendations && weatherBanner.recommendations.length > 0 && (
               <div className="text-[11px] font-bold text-slate-700 dark:text-slate-300 mt-1 pl-4 space-y-0.5">
                 {weatherBanner.recommendations.map((rec: string, i: number) => (
-                  <div key={i}>• {rec}</div>
+                  <div key={i}>ΓÇó {rec}</div>
                 ))}
               </div>
             )}
           </div>
         )}
 
-        {/* ── 1. Wellness Score ─────────────────────────── */}
+        {/* ΓöÇΓöÇ 1. Wellness Score ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */}
         <button
           onClick={() => navigate("/reports")}
           className="pw-card w-full p-5 flex items-center gap-5 text-left"
@@ -505,7 +497,7 @@ export default function Dashboard() {
           </div>
         </button>
 
-        {/* ── 2. Estimated BCS ──────────────────────────── */}
+        {/* ΓöÇΓöÇ 2. Estimated BCS ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */}
         {bcs && (
           <button
             onClick={() => navigate("/bmi")}
@@ -598,7 +590,7 @@ export default function Dashboard() {
           </button>
         )}
 
-        {/* ── 3. Nutrition Tracker ──────────────────────── */}
+        {/* ΓöÇΓöÇ 3. Nutrition Tracker ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */}
         <button
           onClick={() => navigate("/nutrition")}
           className="pw-card w-full p-5 text-left"
@@ -648,14 +640,14 @@ export default function Dashboard() {
           </p>
         </button>
 
-        {/* ── 3.5. Latest Articles ──────────────────────── */}
+        {/* ΓöÇΓöÇ 3.5. Latest Articles ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */}
         <button
           onClick={() => navigate("/pawnews")}
           className="pw-card w-full p-5"
         >
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <span className="text-lg">📰</span>
+              <span className="text-lg">≡ƒô░</span>
               <span className="font-black" style={{ color: "var(--text)" }}>
                 Latest for {selectedDog.name}
               </span>
@@ -713,11 +705,11 @@ export default function Dashboard() {
             className="text-xs font-semibold text-center mt-3"
             style={{ color: "var(--text-2)" }}
           >
-            View all →
+            View all ΓåÆ
           </p>
         </button>
 
-        {/* ── 4. Vision AI Scan ────────────────────────── */}
+        {/* ΓöÇΓöÇ 4. Vision AI Scan ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */}
         <button
           onClick={() => navigate("/vision")}
           className="pw-card w-full p-4 flex items-center gap-4 text-left"
@@ -748,7 +740,7 @@ export default function Dashboard() {
           />
         </button>
 
-        {/* ── 5. PAWAI Health Triage ───────────────────── */}
+        {/* ΓöÇΓöÇ 5. PAWAI Health Triage ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */}
         <div className="pw-card p-5">
           <div className="flex items-center gap-3 mb-4">
             <div
@@ -768,7 +760,7 @@ export default function Dashboard() {
                 className="text-xs font-semibold"
                 style={{ color: "var(--text-2)" }}
               >
-                Early symptom guidance — severity check, warning signs, and safe
+                Early symptom guidance ΓÇö severity check, warning signs, and safe
                 next steps.
               </p>
             </div>
@@ -778,7 +770,7 @@ export default function Dashboard() {
             className="w-full py-3 rounded-xl font-black text-base mb-3 transition-all hover:brightness-110 active:scale-[0.98]"
             style={{ background: "var(--teal)", color: "#fff" }}
           >
-            Start Triage →
+            Start Triage ΓåÆ
           </button>
           {latestTriage && (
             <div className="flex items-center gap-2">
@@ -808,13 +800,13 @@ export default function Dashboard() {
                   : latestTriage.severity === "yellow"
                     ? "Urgent"
                     : "Normal"}{" "}
-                · {latestTriage.concern}
+                ┬╖ {latestTriage.concern}
               </span>
             </div>
           )}
         </div>
 
-        {/* ── 6. Preventive Alerts ─────────────────────── */}
+        {/* ΓöÇΓöÇ 6. Preventive Alerts ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */}
         <div className="pw-card p-5">
           <div className="flex items-center gap-2 mb-3">
             <Bell className="w-4 h-4" style={{ color: "#f59e0b" }} />
@@ -873,7 +865,7 @@ export default function Dashboard() {
           </p>
         </div>
 
-        {/* ── 7. Today's Wellness ──────────────────────── */}
+        {/* ΓöÇΓöÇ 7. Today's Wellness ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */}
         <div className="pw-card p-5">
           <p className="font-black mb-3" style={{ color: "var(--text)" }}>
             Today's Wellness
@@ -934,68 +926,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* ── 7.5 Timeline & Upcoming ──────────────────── */}
-        <div className="pw-card p-5">
-          <div className="flex items-center gap-2 mb-3">
-            <Calendar className="w-4 h-4" style={{ color: "#3b82f6" }} />
-            <span className="font-black text-sm" style={{ color: "var(--text)" }}>
-              Upcoming Events & Timeline
-            </span>
-          </div>
-          <div className="space-y-3">
-            {vetVisits.slice(0, 2).map((v, i) => (
-              <div key={i} className="flex justify-between items-center text-xs">
-                <span style={{ color: "var(--text)" }}>Vet Visit: {v.clinicName}</span>
-                <span style={{ color: "var(--text-2)" }}>{v.visitDate}</span>
-              </div>
-            ))}
-            {vaccineRecords.slice(0, 2).map((v, i) => (
-              <div key={i} className="flex justify-between items-center text-xs">
-                <span style={{ color: "var(--text)" }}>Vaccine: {v.vaccineName}</span>
-                <span style={{ color: "var(--text-2)" }}>Due: {v.nextDueDate || 'Unknown'}</span>
-              </div>
-            ))}
-            {vetVisits.length === 0 && vaccineRecords.length === 0 && (
-              <p className="text-[11px] italic" style={{ color: "var(--text-3)" }}>No recent records.</p>
-            )}
-          </div>
-        </div>
-
-        {/* ── 7.6 Medications & Records ──────────────────── */}
-        <div className="pw-card p-5">
-          <div className="flex items-center gap-2 mb-3">
-            <History className="w-4 h-4" style={{ color: "#ef4444" }} />
-            <span className="font-black text-sm" style={{ color: "var(--text)" }}>
-              Medication Summary
-            </span>
-          </div>
-          <div className="space-y-3">
-            {medications && medications.length > 0 ? medications.slice(0, 2).map((m, i) => (
-              <div key={i} className="flex justify-between items-center text-xs">
-                <span style={{ color: "var(--text)" }}>{m.name}</span>
-                <span style={{ color: "var(--text-2)" }}>{m.dosage}</span>
-              </div>
-            )) : (
-              <p className="text-[11px] italic" style={{ color: "var(--text-3)" }}>No active medications.</p>
-            )}
-          </div>
-        </div>
-
-        {/* ── 7.7 Health Analytics ──────────────────── */}
-        <div className="pw-card p-5">
-          <div className="flex items-center gap-2 mb-3">
-            <TrendingUp className="w-4 h-4" style={{ color: "#10b981" }} />
-            <span className="font-black text-sm" style={{ color: "var(--text)" }}>
-              Weight Trend & Growth Analytics
-            </span>
-          </div>
-          <p className="text-xs mb-2" style={{ color: "var(--text-2)" }}>Current Weight: {selectedDog.weight} kg</p>
-          <div className="h-16 rounded-lg flex flex-col items-center justify-center text-center px-2" style={{ background: "var(--card-2)", border: "1px solid var(--border)" }}>
-             <p className="text-[11px] font-semibold" style={{ color: "var(--text-3)" }}>Charts & Statistics available after more weigh-ins</p>
-          </div>
-        </div>
-
-        {/* ── 8. Daily Tip ─────────────────────────────── */}
+        {/* ΓöÇΓöÇ 8. Daily Tip ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */}
         {!tipDismissed && (
           <button
             className="pw-card w-full p-4 text-left"
@@ -1020,7 +951,7 @@ export default function Dashboard() {
                   style={{ color: "var(--text-2)" }}
                 >
                   Regular vet check-ups (at least once a year) help catch health
-                  issues before they become serious — even in dogs that appear
+                  issues before they become serious ΓÇö even in dogs that appear
                   healthy.
                 </p>
               </div>
@@ -1028,8 +959,8 @@ export default function Dashboard() {
           </button>
         )}
 
-        {/* ── Quick Links row ──────────────────────────── */}
-        <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
+        {/* ΓöÇΓöÇ Quick Links row ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */}
+        <div className="grid grid-cols-4 gap-2">
           {[
             { icon: Eye, label: "Vision", path: "/vision", color: "#a78bfa" },
             {
@@ -1049,18 +980,6 @@ export default function Dashboard() {
               label: "Food Safe",
               path: "/food-safety",
               color: "#f97316",
-            },
-            {
-              icon: MapPin,
-              label: "Vet Locator",
-              path: "/vet-locator",
-              color: "#ef4444",
-            },
-            {
-              icon: FileText,
-              label: "Reports",
-              path: "/reports",
-              color: "#3b82f6",
             },
           ].map(({ icon: Icon, label, path, color }) => (
             <button

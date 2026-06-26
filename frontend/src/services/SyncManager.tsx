@@ -29,7 +29,9 @@ export function useSyncState() {
       try {
         const q = await loadFromStorageAsync<any[]>(StorageKeys.SYNC_QUEUE, []);
         setPendingCount(q.length);
-      } catch {}
+      } catch (e) {
+        console.warn('Init queue error:', e);
+      }
     };
     initQ();
 
@@ -88,7 +90,9 @@ export default function SyncManager() {
     let q: any[] = [];
     try {
       q = await loadFromStorageAsync<any[]>(StorageKeys.SYNC_QUEUE, []);
-    } catch {}
+    } catch (e) {
+      console.warn('Load queue error:', e);
+    }
 
     if (q.length === 0) return;
 
@@ -122,7 +126,7 @@ export default function SyncManager() {
           detail: { pendingCount: 0, lastSyncedAt: now, state: 'synced' } 
         }));
 
-      } catch (err) {
+      } catch (_err) {
         attempt++;
         if (attempt < maxAttempts) {
           const delay = Math.pow(2, attempt) * 1000;
