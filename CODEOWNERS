@@ -1,0 +1,18 @@
+# CODEOWNERS
+
+# Global owners
+*       @ESSAKKI-RAJA
+
+# AI & Vision
+/vision/    @ESSAKKI-RAJA
+/backend/app/services/ai/ @ESSAKKI-RAJA
+
+# Frontend
+/frontend/  @ESSAKKI-RAJA
+
+# Core Backend API
+/backend/   @ESSAKKI-RAJA
+
+# Documentation
+/docs/      @ESSAKKI-RAJA
+README.md   @ESSAKKI-RAJA

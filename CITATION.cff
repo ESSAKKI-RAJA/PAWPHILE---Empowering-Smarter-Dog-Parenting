@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+title: "PAWPHILE: AI-Powered Preventive Healthcare Platform for Companion Dogs"
+message: "If you use this software in your research or clinical studies, please cite it using the metadata from this file."
+type: software
+authors:
+  - given-names: Essakki
+    family-names: Raja
+    email: essakkiraja.dev@gmail.com
+repository-code: "https://github.com/ESSAKKI-RAJA/PAWPHILE"
+url: "https://github.com/ESSAKKI-RAJA/PAWPHILE"
+abstract: >-
+  PAWPHILE is an enterprise-grade, open-source AI platform bridging the gap between veterinary science and daily canine care. 
+  It features an offline-first progressive web application, explainable AI triage with deterministic safety guardrails, 
+  and computer vision pipelines (DermAI™, EyeScan AI™) for continuous, proactive companion dog health monitoring.
+keywords:
+  - Veterinary Informatics
+  - Computer Vision
+  - Explainable AI
+  - Clinical Decision Support
+  - FastAPI
+  - React
+  - Progressive Web App
+license: Apache-2.0
+version: 1.0.0
+date-released: 2026-07-06
