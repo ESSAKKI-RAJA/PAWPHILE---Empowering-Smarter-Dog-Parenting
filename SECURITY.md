@@ -17,7 +17,7 @@ We take the security of PAWPHILE seriously. If you believe you have found a secu
 Please do **not** report security vulnerabilities through public GitHub issues.
 
 Instead, please email the maintainers directly at:
-**[essakkiraja.dev@gmail.com]** (or the designated security contact).
+**[essakki.data@gmail.com]** (or the designated security contact).
 
 ### What to Include
 When reporting a vulnerability, please provide the following details:
