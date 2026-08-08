@@ -1,10 +1,12 @@
-import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback, useMemo } from 'react';
 import { loadFromStorage, saveToStorage, deleteFromStorage } from '../lib/storage';
 import * as api from '../services/apiClient';
 import type {
   DogProfile, OwnerProfile, SymptomLog, TriageResult, VaccineRecord, DewormingRecord,
   VetVisit, FoodCheck, NutritionLog, BehaviorLog, ImageScan, Report, ConsentLog, AuditLog, Medication
 } from '../types/pawphile';
+import type { BreedKnowledge } from '../types/pawphileCore';
+import { BREED_KNOWLEDGE_SEED } from '../data/breedKnowledgeSeed';
 
 interface ThemeSettings {
   mode: 'light' | 'dark' | 'system';
@@ -54,13 +56,17 @@ interface PawphileDataContextType {
   deleteAllData: () => void;
   setThemeSettings: (theme: ThemeSettings) => void;
 
+  // Breed intelligence
+  breedKnowledge: Record<string, BreedKnowledge>;
+  resolveBreedKnowledge: (breedName: string) => BreedKnowledge | null;
+  seedBreedKnowledge: (data: BreedKnowledge[]) => void;
+
   // Legacy fallback aliases for app compatibility while migrating
   state: any;
   dogProfile: DogProfile | null;
   savePetProfile: (dog: any) => void;
   saveOwnerProfile: (owner: any) => void;
   saveVetProfile: (vet: any) => void;
-  seedBreedKnowledge: (data: any) => void;
 }
 
 const PawphileDataContext = createContext<PawphileDataContextType | undefined>(undefined);
@@ -85,6 +91,22 @@ const KEYS = {
   settings: 'pawphile:v1:settings',
 };
 
+/** Normalize breed name for lookup: "Labrador Retriever" -> "labrador retriever" */
+function normalizeBreedName(name: string): string {
+  return name.toLowerCase().trim().replace(/[_-]/g, ' ');
+}
+
+/** Build a Record<normalizedName, BreedKnowledge> from an array */
+function buildBreedKnowledgeMap(data: BreedKnowledge[]): Record<string, BreedKnowledge> {
+  const map: Record<string, BreedKnowledge> = {};
+  for (const bk of data) {
+    map[normalizeBreedName(bk.name)] = bk;
+    // Also index by id (e.g. 'labrador-retriever')
+    if (bk.id) map[normalizeBreedName(bk.id)] = bk;
+  }
+  return map;
+}
+
 export function PawphileDataProvider({ children }: { children: ReactNode }) {
   const [dogProfiles, setDogProfilesState] = useState<DogProfile[]>([]);
   const [selectedDogId, setSelectedDogIdState] = useState<string | null>(null);
@@ -104,6 +126,10 @@ export function PawphileDataProvider({ children }: { children: ReactNode }) {
   const [auditLogs, setAuditLogsState] = useState<AuditLog[]>([]);
   const [notificationPreferences, setNotificationPreferencesState] = useState({});
   const [themeSettings, setThemeSettingsState] = useState<ThemeSettings>({ mode: 'light' });
+  // Breed knowledge — seeded from static data on mount, available offline
+  const [breedKnowledge, setBreedKnowledgeState] = useState<Record<string, BreedKnowledge>>(
+    () => buildBreedKnowledgeMap(BREED_KNOWLEDGE_SEED)
+  );
 
   // Hydrate on mount
   useEffect(() => {
@@ -352,6 +378,29 @@ export function PawphileDataProvider({ children }: { children: ReactNode }) {
 
   const selectedDog = dogProfiles.find(d => d.id === selectedDogId) || dogProfiles[0] || null;
 
+  /** Seed breed knowledge from an array (idempotent — merges, never overwrites existing entries) */
+  const seedBreedKnowledge = useCallback((data: BreedKnowledge[]) => {
+    setBreedKnowledgeState(prev => ({
+      ...buildBreedKnowledgeMap(data),
+      ...prev, // keep any runtime overrides on top
+    }));
+  }, []);
+
+  /** Resolve breed intelligence by display name (case/separator-insensitive) */
+  const resolveBreedKnowledge = useCallback((breedName: string): BreedKnowledge | null => {
+    if (!breedName) return null;
+    const key = normalizeBreedName(breedName);
+    return breedKnowledge[key] ?? null;
+  }, [breedKnowledge]);
+
+  /** Personalization state derived from current selected dog */
+  const legacyState = useMemo(() => ({
+    petProfile: selectedDog,
+    ownerProfile,
+    vetProfile: null,
+    breedKnowledge,
+  }), [selectedDog, ownerProfile, breedKnowledge]);
+
   return (
     <PawphileDataContext.Provider value={{
       dogProfiles, selectedDog, setSelectedDog, ownerProfile, symptomLogs, triageResults,
@@ -363,12 +412,16 @@ export function PawphileDataProvider({ children }: { children: ReactNode }) {
       addFoodCheck, addBehaviorLog, addConsentLog, addAuditLog,
       addNutritionLog, updateNutritionLog, deleteNutritionLog,
       exportAllData, deleteAllData, setThemeSettings,
-      state: { petProfile: selectedDog, ownerProfile, vetProfile: null }, // Enhanced state fallback
+      // Breed intelligence
+      breedKnowledge,
+      resolveBreedKnowledge,
+      seedBreedKnowledge,
+      // Legacy state aliases
+      state: legacyState,
       dogProfile: selectedDog,
       savePetProfile: (dog: any) => selectedDog ? updateDogProfile(selectedDog.id, dog) : addDogProfile(dog),
       saveOwnerProfile: (owner: any) => setOwnerProfileState(owner),
       saveVetProfile: (vet: any) => console.log('Vet profile save not implemented yet', vet),
-      seedBreedKnowledge: (data: any) => console.log('Seed breed knowledge', data)
     }}>
       {children}
     </PawphileDataContext.Provider>

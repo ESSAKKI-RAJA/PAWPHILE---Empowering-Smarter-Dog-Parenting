@@ -34,4 +34,14 @@ export interface ChatContextData {
   vaccineStatus?: "up-to-date" | "overdue" | "unknown";
   knownAllergies?: string[];
   recentSymptoms?: string[];
+  // Breed intelligence (populated by buildChatContext)
+  breedRiskTags?: string[];
+  breedEmergencyFlags?: string[];
+  breedNutritionCautions?: string[];
+  breedExerciseMinutes?: number | null;
+  breedObesityRisk?: string;
+  breedHeatSensitivity?: string;
+  breedNote?: string;
+  breedBcsGuidance?: string;
+  isBreedSupported?: boolean;
 }

@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Scale, HeartPulse, ChevronLeft, Save } from 'lucide-react';
+import { Scale, HeartPulse, ChevronLeft, Save, Info } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import { usePawphileData } from '../context/PawphileDataContext';
+import { usePersonalization } from '../context/PersonalizationContext';
 
 export type BCSScore = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
@@ -41,8 +42,9 @@ export function saveBmiLog(log: BMILog) {
 
 export default function BMICalculator() {
   const navigate = useNavigate();
-  const { state } = usePawphileData() as any;
-  const profile = state.petProfile;
+  const { selectedDog } = usePawphileData() as any;
+  const profile = selectedDog;
+  const { breedIntel, breedName } = usePersonalization();
 
   const [weightKg, setWeightKg] = useState(profile?.weightKg?.toString() || '');
   const [heightCm, setHeightCm] = useState('');
@@ -154,6 +156,25 @@ export default function BMICalculator() {
             Canine BMI is less reliable than BCS because dog breeds vary widely. Use our BCS checklist to get an accurate body condition score.
           </p>
         </div>
+
+        {breedIntel?.bcsGuidance && (
+          <div className="mt-4 bg-teal-50 dark:bg-teal-900/15 border border-teal-200 dark:border-teal-800/40 rounded-2xl p-4 flex gap-3 shadow-sm">
+            <Info className="w-5 h-5 text-teal-600 dark:text-teal-400 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-[11px] font-extrabold text-teal-700 dark:text-teal-300 uppercase tracking-widest mb-1">
+                {breedName} BCS Guidance
+              </p>
+              <p className="text-xs text-teal-800 dark:text-teal-200 leading-relaxed">
+                {breedIntel.bcsGuidance}
+              </p>
+              {breedIntel.bcsNote && (
+                <p className="text-xs text-teal-700 dark:text-teal-300 italic mt-1">
+                  Note: {breedIntel.bcsNote}
+                </p>
+              )}
+            </div>
+          </div>
+        )}
 
         <div className="mt-6 bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 p-6">
           <form onSubmit={calculate} className="space-y-6">

@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { usePawphileData } from '../context/PawphileDataContext';
-import { Download, FileText, Printer, Stethoscope, AlertTriangle, CheckCircle } from 'lucide-react';
+import { usePersonalization } from '../context/PersonalizationContext';
+import { Download, FileText, Printer, Stethoscope, AlertTriangle, CheckCircle, Info } from 'lucide-react';
 import { generatePdfFromElement } from '../services/pdfGenerator';
 import { daysUntil } from '../lib/dateUtils';
 import { calculateBCS } from '../utils/bcsUtils';
@@ -16,6 +17,7 @@ export default function Reports() {
     nutritionLogs,
     triageResults
   } = usePawphileData();
+  const { breedIntel, breedName, sizeCategory, riskFlags } = usePersonalization();
 
   const [isExporting, setIsExporting] = useState(false);
 
@@ -93,9 +95,20 @@ export default function Reports() {
               <h2 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3 border-b border-slate-200 dark:border-slate-800 pb-2">1. Patient Demographics</h2>
               <div className="space-y-1 text-sm font-medium">
                 <p><span className="font-bold text-slate-500 w-24 inline-block">Name:</span> <span className="font-black text-lg">{selectedDog.name}</span></p>
-                <p><span className="font-bold text-slate-500 w-24 inline-block">Breed:</span> {selectedDog.breed}</p>
+                <p><span className="font-bold text-slate-500 w-24 inline-block">Breed:</span> {breedName || 'Unknown'}</p>
                 <p><span className="font-bold text-slate-500 w-24 inline-block">Age/DOB:</span> {selectedDog.age || '?'} years</p>
                 <p><span className="font-bold text-slate-500 w-24 inline-block">Gender/Sex:</span> {selectedDog.sex}</p>
+                {breedIntel && (
+                  <div className="mt-3 p-3 bg-slate-100 dark:bg-slate-800 rounded-lg">
+                    <p className="text-xs font-black uppercase text-slate-500 mb-1 flex items-center gap-1">
+                      <Info className="w-3 h-3" /> Current Breed Context
+                    </p>
+                    <p className="text-xs"><span className="font-bold">Size:</span> <span className="capitalize">{sizeCategory}</span></p>
+                    {riskFlags.length > 0 && (
+                      <p className="text-xs mt-0.5"><span className="font-bold">Key Risks:</span> {riskFlags.join(', ')}</p>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -122,7 +135,7 @@ export default function Reports() {
               <p className="mb-2"><span className="font-bold">Current Weight:</span> {selectedDog.weight ? `${selectedDog.weight} ${selectedDog.weightUnit}` : 'Not Recorded'}</p>
               <p className="mb-4"><span className="font-bold">Body Condition Score (Est):</span> {bcs.score}/9 - {bcs.label}</p>
               <p className="italic text-slate-600 dark:text-slate-300">
-                "{selectedDog.name} is a {selectedDog.age}-year-old {selectedDog.breed} presenting with {myVetVisits.length} recorded vet visits. 
+                "{selectedDog.name} is a {selectedDog.age}-year-old {breedName || 'unknown breed'} presenting with {myVetVisits.length} recorded vet visits. 
                 {myVaccines.length > 0 ? ` Vaccinations are tracked, with the most recent being ${myVaccines[0]?.vaccineName}.` : ' No vaccination history is currently recorded.'}
                 {myMedications.length > 0 ? ` Patient is currently on ${myMedications.length} active medication(s).` : ' Patient is not currently taking any active medications.'}
                 {myTriage.length > 0 && myTriage[0].severity === 'red' ? ' ALERT: A recent severe triage event was logged requiring immediate attention.' : ' No severe acute events logged recently.'}

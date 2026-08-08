@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { usePawphileData } from "../../context/PawphileDataContext";
+import { usePersonalization } from "../../context/PersonalizationContext";
 import SeasonalAlertCard from "../../components/pawnews/SeasonalAlertCard";
 import GuideGrid from "../../components/pawnews/GuideGrid";
 import breedSeasonalRules, {
@@ -9,6 +10,7 @@ import CARE_GUIDES from "../../data/careGuides";
 
 export default function PawNewsPage() {
   const { dogProfile } = usePawphileData();
+  const { breedName, breedId } = usePersonalization();
 
   // Map month to India-relevant season keys and labels
   const month = new Date().getMonth() + 1; // 1-12
@@ -28,17 +30,8 @@ export default function PawNewsPage() {
     seasonLabel = "Winter";
   }
 
-  // Resolve breed key (normalize and attempt substring match)
-  const breedRaw = dogProfile?.breed || dogProfile?.name || null;
-  const breedLower = breedRaw ? String(breedRaw).toLowerCase() : null;
-
-  const matchedKey = breedLower
-    ? Object.keys(breedSeasonalRules).find((k) => breedLower.includes(k)) ||
-      Object.keys(breedSeasonalRules).find((k) => k.includes(breedLower))
-    : null;
-
-  const alertRule = matchedKey
-    ? (breedSeasonalRules[matchedKey]?.[seasonKey] ?? FALLBACK_RULE)
+  const alertRule = breedId
+    ? (breedSeasonalRules[breedId]?.[seasonKey] ?? FALLBACK_RULE)
     : FALLBACK_RULE;
 
   return (
@@ -74,7 +67,7 @@ export default function PawNewsPage() {
       ) : (
         <div className="space-y-6">
           <SeasonalAlertCard
-            breed={dogProfile.breed ?? null}
+            breed={breedName}
             season={seasonLabel}
             age={dogProfile.age ?? null}
             alert={alertRule}

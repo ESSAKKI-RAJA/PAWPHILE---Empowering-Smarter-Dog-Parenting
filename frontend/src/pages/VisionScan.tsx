@@ -4,6 +4,7 @@ import { AlertTriangle, CheckCircle, Image as ImageIcon, Shield, X, Save, Stetho
 import PageWrapper from '../components/layout/PageWrapper';
 import PawphileLoader from '../components/ui/PawphileLoader';
 import { usePawphileData } from '../context/PawphileDataContext';
+import { usePersonalization } from '../context/PersonalizationContext';
 import { calculateVisionSignal, VisionScreeningResult } from '../features/vision/visionScreeningEngine';
 import { useToast } from '../context/ToastContext';
 import { createEmergencyEvent } from '../services/emergencyEventsService';
@@ -16,6 +17,7 @@ const SEVERITY_SELF = ['mild', 'moderate', 'severe', 'worsening'];
 export default function VisionScan() {
   const navigate = useNavigate();
   const { selectedDog } = usePawphileData();
+  const { breedIntel, breedName } = usePersonalization();
   const { showToast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -137,6 +139,21 @@ export default function VisionScan() {
             <strong>Safety First:</strong> PAWPHILE Vision is awareness and preventive decision-support only. It is not a replacement for a licensed veterinarian.
           </p>
         </div>
+
+        {/* Breed Vision Context */}
+        {breedIntel?.visionScanNote && (
+          <div className="bg-blue-50 dark:bg-blue-900/15 border border-blue-200 dark:border-blue-800/40 rounded-xl p-3 flex gap-2.5 shadow-sm">
+            <Info className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-[10px] font-extrabold text-blue-700 dark:text-blue-300 uppercase tracking-widest mb-1">
+                {breedName} • Visual Context
+              </p>
+              <p className="text-xs text-blue-800 dark:text-blue-200">
+                {breedIntel.visionScanNote}
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* ── STEP 1: Image Upload ──────────────────────────────── */}
         <div className="pw-card p-5 space-y-4 shadow-sm">

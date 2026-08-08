@@ -1,8 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { Bar, BarChart, CartesianGrid, Line, LineChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import { AlertTriangle, Edit3, Flame, Plus, Trash2, X } from 'lucide-react';
+import { AlertTriangle, Edit3, Flame, Info, Plus, ShieldAlert, Trash2, X } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import { usePawphileData } from '../context/PawphileDataContext';
+import { usePersonalization } from '../context/PersonalizationContext';
 import { calculateMER } from '../utils/bcsUtils';
 import type { FoodScanLog } from '../types/pawphileCore';
 import { isoDate, nowIso } from '../types/pawphileCore';
@@ -144,7 +145,8 @@ function estimateFromFallback(args: {
 }
 
 export default function Nutrition() {
-  const { dogProfile: profile, addFoodScanLog, securitySettings, nutritionLogs, addNutritionLog, updateNutritionLog, deleteNutritionLog } = usePawphileData() as any;
+  const { dogProfile: profile, nutritionLogs, addNutritionLog, updateNutritionLog, deleteNutritionLog } = usePawphileData() as any;
+  const { breedIntel, breedName, ageCategory, obesityTendency } = usePersonalization();
   const [period, setPeriod] = useState<Period>('1W');
   const [quickWindow, setQuickWindow] = useState<'Today' | '7D' | '30D'>('Today');
   const [showLogModal, setShowLogModal] = useState(false);
@@ -273,6 +275,51 @@ export default function Nutrition() {
             <AlertTriangle className="w-6 h-6 text-red-600 dark:text-red-400 flex-shrink-0" />
             <p className="text-sm text-red-800 dark:text-red-200">
               Today’s intake is above target. Calorie targets are estimates — if your dog is a puppy, senior, pregnant, or has illness, confirm with a veterinarian.
+            </p>
+          </div>
+        )}
+
+        {/* Breed Nutrition Context Panel — only shown when breedIntel has nutrition data */}
+        {breedIntel?.nutritionCautions && breedIntel.nutritionCautions.length > 0 && (
+          <div className="bg-amber-50 dark:bg-amber-900/15 border border-amber-200 dark:border-amber-800/40 rounded-2xl p-4 space-y-2 shadow-sm">
+            <div className="flex items-center gap-2 mb-1">
+              <ShieldAlert className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
+              <span className="text-xs font-extrabold text-amber-700 dark:text-amber-300 uppercase tracking-widest">
+                {breedName} · Nutrition Considerations
+              </span>
+              {obesityTendency === 'high' && (
+                <span className="ml-auto text-[10px] font-black bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 px-2 py-0.5 rounded-full">
+                  High Obesity Risk
+                </span>
+              )}
+            </div>
+            <ul className="space-y-1">
+              {breedIntel.nutritionCautions.map((note, i) => (
+                <li key={i} className="text-sm text-amber-800 dark:text-amber-200 flex gap-2">
+                  <span className="text-amber-500 dark:text-amber-400 flex-shrink-0 mt-0.5">•</span>
+                  <span>{note}</span>
+                </li>
+              ))}
+            </ul>
+            {ageCategory !== 'unknown' && (
+              <p className="text-[11px] text-amber-600/80 dark:text-amber-400/70 italic mt-1">
+                Life stage: <span className="font-bold capitalize">{ageCategory}</span>
+                {ageCategory === 'puppy' && ' — Puppies have different nutritional requirements. Consult your vet for puppy-specific feeding guidance.'}
+                {ageCategory === 'senior' && ' — Senior dogs may need reduced calorie density. Discuss with your vet.'}
+              </p>
+            )}
+            <p className="text-[10px] text-amber-500/70 dark:text-amber-500/50 italic">
+              Source: breed profile data. Not a prescription diet. Consult your veterinarian.
+            </p>
+          </div>
+        )}
+
+        {/* General breed note even if no specific cautions */}
+        {breedIntel && (!breedIntel.nutritionCautions || breedIntel.nutritionCautions.length === 0) && breedIntel.notes && (
+          <div className="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl p-3 flex gap-2 shadow-sm">
+            <Info className="w-4 h-4 text-slate-400 flex-shrink-0 mt-0.5" />
+            <p className="text-xs text-slate-600 dark:text-slate-400">
+              <span className="font-bold">{breedName} note:</span> {breedIntel.notes}
             </p>
           </div>
         )}

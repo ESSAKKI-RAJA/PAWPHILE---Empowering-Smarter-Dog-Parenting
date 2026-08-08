@@ -1,4 +1,5 @@
 import { DogProfile, VaccineRecord, DewormingRecord, SymptomLog, BehaviorLog, VetVisit, WellnessScore, NutritionLog } from '../types/pawphile';
+import { BreedKnowledge } from '../types/pawphileCore';
 import { isWithinDays, daysUntil } from '../lib/dateUtils';
 import { calculateMER } from '../utils/bcsUtils';
 
@@ -9,7 +10,8 @@ export function calculateWellnessScore(
   symptomLogs: SymptomLog[],
   behaviorLogs: BehaviorLog[],
   vetVisits: VetVisit[],
-  nutritionLogs: NutritionLog[] = []
+  nutritionLogs: NutritionLog[] = [],
+  breedIntel?: BreedKnowledge | null
 ): WellnessScore {
   let recentSymptoms = 30;   // 30%
   let vaccineDeworming = 25; // 25%
@@ -31,6 +33,7 @@ export function calculateWellnessScore(
       log.breathingStatus === 'labored' ||
       log.toxinExposure
     );
+
     const hasModerate = recentLogs.some(log => 
       log.energyLevel === 'lethargic' || 
       log.energyLevel === 'weak' || 
@@ -48,6 +51,22 @@ export function calculateWellnessScore(
       safetyNote = 'Recent symptoms include moderate indicators. Monitor closely.';
     } else {
       recentSymptoms = 30;
+    }
+
+    // Breed-specific context: annotate (do NOT change the score).
+    // Only triggers when a specific keyword from breedIntel.emergencyRedFlags
+    // is found in log notes AND the score is already 0 (emergency).
+    // This ensures breed context never *causes* an emergency zero — only annotates one.
+    if (recentSymptoms === 0 && breedIntel?.emergencyRedFlags?.length) {
+      const matchedBreedFlag = breedIntel.emergencyRedFlags.find(flag =>
+        recentLogs.some(log => (log.notes || '').toLowerCase().includes(
+          // Only match simple keywords to avoid long-phrase false positives
+          flag.split(/[,/(]/)[0].trim().toLowerCase()
+        ))
+      );
+      if (matchedBreedFlag) {
+        reasons.push(`Breed context (${breedIntel.name}): ${matchedBreedFlag}`);
+      }
     }
   } else {
     recentSymptoms = 30; // no logged issues means healthy baseline
@@ -90,11 +109,16 @@ export function calculateWellnessScore(
         const dailyAverage = totalCalories / Math.max(1, new Set(recentNutrition.map(n => new Date(n.createdAt).toDateString())).size);
         
         const deviation = Math.abs(dailyAverage - targetMer) / targetMer;
+        // Uniform 15% threshold for all breeds — no breed-based penalty.
+        // Breed obesity tendency is contextual info shown elsewhere (Nutrition page), not a scoring input.
         if (deviation <= 0.15) {
           nutritionScore = 20;
         } else {
           nutritionScore = 10;
-          reasons.push('Average daily calorie intake deviates significantly from the recommended target.');
+          const breedObesityNote = breedIntel?.obesityTendency === 'high'
+            ? ` Note: ${breedIntel.name} has high obesity tendency — consistent portioning is important.`
+            : '';
+          reasons.push(`Average daily calorie intake deviates significantly from target.${breedObesityNote}`);
         }
       } else {
         nutritionScore = 5;

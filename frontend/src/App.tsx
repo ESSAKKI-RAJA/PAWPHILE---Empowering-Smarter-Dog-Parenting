@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { PawphileDataProvider } from './context/PawphileDataContext';
+import { PersonalizationProvider } from './context/PersonalizationContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { ToastProvider } from './context/ToastContext';
 import Layout from './components/layout/Layout';
@@ -33,6 +34,7 @@ export default function App() {
       <ToastProvider>
         <PawphileDataProvider>
           <SyncManager />
+        <PersonalizationProvider>
           <BrowserRouter>
             <Routes>
               {/* Auth page — public */}
@@ -77,6 +79,7 @@ export default function App() {
               </Route>
             </Routes>
           </BrowserRouter>
+        </PersonalizationProvider>
         </PawphileDataProvider>
       </ToastProvider>
     </ThemeProvider>

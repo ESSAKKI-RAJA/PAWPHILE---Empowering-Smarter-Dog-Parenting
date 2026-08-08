@@ -1,11 +1,13 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Brain, AlertCircle, CheckCircle2, ShieldAlert, Plus, X,
+  Brain, AlertCircle, CheckCircle2, ShieldAlert, Plus, X, Info,
   TrendingUp, TrendingDown, Minus, Smile, Zap, Apple, Activity, Wind,
 } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { usePawphileData } from '../context/PawphileDataContext';
+import { usePersonalization } from '../context/PersonalizationContext';
+import { BREEDS } from '../data/breeds';
 import { analyzeBehavior } from '../engines/behaviorEngine';
 import { generateId } from '../lib/ids';
 import type { BehaviorLog } from '../types/pawphile';
@@ -39,6 +41,11 @@ function getLifeStage(age?: number): string {
 export default function Behavior() {
   const navigate = useNavigate();
   const { behaviorLogs = [], addBehaviorLog, selectedDog } = usePawphileData() as any;
+  const { breedIntel, breedName } = usePersonalization();
+  const breedRecord = useMemo(() =>
+    breedName ? BREEDS.find(b => b.name.toLowerCase() === breedName.toLowerCase()) ?? null : null,
+    [breedName]
+  );
   const [showLogForm, setShowLogForm] = useState(false);
   const [form, setForm] = useState<typeof FORM_DEFAULT>({ ...FORM_DEFAULT });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -141,6 +148,31 @@ export default function Behavior() {
             <span className="text-xs font-black" style={{ color: 'var(--teal)' }}>
               {selectedDog.name} · {selectedDog.breed} · {lifeStage}
             </span>
+          </div>
+        )}
+
+        {/* Breed Behavior Baseline — contextual, never a judgment about this individual dog */}
+        {(breedRecord?.behaviorBaseline || breedIntel?.exerciseGuidance) && (
+          <div className="mt-2 bg-violet-50 dark:bg-violet-900/15 border border-violet-200 dark:border-violet-800/40 rounded-xl p-3 space-y-1">
+            <div className="flex items-center gap-1.5">
+              <Info className="w-3.5 h-3.5 text-violet-600 dark:text-violet-400" />
+              <span className="text-[11px] font-extrabold text-violet-700 dark:text-violet-300 uppercase tracking-wider">
+                {breedName} Breed Context
+              </span>
+            </div>
+            {breedRecord?.behaviorBaseline && (
+              <p className="text-xs text-violet-800 dark:text-violet-200 leading-relaxed">
+                {breedRecord.behaviorBaseline}
+              </p>
+            )}
+            {breedIntel?.exerciseGuidance && (
+              <p className="text-xs text-violet-700 dark:text-violet-300 leading-relaxed">
+                <span className="font-bold">Activity:</span> {breedIntel.exerciseGuidance}
+              </p>
+            )}
+            <p className="text-[10px] text-violet-400/70 dark:text-violet-500/50 italic pt-0.5">
+              Breed context only. Individual behavior varies. Your logged data takes priority.
+            </p>
           </div>
         )}
       </div>

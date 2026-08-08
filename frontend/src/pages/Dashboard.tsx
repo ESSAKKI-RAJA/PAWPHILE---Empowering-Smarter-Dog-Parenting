@@ -29,6 +29,7 @@ import {
 } from "lucide-react";
 import NotificationBell from "../components/layout/NotificationBell";
 import { usePawphileData } from "../context/PawphileDataContext";
+import { usePersonalization } from "../context/PersonalizationContext";
 import { calculateWellnessScore } from "../engines/healthEngine";
 import { daysUntil } from "../lib/dateUtils";
 import pawNewsArticles from "../data/pawNews";
@@ -52,6 +53,7 @@ export default function Dashboard() {
     nutritionLogs,
     medications,
   } = usePawphileData();
+  const { breedIntel, breedSummaryLine, breedName, breedId } = usePersonalization();
   const [tipDismissed, setTipDismissed] = useState(false);
   const [weatherAlert, setWeatherAlert] = useState<any>(null);
 
@@ -93,6 +95,7 @@ export default function Dashboard() {
       behaviorLogs.filter((r) => r.dogId === selectedDog.id),
       vetVisits.filter((r) => r.dogId === selectedDog.id),
       nutritionLogs.filter((r) => r.dogId === selectedDog.id),
+      breedIntel,
     );
   }, [
     selectedDog,
@@ -102,6 +105,7 @@ export default function Dashboard() {
     behaviorLogs,
     vetVisits,
     nutritionLogs,
+    breedIntel,
   ]);
 
   const bcs = useMemo(() => {
@@ -163,8 +167,7 @@ export default function Dashboard() {
     const isMonsoon = weatherAlert.is_monsoon_season || weatherAlert.has_rain || weatherAlert.high_humidity;
     if (!isMonsoon) return null;
 
-    const breedKey = selectedDog.breed.toLowerCase().trim();
-    const rules = breedSeasonalRules[breedKey] || {};
+    const rules = breedSeasonalRules[breedId || ""] || {};
     const monsoonRule = rules.monsoon || FALLBACK_RULE;
 
     return {
@@ -247,7 +250,7 @@ export default function Dashboard() {
       currentSeason = "postMonsoon";
 
     // Get dog's breed
-    const dogBreed = selectedDog.breed || "";
+    const dogBreed = breedName || "";
 
     // Sort articles by relevance
     return [...pawNewsArticles]
@@ -378,7 +381,7 @@ export default function Dashboard() {
             className="text-xs font-semibold truncate"
             style={{ color: "var(--text-2)" }}
           >
-            {selectedDog.breed} · {selectedDog.age || "?"} yrs ·{" "}
+            {breedName || "Unknown Breed"} · {selectedDog.age || "?"} yrs ·{" "}
             {selectedDog.weight
               ? `${selectedDog.weight} ${selectedDog.weightUnit || "kg"}`
               : "?"}

@@ -1,17 +1,5 @@
-import { ChatMessage, ChatContextData } from "../types/chat";
 
-/**
- * Extract the dog's context from profile for chat operations
- */
-export function buildChatContext(dogProfile: any): ChatContextData {
-  return {
-    breed: dogProfile?.breed || dogProfile?.breedName,
-    age: dogProfile?.age,
-    weight: dogProfile?.weight || dogProfile?.weightKg,
-    knownAllergies: dogProfile?.knownAllergies || [],
-    recentSymptoms: dogProfile?.recentSymptoms || [],
-  };
-}
+import { ChatMessage, ChatContextData } from "../types/chat";
 
 /**
  * Get the last N messages from the conversation

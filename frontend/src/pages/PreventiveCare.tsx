@@ -1,9 +1,11 @@
 import { useState, useMemo } from 'react';
 import {
   Syringe, Bug, Bell, FileText, Plus, X, AlertTriangle, CheckCircle2,
-  ShieldAlert, Calendar, ChevronRight,
+  ShieldAlert, Calendar, ChevronRight, Info,
 } from 'lucide-react';
 import { usePawphileData } from '../context/PawphileDataContext';
+import { usePersonalization } from '../context/PersonalizationContext';
+import { BREEDS } from '../data/breeds';
 import { daysUntil } from '../lib/dateUtils';
 import { generateId } from '../lib/ids';
 import type { VaccineRecord, DewormingRecord } from '../types/pawphile';
@@ -29,6 +31,12 @@ function StatusChip({ daysLeft }: { daysLeft: number }) {
 
 export default function PreventiveCare() {
   const { selectedDog, vaccineRecords, dewormingRecords, addVaccineRecord, addDewormingRecord, ownerProfile } = usePawphileData();
+  const { breedIntel, breedName, ageCategory } = usePersonalization();
+  // Look up BREEDS record for vaccine/deworming notes (they live in BREEDS, not breedKnowledge)
+  const breedRecord = useMemo(() =>
+    breedName ? BREEDS.find(b => b.name.toLowerCase() === breedName.toLowerCase()) ?? null : null,
+    [breedName]
+  );
   const [activeTab, setActiveTab] = useState<Tab>('vaccines');
   const [showVaccineForm, setShowVaccineForm] = useState(false);
   const [showDewormForm, setShowDewormForm] = useState(false);
@@ -104,7 +112,42 @@ export default function PreventiveCare() {
           style={{ background: 'var(--teal-dim)', border: '1px solid var(--teal-glow)' }}>
           <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse" />
           <span className="text-xs font-black" style={{ color: 'var(--teal)' }}>{selectedDog.name}</span>
+          {ageCategory !== 'unknown' && (
+            <span className="text-xs font-semibold ml-1" style={{ color: 'var(--text-2)' }}>
+              · <span className="capitalize">{ageCategory}</span>
+            </span>
+          )}
         </div>
+
+        {/* Breed Preventive Care Notes */}
+        {(breedRecord?.vaccinationNotes || breedRecord?.dewormingNotes || breedIntel?.reminderNote) && (
+          <div className="mt-3 bg-teal-50 dark:bg-teal-900/15 border border-teal-200 dark:border-teal-800/40 rounded-xl p-3 space-y-1.5">
+            <div className="flex items-center gap-1.5 mb-0.5">
+              <Info className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
+              <span className="text-[11px] font-extrabold text-teal-700 dark:text-teal-300 uppercase tracking-wider">
+                {breedName} Preventive Care Notes
+              </span>
+            </div>
+            {breedRecord?.vaccinationNotes && (
+              <p className="text-xs text-teal-800 dark:text-teal-200">
+                <span className="font-bold">Vaccines:</span> {breedRecord.vaccinationNotes}
+              </p>
+            )}
+            {breedRecord?.dewormingNotes && (
+              <p className="text-xs text-teal-800 dark:text-teal-200">
+                <span className="font-bold">Deworming:</span> {breedRecord.dewormingNotes}
+              </p>
+            )}
+            {breedIntel?.reminderNote && (
+              <p className="text-xs text-teal-800 dark:text-teal-200">
+                <span className="font-bold">Reminder:</span> {breedIntel.reminderNote}
+              </p>
+            )}
+            <p className="text-[10px] text-teal-500/70 dark:text-teal-500/50 italic pt-0.5">
+              Breed-specific context only. Follow your vet's schedule.
+            </p>
+          </div>
+        )}
       </div>
 
       {/* ── Tabs ───────────────────────────────── */}

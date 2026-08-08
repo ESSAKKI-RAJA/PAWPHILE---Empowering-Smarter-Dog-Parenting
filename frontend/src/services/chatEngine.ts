@@ -1,7 +1,6 @@
 import { ChatMessage, ChatContextData } from "../types/chat";
 import { enhancedLocalFallback } from "../utils/aiFallback";
 import {
-  buildChatContext,
   getRecentMessages,
   generateFollowUpQuestions,
 } from "../utils/chatHelpers";
@@ -23,7 +22,7 @@ export interface SendMessageOptions {
 export async function sendMessage(
   messages: ChatMessage[],
   userInput: string,
-  dogProfile: any,
+  context: any, // Accepts PawAiContextObject from PersonalizationContext
   options: SendMessageOptions = {},
 ): Promise<ChatMessage> {
   const { maxHistoryMessages = 10 } = options;
@@ -32,8 +31,7 @@ export async function sendMessage(
     throw new Error("User input cannot be empty");
   }
 
-  // Build context
-  const context = buildChatContext(dogProfile);
+  // Context is now passed directly from PersonalizationContext
 
   // Get recent message history (to stay within token limits)
   const recentMessages = getRecentMessages(messages, maxHistoryMessages);
@@ -55,7 +53,7 @@ export async function sendMessage(
 async function callChatAPI(
   recentMessages: ChatMessage[],
   userInput: string,
-  context: ChatContextData,
+  context: any,
 ): Promise<ChatMessage> {
   const apiUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8001";
 
@@ -105,7 +103,7 @@ async function callChatAPI(
 function generateLocalResponse(
   messages: ChatMessage[],
   userInput: string,
-  context: ChatContextData,
+  context: any,
 ): ChatMessage {
   const fallback = enhancedLocalFallback(messages, userInput, context);
 
@@ -131,7 +129,7 @@ function generateLocalResponse(
  */
 export function generateQuickChips(
   messages: ChatMessage[],
-  dogProfile: any,
+  context: any,
 ): string[] {
   // If no messages yet, show common symptoms
   if (messages.length === 0) {
@@ -171,7 +169,7 @@ export function generateQuickChips(
   const chips = generateFollowUpQuestions(lastMessage);
 
   // Add breed-specific chips if applicable
-  const dogBreed = dogProfile?.breed || dogProfile?.breedName || "";
+  const dogBreed = context?.breed || "";
   if (dogBreed && chips.length < 4) {
     const breedLower = dogBreed.toLowerCase();
     const breedSpecificChips: { [key: string]: string[] } = {

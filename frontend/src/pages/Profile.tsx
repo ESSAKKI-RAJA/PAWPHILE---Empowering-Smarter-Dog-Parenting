@@ -1,9 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Building2, Save, ShieldAlert, User } from 'lucide-react';
+import { Building2, CheckCircle, Save, ShieldAlert, User, XCircle } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import { BREEDS } from '../data/breeds';
-import { BREED_KNOWLEDGE_SEED } from '../data/breedKnowledgeSeed';
 import { usePawphileData } from '../context/PawphileDataContext';
 import type { OwnerProfile, PetProfile, VetProfile } from '../types/pawphileCore';
 import { computeAge, isoDate, nowIso, newUuid } from '../types/pawphileCore';
@@ -18,16 +17,11 @@ function chipClass(kind: 'ok' | 'warn' | 'bad') {
 }
 
 export default function Profile({ isNew = false }: ProfileProps) {
-  const { state, seedBreedKnowledge, savePetProfile, saveOwnerProfile, saveVetProfile } = usePawphileData();
+  const { state, resolveBreedKnowledge, savePetProfile, saveOwnerProfile, saveVetProfile } = usePawphileData();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const defaultTab = (searchParams.get('tab') as TabId) || 'pet';
   const [tab, setTab] = useState<TabId>(defaultTab);
-
-  useEffect(() => {
-    if (Object.keys(state.breedKnowledge || {}).length === 0) seedBreedKnowledge(BREED_KNOWLEDGE_SEED);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   useEffect(() => {
     setSearchParams((prev) => {
@@ -122,9 +116,8 @@ export default function Profile({ isNew = false }: ProfileProps) {
   }, [state.vetProfile]);
 
   const breedIntel = useMemo(() => {
-    const name = petForm.breed;
-    return state.breedKnowledge?.[name] ?? null;
-  }, [state.breedKnowledge, petForm.breed]);
+    return resolveBreedKnowledge(petForm.breed);
+  }, [resolveBreedKnowledge, petForm.breed]);
 
   const autoAge = useMemo(() => computeAge(petForm.dob), [petForm.dob]);
 
@@ -328,10 +321,21 @@ export default function Profile({ isNew = false }: ProfileProps) {
               <div className="flex items-center gap-2">
                 <ShieldAlert className="w-5 h-5 text-amber-500" />
                 <h2 className="font-black">Breed Intelligence</h2>
+                {breedIntel ? (
+                  <span className="ml-auto flex items-center gap-1 text-[11px] font-extrabold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-0.5 rounded-full">
+                    <CheckCircle className="w-3 h-3" /> Supported
+                  </span>
+                ) : petForm.breed ? (
+                  <span className="ml-auto flex items-center gap-1 text-[11px] font-extrabold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full">
+                    <XCircle className="w-3 h-3" /> General profile only
+                  </span>
+                ) : null}
               </div>
               {!breedIntel ? (
                 <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-                  Breed intelligence unavailable — using general dog profile logic.
+                  {petForm.breed
+                    ? `Breed-specific intelligence is not yet available for "${petForm.breed}". General dog health logic will be used.`
+                    : 'Select a breed above to see breed-specific health intelligence.'}
                 </p>
               ) : (
                 <div className="mt-4 space-y-3">
@@ -348,27 +352,48 @@ export default function Profile({ isNew = false }: ProfileProps) {
                     <InfoCard title="Heat sensitivity">{breedIntel.heatSensitivity}</InfoCard>
                   </div>
 
-                  <div>
+                  {breedIntel.notes && (
+                    <div className="mt-4 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700">
+                      <p className="text-xs font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1">Breed Notes</p>
+                      <p className="text-sm font-medium text-slate-700 dark:text-slate-300 leading-relaxed">{breedIntel.notes}</p>
+                    </div>
+                  )}
+
+                  <div className="pt-2">
                     <p className="text-xs font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400">Temperament</p>
                     <div className="mt-2 flex flex-wrap gap-2">
-                      {breedIntel.temperamentTags.map((t: string) => (
-                        <span key={t} className="text-[11px] font-extrabold px-2 py-1 rounded-full bg-teal-50 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300">
+                      {breedIntel.temperamentTags?.map((t: string) => (
+                        <span key={t} className="text-[11px] font-extrabold px-3 py-1.5 rounded-full bg-teal-50 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300 border border-teal-100 dark:border-teal-800/30">
                           {t.split('_').join(' ')}
                         </span>
                       ))}
                     </div>
                   </div>
 
-                  <div>
+                  <div className="pt-2">
                     <p className="text-xs font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400">Health risk tags</p>
                     <div className="mt-2 flex flex-wrap gap-2">
-                      {breedIntel.commonRiskTags.map((t: string) => (
-                        <span key={t} className="text-[11px] font-extrabold px-2 py-1 rounded-full bg-amber-50 text-amber-800 dark:bg-amber-900/20 dark:text-amber-200">
+                      {breedIntel.commonRiskTags?.map((t: string) => (
+                        <span key={t} className="text-[11px] font-extrabold px-3 py-1.5 rounded-full bg-amber-50 text-amber-800 dark:bg-amber-900/20 dark:text-amber-200 border border-amber-100 dark:border-amber-800/30">
                           {t.split('_').join(' ')}
                         </span>
                       ))}
                     </div>
                   </div>
+
+                  {breedIntel.emergencyRedFlags && breedIntel.emergencyRedFlags.length > 0 && (
+                    <div className="pt-2">
+                      <p className="text-xs font-extrabold uppercase tracking-widest text-red-500 dark:text-red-400 mb-2">Emergency Red Flags</p>
+                      <ul className="space-y-1.5">
+                        {breedIntel.emergencyRedFlags.map((flag: string, i: number) => (
+                          <li key={i} className="flex gap-2 text-sm text-red-800 dark:text-red-300 bg-red-50 dark:bg-red-900/10 p-2.5 rounded-xl border border-red-100 dark:border-red-900/30">
+                            <span className="text-red-500 flex-shrink-0 mt-0.5">•</span>
+                            <span className="font-medium">{flag}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
 
                   <p className="text-[11px] text-slate-500 dark:text-slate-400 italic leading-relaxed">
                     Guidance only. Not a diagnosis. If you notice concerning signs, a vet check is recommended.

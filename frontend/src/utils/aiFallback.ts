@@ -1,5 +1,4 @@
-import { ChatMessage, ChatContextData, SeverityLevel } from "../types/chat";
-import { BREED_KNOWLEDGE_SEED as breedKnowledgeSeed } from "../data/breedKnowledgeSeed";
+import { ChatMessage, SeverityLevel } from "../types/chat";
 
 interface FallbackResponse {
   severity: SeverityLevel;
@@ -73,7 +72,7 @@ const YELLOW_FLAG_KEYWORDS = [
 export function enhancedLocalFallback(
   messages: ChatMessage[],
   userInput: string,
-  context: ChatContextData,
+  context: any,
 ): FallbackResponse {
   const userHistory = messages
     .filter((m) => m.role === "user")
@@ -81,8 +80,10 @@ export function enhancedLocalFallback(
   const assistantHistory = messages.filter((m) => m.role === "assistant");
   const combinedHistory = userHistory.join(" ").toLowerCase();
 
-  // Check for red flags
-  const foundRedFlags = RED_FLAG_KEYWORDS.filter(
+  // Check for red flags (including breed-specific emergency flags)
+  const allRedFlags = [...RED_FLAG_KEYWORDS, ...(context.breedEmergencyFlags || [])].map(f => f.toLowerCase());
+  
+  const foundRedFlags = allRedFlags.filter(
     (flag) =>
       userInput.toLowerCase().includes(flag) || combinedHistory.includes(flag),
   );
@@ -94,7 +95,7 @@ export function enhancedLocalFallback(
       message: `🚨 **EMERGENCY - SEEK IMMEDIATE VET CARE**\n\nI've detected potential emergency signs:\n${foundRedFlags.map((f) => `• ${f}`).join("\n")}\n\n**Please go to an emergency veterinary clinic immediately.** Do not wait for a regular appointment.\n\nIf you cannot reach a vet, call your local emergency animal hospital right away.`,
       vetEscalation: true,
       nextAction: "Emergency vet visit required",
-      dataUsed: ["Red flag detection", "Real-time symptoms"],
+      dataUsed: ["Red flag detection", "Real-time symptoms", "Breed-specific emergency rules"],
       redFlags: foundRedFlags,
     };
   }
@@ -133,14 +134,13 @@ export function enhancedLocalFallback(
 
   // Breed-specific context
   let breedInfo = "";
-  if (context.breed) {
-    const breedLower = context.breed.toLowerCase();
-    const knownBreedRisks =
-      breedKnowledgeSeed.find(
-        (breed) => breed.name.toLowerCase() === breedLower,
-      )?.commonRiskTags || [];
+  if (context.breed && context.isBreedSupported) {
+    const knownBreedRisks = context.breedRiskTags || [];
     if (knownBreedRisks.length > 0) {
       breedInfo = `\n\nNote: ${context.breed} is prone to certain conditions. Keep in mind: ${knownBreedRisks.slice(0, 2).join(", ")}`;
+    }
+    if (context.breedNote) {
+      breedInfo += `\n\n${context.breedNote}`;
     }
   }
 

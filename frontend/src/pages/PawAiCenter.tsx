@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, RotateCcw, Save, AlertTriangle } from "lucide-react";
 import { usePawphileData } from "../context/PawphileDataContext";
+import { usePersonalization } from "../context/PersonalizationContext";
 import { sendMessage, generateQuickChips } from "../services/chatEngine";
 import ChatMessageBubble from "../components/chat/ChatMessageBubble";
 import QuickChipRow from "../components/chat/QuickChipRow";
@@ -17,6 +18,7 @@ import { formatContextInfo } from "../services/chatEngine";
 export const PawAiCenter: React.FC = () => {
   const navigate = useNavigate();
   const { selectedDog } = usePawphileData();
+  const { pawAiContext } = usePersonalization();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Session and message state
@@ -99,7 +101,7 @@ What's happening with ${selectedDog?.name || "your dog"} today?`,
 
       try {
         // Get AI response
-        const assistantMessage = await sendMessage(messages, text, selectedDog);
+        const assistantMessage = await sendMessage(messages, text, pawAiContext);
         setMessages((prev) => [...prev, assistantMessage]);
 
         // Check if severity is Red - show prominent warning
@@ -190,7 +192,7 @@ What's happening with ${selectedDog?.name || "your dog"} today?`,
   };
 
   // Get dynamic chips
-  const dynamicChips = generateQuickChips(messages, selectedDog);
+  const dynamicChips = generateQuickChips(messages, pawAiContext);
 
   // No dog selected - show prompt
   if (!selectedDog) {

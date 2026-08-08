@@ -102,6 +102,41 @@ BREED_RULES: dict[str, dict[str, Any]] = {
         "red_flags": ["Hypoglycaemia", "Luxating patella", "Tracheal collapse"],
         "notes": "Tiny size — easily injured. Cold sensitive. Small meal frequency important.",
     },
+    "beagle": {
+        "obesity_risk": "high", "joint_risk": "medium", "exercise_mins": 60,
+        "red_flags": ["Severe neck/back pain (IVDD)", "Seizures (epilepsy risk)"],
+        "notes": "Prone to obesity and ear infections. Highly food-motivated scavenger.",
+    },
+    "shih tzu": {
+        "obesity_risk": "high", "joint_risk": "low", "exercise_mins": 30,
+        "red_flags": ["Eye injuries/prolapse", "Breathing difficulty (brachycephalic)", "Heatstroke"],
+        "notes": "Flat-faced breed. Needs daily eye cleaning. Very poor heat tolerance.",
+    },
+    "rottweiler": {
+        "obesity_risk": "high", "joint_risk": "high", "exercise_mins": 60,
+        "red_flags": ["Bone pain/limping (osteosarcoma risk)", "Bloat/GDV", "Parvo susceptibility"],
+        "notes": "High cancer risk (osteosarcoma). Needs strict puppy vaccination schedule.",
+    },
+    "boxer": {
+        "obesity_risk": "low", "joint_risk": "medium", "exercise_mins": 60,
+        "red_flags": ["Fainting/collapse (cardiac issues)", "New lumps (high mast cell tumor risk)", "Bloat"],
+        "notes": "High cancer and heart disease risk. Any collapse is a severe emergency.",
+    },
+    "cocker spaniel": {
+        "obesity_risk": "high", "joint_risk": "medium", "exercise_mins": 45,
+        "red_flags": ["Severe ear scratching/head shaking", "Eye cloudiness (glaucoma)"],
+        "notes": "Extremely prone to chronic ear infections. Requires strict ear hygiene.",
+    },
+    "saint bernard": {
+        "obesity_risk": "medium", "joint_risk": "high", "exercise_mins": 30,
+        "red_flags": ["Bloat/GDV (swollen belly)", "Bone cancer signs", "Extreme heatstroke"],
+        "notes": "Giant breed. High bloat risk. Keep cool at all times in Indian climate.",
+    },
+    "doberman": {
+        "obesity_risk": "low", "joint_risk": "medium", "exercise_mins": 90,
+        "red_flags": ["Fainting/coughing (DCM heart risk)", "Bleeding issues (Von Willebrand's)", "Bloat"],
+        "notes": "Dilated Cardiomyopathy (DCM) is highly prevalent. Any cough/fainting is critical.",
+    },
 }
 
 
