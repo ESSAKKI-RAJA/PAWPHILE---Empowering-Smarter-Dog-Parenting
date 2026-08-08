@@ -53,7 +53,7 @@ export default function Dashboard() {
     nutritionLogs,
     medications,
   } = usePawphileData();
-  const { breedIntel, breedSummaryLine, breedName, breedId } = usePersonalization();
+  const { breedIntel, breedSummaryLine, breedName, breedId, ageYears } = usePersonalization();
   const [tipDismissed, setTipDismissed] = useState(false);
   const [weatherAlert, setWeatherAlert] = useState<any>(null);
 
@@ -381,9 +381,9 @@ export default function Dashboard() {
             className="text-xs font-semibold truncate"
             style={{ color: "var(--text-2)" }}
           >
-            {breedName || "Unknown Breed"} · {selectedDog.age || "?"} yrs ·{" "}
-            {selectedDog.weight
-              ? `${selectedDog.weight} ${selectedDog.weightUnit || "kg"}`
+            {breedName || "Unknown Breed"} · {ageYears !== null ? `${ageYears}` : "?"} yrs ·{" "}
+            {selectedDog.weightKg || selectedDog.weight
+              ? `${selectedDog.weightKg || selectedDog.weight} ${selectedDog.weightUnit || "kg"}`
               : "?"}
           </p>
         </div>

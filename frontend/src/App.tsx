@@ -4,6 +4,7 @@ import { PersonalizationProvider } from './context/PersonalizationContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { ToastProvider } from './context/ToastContext';
 import Layout from './components/layout/Layout';
+import ErrorBoundary from './components/layout/ErrorBoundary';
 import Profile from './pages/Profile';
 import Dashboard from './pages/Dashboard';
 import DogHealthTriage from './pages/DogHealthTriage';
@@ -44,7 +45,9 @@ export default function App() {
               <Route 
                 path="*" 
                 element={
-                  <Layout />
+                  <ErrorBoundary>
+                    <Layout />
+                  </ErrorBoundary>
                 }
               >
                 <Route index element={<Navigate to="/dashboard" replace />} />

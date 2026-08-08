@@ -158,7 +158,7 @@ export default function Nutrition() {
   const todayKey = isoDate(new Date());
 
   const todayLogs = useMemo(() => {
-    return (nutritionLogs as NutritionLog[]).filter((l: NutritionLog) => l.createdAt.startsWith(todayKey));
+    return (nutritionLogs as NutritionLog[]).filter((l: NutritionLog) => l.createdAt && l.createdAt.startsWith(todayKey));
   }, [nutritionLogs, todayKey]);
 
   const todayCals = useMemo(() => sum(todayLogs.map((l: NutritionLog) => l.caloriesCal || l.calories || 0)), [todayLogs]);
@@ -172,7 +172,7 @@ export default function Nutrition() {
 
     const map: Record<string, number> = {};
     for (const l of nutritionLogs) {
-      const dateStr = l.createdAt.split('T')[0];
+      const dateStr = l.createdAt ? l.createdAt.split('T')[0] : new Date().toISOString().split('T')[0];
       map[dateStr] = (map[dateStr] || 0) + (l.caloriesCal || 0);
     }
 
@@ -199,7 +199,7 @@ export default function Nutrition() {
     start.setDate(start.getDate() - (w - 1));
     const map: Record<string, number> = {};
     for (const l of nutritionLogs) {
-      const dateStr = l.createdAt.split('T')[0];
+      const dateStr = l.createdAt ? l.createdAt.split('T')[0] : new Date().toISOString().split('T')[0];
       map[dateStr] = (map[dateStr] || 0) + (l.caloriesCal || 0);
     }
     const out: any[] = [];
