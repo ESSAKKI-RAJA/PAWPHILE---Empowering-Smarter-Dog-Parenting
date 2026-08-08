@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AlertTriangle, CheckCircle, Image as ImageIcon, Shield, X, Save, Stethoscope, Phone } from 'lucide-react';
+import { AlertTriangle, CheckCircle, Image as ImageIcon, Shield, X, Save, Stethoscope, Phone, Info } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
 import PawphileLoader from '../components/ui/PawphileLoader';
 import { usePawphileData } from '../context/PawphileDataContext';
