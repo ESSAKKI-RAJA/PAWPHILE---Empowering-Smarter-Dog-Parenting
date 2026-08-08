@@ -126,3 +126,6 @@ desktop.ini
 *.tmp
 *.temp
 archive/
+
+.vercel
+.env*

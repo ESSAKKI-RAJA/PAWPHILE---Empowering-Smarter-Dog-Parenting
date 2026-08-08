@@ -12,6 +12,6 @@ class Settings(BaseSettings):
     CLOUDINARY_API_KEY: str = os.getenv("CLOUDINARY_API_KEY", "")
     CLOUDINARY_API_SECRET: str = os.getenv("CLOUDINARY_API_SECRET", "")
     FRONTEND_ORIGIN: str = os.getenv("FRONTEND_ORIGIN", "http://localhost:5173")
-    VISION_API_URL: str = os.getenv("VISION_API_URL", "http://localhost:8000")
+    ROBOFLOW_API_KEY: str = os.getenv("ROBOFLOW_API_KEY", "")
 
 settings = Settings()
