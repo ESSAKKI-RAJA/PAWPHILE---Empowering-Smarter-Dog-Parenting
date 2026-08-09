@@ -61,6 +61,7 @@ export interface DogProfile extends BaseEntity {
   sex: 'male' | 'female' | 'unknown';
   neutered: boolean;
   weight?: number;
+  weightKg?: number;
   weightUnit: 'kg' | 'lbs';
   allergies?: string[];
   chronicConditions?: string[];

@@ -145,8 +145,9 @@ function estimateFromFallback(args: {
 }
 
 export default function Nutrition() {
-  const { dogProfile: profile, nutritionLogs, addNutritionLog, updateNutritionLog, deleteNutritionLog } = usePawphileData() as any;
+  const { dogProfile: profile, selectedDog, nutritionLogs, addNutritionLog, updateNutritionLog, deleteNutritionLog, addFoodCheck } = usePawphileData() as any;
   const { breedIntel, breedName, ageCategory, obesityTendency } = usePersonalization();
+  const securitySettings = { consentForAI: false };
   const [period, setPeriod] = useState<Period>('1W');
   const [quickWindow, setQuickWindow] = useState<'Today' | '7D' | '30D'>('Today');
   const [showLogModal, setShowLogModal] = useState(false);
@@ -221,7 +222,7 @@ export default function Nutrition() {
           <Flame className="w-12 h-12 text-red-500 mx-auto" />
           <p className="text-slate-900 dark:text-white font-bold">Nutrition Tracker</p>
           <p className="text-slate-500 dark:text-slate-400 text-sm">
-            Add weight in Pet Profile to calculate daily MER target.
+            {selectedDog?.weightKg ?? selectedDog?.weight ? `${selectedDog?.weightKg ?? selectedDog?.weight} kg` : '—'} to calculate daily MER target.
           </p>
         </div>
       </PageWrapper>
@@ -545,7 +546,7 @@ export default function Nutrition() {
             };
             addNutritionLog(newLog);
             setShowScanModal(false);
-            addFoodScanLog({
+            addFoodCheck({
               userId: null,
               petId: profile?.id,
               scannedAt: nowIso(),
