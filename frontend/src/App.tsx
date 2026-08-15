@@ -27,6 +27,7 @@ import PawAiCenter from './pages/PawAiCenter';
 import PreventiveCare from './pages/PreventiveCare';
 import PawNewsPage from './pages/PawNews';
 import AdminNews from './pages/admin/AdminNews';
+import Timeline from './pages/Timeline';
 import SyncManager from './services/SyncManager';
 
 export default function App() {
@@ -52,6 +53,7 @@ export default function App() {
               >
                 <Route index element={<Navigate to="/dashboard" replace />} />
                 <Route path="dashboard" element={<Dashboard />} />
+                <Route path="timeline" element={<Timeline />} />
                 <Route path="triage" element={<DogHealthTriage />} />
                 <Route path="emergency" element={<EmergencyClassifier />} />
                 {/* Preventive Care — consolidated page */}
