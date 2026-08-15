@@ -103,6 +103,21 @@ Core capabilities include:
 
 ---
 
+## 🖼️ Product Screens
+
+> **Note:** Screenshots are illustrative representations of the PAWPHILE interface.
+
+<div align="center">
+  <img src="https://via.placeholder.com/800x450.png?text=Mission+Control+Dashboard" alt="Dashboard" width="48%">
+  <img src="https://via.placeholder.com/800x450.png?text=PAW+AI+Triage+Interface" alt="PAW AI" width="48%">
+</div>
+<div align="center">
+  <img src="https://via.placeholder.com/800x450.png?text=Vision+AI+Inference+Pipeline" alt="Vision AI" width="48%">
+  <img src="https://via.placeholder.com/800x450.png?text=Clinical+Health+Summary" alt="Health Summary" width="48%">
+</div>
+
+---
+
 ## 🏛️ Complete System Architecture
 
 ### Three-Tier Architecture

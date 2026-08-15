@@ -1,19 +1,21 @@
 import { NavLink } from 'react-router-dom';
-import { Home, Brain, ShieldAlert, Activity, Camera } from 'lucide-react';
+import { Home, Brain, FileText, User, ShieldAlert } from 'lucide-react';
 
 const ITEMS = [
-  { label: 'Home',     path: '/dashboard',       icon: Home },
-  { label: 'Timeline', path: '/timeline',        icon: Activity },
-  { label: 'PAW AI',   path: '/paw-ai',          icon: Brain },
-  { label: 'Scan',     path: '/vision',          icon: Camera },
+  { label: 'Home',     path: '/dashboard', icon: Home },
+  { label: 'PAW AI',   path: '/paw-ai',    icon: Brain },
   { label: 'Care',     path: '/preventive-care', icon: ShieldAlert },
+  { label: 'Reports',  path: '/reports',   icon: FileText },
+  { label: 'Profile',  path: '/profile',   icon: User },
 ];
 
 export default function BottomNav() {
   return (
     <nav
-      className="md:hidden flex-shrink-0 flex items-stretch z-50 bg-white border-t border-line-200"
+      className="md:hidden flex-shrink-0 flex items-stretch z-50"
       style={{
+        background: 'var(--card)',
+        borderTop: '1px solid var(--border)',
         paddingBottom: 'env(safe-area-inset-bottom, 0px)',
       }}
     >
@@ -22,16 +24,14 @@ export default function BottomNav() {
           key={path}
           to={path}
           className={({ isActive }) =>
-            `flex-1 py-3 flex flex-col items-center justify-center gap-1 transition-colors ${
-              isActive ? 'text-primary' : 'text-muted-400 hover:text-ink-950'
-            }`
+            `pw-bottom-item ${isActive ? 'active' : ''}`
           }
           aria-label={label}
         >
           {({ isActive }) => (
             <>
-              <Icon className="w-6 h-6" strokeWidth={isActive ? 2.5 : 2} />
-              <span className="text-[10px] font-bold">{label}</span>
+              <Icon className="w-5 h-5" strokeWidth={isActive ? 2.5 : 1.8} />
+              <span>{label}</span>
             </>
           )}
         </NavLink>
