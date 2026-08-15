@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional
 from uuid import UUID
 from datetime import datetime
@@ -15,8 +15,7 @@ class UserOut(UserBase):
     clerk_user_id: str
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 # ─── Dog Profile Schemas ───────────────────────
 class DogCreate(BaseModel):
@@ -60,8 +59,7 @@ class DogOut(BaseModel):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 # ─── Vaccine Schemas ───────────────────────────
 class VaccineCreate(BaseModel):
@@ -77,8 +75,7 @@ class VaccineOut(VaccineCreate):
     dog_id: UUID
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 # ─── Medical History Schemas ───────────────────
 class MedicalHistoryCreate(BaseModel):
@@ -92,8 +89,7 @@ class MedicalHistoryOut(MedicalHistoryCreate):
     dog_id: UUID
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 # ─── Vision Scan Schemas ───────────────────────
 class VisionScanOut(BaseModel):
@@ -108,5 +104,4 @@ class VisionScanOut(BaseModel):
     severity_level: Optional[str]
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

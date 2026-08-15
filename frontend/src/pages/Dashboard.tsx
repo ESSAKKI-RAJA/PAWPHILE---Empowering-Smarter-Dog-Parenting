@@ -53,7 +53,7 @@ export default function Dashboard() {
     nutritionLogs,
     medications,
   } = usePawphileData();
-  const { breedIntel, breedSummaryLine, breedName, breedId, ageYears } = usePersonalization();
+  const { breedIntel, breedName, breedId, ageYears } = usePersonalization();
   const [tipDismissed, setTipDismissed] = useState(false);
   const [weatherAlert, setWeatherAlert] = useState<any>(null);
 
@@ -179,7 +179,7 @@ export default function Dashboard() {
       humidity: weatherAlert.humidity,
       condition: weatherAlert.condition
     };
-  }, [weatherAlert, selectedDog]);
+  }, [weatherAlert, selectedDog, breedId]);
 
   const preventiveAlerts = useMemo(() => {
     if (!selectedDog) return [];
@@ -277,7 +277,7 @@ export default function Dashboard() {
       .sort((a, b) => b.score - a.score)
       .slice(0, 3)
       .map((x) => x.article);
-  }, [selectedDog]);
+  }, [selectedDog, breedName]);
 
   /* ── No dog ──────────────────────────────────────────── */
   if (!selectedDog) {

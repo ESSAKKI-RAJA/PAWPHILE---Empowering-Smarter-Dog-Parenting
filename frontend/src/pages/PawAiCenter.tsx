@@ -127,7 +127,7 @@ What's happening with ${selectedDog?.name || "your dog"} today?`,
         setIsLoading(false);
       }
     },
-    [messages, selectedDog, isLoading],
+    [messages, selectedDog, isLoading, pawAiContext],
   );
 
   // Handle chip click

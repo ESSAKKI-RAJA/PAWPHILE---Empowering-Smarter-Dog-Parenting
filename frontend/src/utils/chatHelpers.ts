@@ -1,5 +1,5 @@
 
-import { ChatMessage, ChatContextData } from "../types/chat";
+import { ChatMessage } from "../types/chat";
 
 /**
  * Get the last N messages from the conversation

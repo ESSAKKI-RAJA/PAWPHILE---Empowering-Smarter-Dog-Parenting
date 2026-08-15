@@ -126,7 +126,7 @@ export default function SyncManager() {
           detail: { pendingCount: 0, lastSyncedAt: now, state: 'synced' } 
         }));
 
-      } catch (_err) {
+      } catch {
         attempt++;
         if (attempt < maxAttempts) {
           const delay = Math.pow(2, attempt) * 1000;

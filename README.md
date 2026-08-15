@@ -536,3 +536,7 @@ If you utilize PAWPHILE for academic research or clinical studies, please cite:
 <div align="center">
   <p>Made with ❤️ for dogs everywhere.</p>
 </div>
+
+
+## PAWPHILE CV Status
+PAWPHILE CV engineering is complete. Clinical skin model training is blocked by missing Tier-A veterinary data.
