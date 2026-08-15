@@ -1,0 +1,4 @@
+image_id,dog_id,breed,age_group,sex,body_region,capture_date,image_source,clinical_site,device,consent_status,license
+img_001,dog_A123,Golden Retriever,adult,M,face,2026-08-15,vet_clinic_1,Clinic Alpha,iPhone 14,research_and_commercial,proprietary
+img_002,dog_A123,Golden Retriever,adult,M,abdomen,2026-08-15,vet_clinic_1,Clinic Alpha,iPhone 14,research_and_commercial,proprietary
+img_003,dog_B456,Mixed Breed,senior,F,paw,2026-08-16,vet_clinic_2,Clinic Beta,Samsung S23,research_and_commercial,proprietary

@@ -1,0 +1,2 @@
+Dog Detection Recall (Subset): 79.00%
+mAP@50 and IoU skipped due to CPU evaluation limits on native COCO model mapping.

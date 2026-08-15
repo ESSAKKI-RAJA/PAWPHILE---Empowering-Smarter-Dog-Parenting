@@ -1,0 +1,40 @@
+# PAWPHILE CV Bin 2C Training Configuration Template
+# This config must reference a LOCKED version of Tier A clinical data.
+
+metadata:
+  experiment_name: "pawphile_skin_production_candidate_v1"
+  dataset_version: "PAWPHILE-SKIN-v1.0"
+  ontology_version: "v1.0"
+  seed: 42
+
+architecture:
+  # The specific architecture will be determined during Phase 5 (Detection vs Segmentation vs Classification).
+  # e.g., yolov8m, unet, efficientnet-b2
+  model_type: "PENDING_DECISION"
+  pretrained: true
+  input_size: [512, 512]
+
+hyperparameters:
+  batch_size: 32
+  epochs: 100
+  learning_rate: 0.0001
+  optimizer: "AdamW"
+  weight_decay: 0.01
+  loss_function: "PENDING_DECISION"
+  mixed_precision: true
+
+augmentation:
+  flip_lr: 0.5
+  rotation: 15
+  brightness: 0.1
+  contrast: 0.1
+  saturation: 0.1
+
+early_stopping:
+  patience: 15
+  monitor: "val_loss"
+  mode: "min"
+
+hardware:
+  device: "cuda"
+  num_workers: 8

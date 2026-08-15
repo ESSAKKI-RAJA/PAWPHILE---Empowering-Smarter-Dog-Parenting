@@ -1,0 +1,26 @@
+Top-1 Accuracy: 43.45%
+Top-3 Accuracy: 81.55%
+Macro F1 Score: 0.1923
+
+Classification Report:
+                    precision    recall  f1-score   support
+
+            Beagle       0.83      0.58      0.68        95
+             Boxer       0.00      0.00      0.00         0
+         Chihuahua       0.75      0.29      0.42        52
+    Cocker Spaniel       0.00      0.00      0.00         0
+          Doberman       0.00      0.00      0.00         0
+   German Shepherd       0.00      0.00      0.00         0
+  Golden Retriever       0.80      0.56      0.66        50
+        Great Dane       0.00      0.00      0.00         0
+Labrador Retriever       0.41      0.60      0.48        25
+        Pomeranian       0.00      0.00      0.00         0
+               Pug       0.00      0.00      0.00         0
+        Rottweiler       0.00      0.00      0.00         0
+     Saint Bernard       0.00      0.00      0.00         0
+          Shih Tzu       1.00      0.29      0.45       114
+    Siberian Husky       0.00      0.00      0.00         0
+
+          accuracy                           0.43       336
+         macro avg       0.25      0.15      0.18       336
+      weighted avg       0.84      0.43      0.54       336

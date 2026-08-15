@@ -1,0 +1,10 @@
+{
+  "erythema": 0.41,
+  "alopecia": 0.41,
+  "crust": 0.46,
+  "scaling": 0.43,
+  "erosion": 0.5,
+  "ulcer": 0.5,
+  "pustule": 0.5,
+  "lichenification": 0.48
+}

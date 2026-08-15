@@ -1,0 +1,30 @@
+{
+  "image_id": "img_001",
+  "annotator_id": "vet_john_doe",
+  "annotation_date": "2026-08-16T10:00:00Z",
+  "image_level_quality": "accepted",
+  "findings": [
+    {
+      "annotation_id": "ann_001",
+      "lesion_type": "erythema",
+      "format": "polygon",
+      "coordinates": [
+        [100, 150],
+        [120, 160],
+        [130, 200],
+        [90, 190]
+      ],
+      "severity": "moderate",
+      "ambiguous": false
+    },
+    {
+      "annotation_id": "ann_002",
+      "lesion_type": "pustule",
+      "format": "bounding_box",
+      "coordinates": [110, 155, 115, 160],
+      "severity": "mild",
+      "ambiguous": false
+    }
+  ],
+  "provisional_condition": "bacterial dermatosis"
+}

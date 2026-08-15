@@ -1,0 +1,36 @@
+{
+  "image_id": "img_001",
+  "reviewer_id": "vet_jane_smith",
+  "review_date": "2026-08-17T11:00:00Z",
+  "review_type": "double_blind_audit",
+  "agreement_status": "disagreement",
+  "original_annotations": [
+    {
+      "annotation_id": "ann_001",
+      "lesion_type": "erythema",
+      "status": "agreed"
+    },
+    {
+      "annotation_id": "ann_002",
+      "lesion_type": "pustule",
+      "status": "disagreed",
+      "reviewer_correction": "papule",
+      "reviewer_notes": "Lesion lacks purulent center. It is solid, thus a papule."
+    }
+  ],
+  "missing_annotations": [
+    {
+      "annotation_id": "ann_003",
+      "lesion_type": "alopecia",
+      "format": "polygon",
+      "coordinates": [
+        [50, 50],
+        [80, 50],
+        [80, 80],
+        [50, 80]
+      ],
+      "reviewer_notes": "Annotator missed obvious focal alopecia on the margin."
+    }
+  ],
+  "final_resolution_required": true
+}

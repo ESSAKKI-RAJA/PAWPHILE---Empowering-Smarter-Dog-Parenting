@@ -1,0 +1,45 @@
+# PAWPHILE CV GPU Training Configuration
+# Use this configuration when training the Bin 1 and Bin 2 models on an external GPU machine (e.g., AWS, GCP, Google Colab).
+
+global:
+  seed: 42
+  device: "cuda"
+  num_workers: 4 # Adjust based on CPU cores available on the external GPU instance
+
+yolo_detection:
+  model: "yolov8n.pt" # Start with pre-trained nano
+  imgsz: 640
+  epochs: 100
+  batch_size: 16
+  early_stopping_patience: 15
+  optimizer: "auto"
+  save_period: 10 # Save checkpoint every 10 epochs
+
+efficientnet_classification:
+  model: "efficientnet_b0"
+  imgsz: 224
+  epochs: 50
+  batch_size: 32
+  learning_rate: 0.001
+  weight_decay: 1e-4
+  optimizer: "AdamW"
+  scheduler: "CosineAnnealingLR"
+  early_stopping_patience: 10
+  augmentations:
+    RandomHorizontalFlip: 0.5
+    RandomRotation: 15
+    ColorJitter: 
+      brightness: 0.2
+      contrast: 0.2
+      saturation: 0.2
+      hue: 0.1
+
+skin_multi_label_classification:
+  model: "efficientnet_b0" # Exploring b0 for the initial skin lesion detection
+  imgsz: 224
+  epochs: 50
+  batch_size: 32
+  learning_rate: 0.0005 # Slower learning rate for fine-tuning on medical data
+  loss_function: "BCEWithLogitsLoss" # Required for multi-label (multiple lesions at once)
+  optimizer: "AdamW"
+  early_stopping_patience: 12
