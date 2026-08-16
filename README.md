@@ -29,7 +29,6 @@
 1. [Executive Summary](#executive-summary)
 2. [Product Overview](#product-overview)
 3. [Key Features](#key-features)
-4. [Product Screens](#product-screens)
 5. [Complete System Architecture](#complete-system-architecture)
 6. [Technology Stack](#technology-stack)
 7. [Repository Structure](#repository-structure)
@@ -94,27 +93,12 @@ Core capabilities include:
 
 | Feature | Description | Technology | Status |
 |---------|-------------|------------|--------|
-| **PAW AI Assistant** | Context-aware, breed-specific LLM triage. | FastAPI + Groq / Llama 3 | Production Ready |
-| **DermAI™ Vision** | Detection of skin lesions, ticks, and hotspots. | PyTorch + ResNet/EfficientNet | Beta |
-| **Offline Synchronization** | Zero-latency interactions with background sync. | React + IndexedDB (Dexie) | Production Ready |
+| **PAW AI Assistant** | Context-aware, breed-specific LLM triage. | FastAPI + Local Ollama / Llama 3 | Locally Working |
+| **DermAI™ Vision** | Detection of skin lesions, ticks, and hotspots. | PyTorch + ResNet/EfficientNet | Experimental |
+| **Offline Synchronization** | Zero-latency interactions with background sync. | React + IndexedDB (Dexie) | Implemented & Tested |
 | **Vet Reports Generation** | Export longitudinal health data to PDF for vets. | React-PDF | Planned |
-| **Deterministic Guardrails**| Rule-engine that preempts AI hallucination. | Python Rule Engine | Production Ready |
-| **Breed Intelligence** | 100+ breed profiles governing expected biometrics. | PostgreSQL (Neon) | Production Ready |
-
----
-
-## 🖼️ Product Screens
-
-> **Note:** Screenshots are illustrative representations of the PAWPHILE interface.
-
-<div align="center">
-  <img src="https://via.placeholder.com/800x450.png?text=Mission+Control+Dashboard" alt="Dashboard" width="48%">
-  <img src="https://via.placeholder.com/800x450.png?text=PAW+AI+Triage+Interface" alt="PAW AI" width="48%">
-</div>
-<div align="center">
-  <img src="https://via.placeholder.com/800x450.png?text=Vision+AI+Inference+Pipeline" alt="Vision AI" width="48%">
-  <img src="https://via.placeholder.com/800x450.png?text=Clinical+Health+Summary" alt="Health Summary" width="48%">
-</div>
+| **Deterministic Guardrails**| Rule-engine that preempts AI hallucination. | Python Rule Engine | Implemented & Tested |
+| **Breed Intelligence** | 100+ breed profiles governing expected biometrics. | PostgreSQL (Neon) | Implemented & Tested |
 
 ---
 
@@ -241,7 +225,7 @@ PAWPHILE implements a **Guardrail-First AI Architecture**.
 
 1. **Intent Classification**: Before querying the LLM, the system runs a deterministic NLP check against a proprietary database of emergency keywords (e.g., "bloat", "unresponsive", "pale gums").
 2. **Context Injection**: Breed-specific data, age, and recent medical history are automatically injected into the system prompt via RAG (Retrieval-Augmented Generation).
-3. **Groq Integration**: Utilizes Llama 3 via Groq for ultra-low latency inference, crucial during high-stress triage situations.
+3. **Local Ollama Integration**: Currently relies on local Ollama inference (`localhost:11434`). Cloud production readiness (e.g., Groq) is pending.
 4. **Safety Layers**: Outputs are post-processed to append mandatory veterinary disclaimers. The AI is structurally prevented from generating dosages or explicit diagnostic terms.
 
 ---
@@ -488,10 +472,11 @@ Please read our [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of co
 
 ## 📚 Documentation
 
-- [Core Architecture](docs/architecture.md)
-- [API Reference](docs/api.md)
-- [Setup & Environment Guide](docs/setup.md)
-- [Security Policies](SECURITY.md)
+- [Master Product Dossier](docs/PAWPHILE_MASTER_PRODUCT_DOSSIER.md)
+- [Core Architecture](docs/PAWPHILE_ARCHITECTURE.md)
+- [API Reference](docs/PAWPHILE_API_REFERENCE.md)
+- [Setup & Development Guide](docs/PAWPHILE_SETUP_AND_DEVELOPMENT.md)
+- [CV Overview](docs/cv/CV_OVERVIEW.md)
 
 ---
 
