@@ -12,10 +12,6 @@
 
 <br/>
 
-**.Know Them Better &nbsp;·&nbsp; .Care Them Better**
-
-<br/>
-
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg?style=for-the-badge)](LICENSE)
 [![Version](https://img.shields.io/badge/version-2.0.0-teal?style=for-the-badge)](CHANGELOG.md)
 [![React](https://img.shields.io/badge/React-18.x-61dafb?style=for-the-badge&logo=react&logoColor=black)](https://reactjs.org/)
