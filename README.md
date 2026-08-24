@@ -1,130 +1,171 @@
 <div align="center">
 
-# 🐾 PAWPHILE
+<img src="frontend/public/pawphile-logo.png" alt="PAWPHILE Logo" width="260" />
 
-**AI-Powered Preventive Healthcare Platform for Companion Dogs**
+# PAWPHILE
 
-*Bridging the gap between veterinary science and daily canine care through explainable AI, clinical decision support, and vision-based health monitoring.*
+### Empowering Smarter Dog Parenting
+
+<br/>
+
+> ## *"Don't Wait for the Emergency. Know the Signs. Care Better."*
+
+<br/>
+
+**.Know Them Better &nbsp;·&nbsp; .Care Them Better**
+
+<br/>
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg?style=for-the-badge)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.0.0-teal?style=for-the-badge)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-2.0.0-teal?style=for-the-badge)](CHANGELOG.md)
 [![React](https://img.shields.io/badge/React-18.x-61dafb?style=for-the-badge&logo=react&logoColor=black)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178c6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
-[![Python](https://img.shields.io/badge/Python-3.11-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
-[![PostgreSQL](https://img.shields.io/badge/Neon_PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white)](https://neon.tech)
-[![AI Powered](https://img.shields.io/badge/AI_Powered-Explainable_AI-FF6F00?style=for-the-badge&logo=openai&logoColor=white)](#ai-architecture)
-[![Computer Vision](https://img.shields.io/badge/Computer_Vision-PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)](#vision-ai-architecture)
-[![Research](https://img.shields.io/badge/Research-Clinical_Significance-8A2BE2?style=for-the-badge)](CITATION.cff)
+[![FastAPI](https://img.shields.io/badge/FastAPI-Python_3.12-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![AI Powered](https://img.shields.io/badge/AI-Groq_%2B_Ollama-FF6F00?style=for-the-badge&logo=openai&logoColor=white)](#ai-architecture)
+[![Vision](https://img.shields.io/badge/Vision_AI-Roboflow_%2B_PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)](#computer-vision)
 [![PWA](https://img.shields.io/badge/PWA-Offline_First-5A0FC8?style=for-the-badge&logo=pwa&logoColor=white)](#offline-first)
-[![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen?style=for-the-badge)](https://github.com/ESSAKKI-RAJA/PAWPHILE/actions)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg?style=for-the-badge)](CONTRIBUTING.md)
 
 </div>
 
 ---
 
-## 📑 Table of Contents
+## The Problem
 
-1. [Executive Summary](#executive-summary)
-2. [Product Overview](#product-overview)
-3. [Key Features](#key-features)
-5. [Complete System Architecture](#complete-system-architecture)
-6. [Technology Stack](#technology-stack)
-7. [Repository Structure](#repository-structure)
-8. [Platform Modules](#platform-modules)
-9. [AI Architecture](#ai-architecture)
-10. [Vision AI Architecture](#vision-ai-architecture)
-11. [Machine Learning](#machine-learning)
-12. [Database Design](#database-design)
-13. [API Documentation](#api-documentation)
-14. [Installation](#installation)
-15. [Environment Variables](#environment-variables)
-16. [Usage](#usage)
-17. [Security](#security)
-18. [Safety Architecture](#safety-architecture)
-19. [Offline First](#offline-first)
-20. [Performance](#performance)
-21. [Testing](#testing)
-22. [Deployment](#deployment)
-23. [Research Contributions](#research-contributions)
-24. [Comparison](#comparison)
-25. [Future Roadmap](#future-roadmap)
-26. [Contributing](#contributing)
-27. [Documentation](#documentation)
-28. [FAQ](#faq)
-29. [Citation](#citation)
-30. [Acknowledgements](#acknowledgements)
+Dog parents face a fundamental information gap. When something seems wrong, the choice is between a Google spiral that causes panic, a rushed emergency vet visit that may not be needed, or the more dangerous option — doing nothing and hoping it resolves.
+
+Preventive healthcare is invisible. Veterinary care is episodic. Warning signs go unrecognized until they become emergencies.
+
+**PAWPHILE exists to close that gap.**
 
 ---
 
-## 🏢 Executive Summary
+## Product Philosophy
 
-### The Problem
-Canine preventive healthcare is highly fragmented. Dog owners lack continuous access to reliable, data-backed insights regarding their pet’s health. Existing solutions focus heavily on reactive care—managing illnesses after they occur rather than predicting and preventing them. Furthermore, Dr. Google often leads to misdiagnosis, anxiety, and delayed veterinary intervention.
+PAWPHILE is built on a single organizing principle: **responsible dog parents should be able to recognize warning signs early, understand what they mean, and know when to escalate to a professional.**
 
-### Our Motivation
-Veterinary clinics face overwhelming caseloads. By empowering dog owners with clinical-grade decision-support tools, we can triage non-emergency cases, provide early warning signs for critical conditions, and foster a proactive rather than reactive healthcare ecosystem. 
+PAWPHILE is not an AI veterinarian. It does not diagnose. It does not prescribe.
 
-### Innovation & Vision
-**PAWPHILE** is built as an enterprise-grade, AI-powered platform tailored specifically to companion dogs. We merge **Explainable AI (XAI)**, **Computer Vision**, and **Offline-First PWA mechanics** into a single cohesive ecosystem. Our vision is to become the standard digital twin for canine health, bridging the gap between veterinary professionals, academic researchers, and pet parents globally.
+It is a **decision-support platform** — one that combines deterministic safety guardrails, breed-specific health intelligence, and AI-assisted guidance to help dog parents make more informed, calmer decisions before, during, and between veterinary visits.
 
-### Target Audience & Value
-- **Pet Parents**: Gain peace of mind through actionable, deterministic health insights.
-- **Veterinarians**: Receive structured, longitudinal health reports prior to visits, saving diagnostic time.
-- **Researchers**: Access anonymized, aggregated demographic and health trend data for canine longevity studies.
+---
+
+## 📑 Table of Contents
+
+1. [Product Overview](#product-overview)
+2. [Core Capabilities](#core-capabilities)
+3. [Safety Architecture](#safety-architecture)
+4. [System Architecture](#system-architecture)
+5. [Technology Stack](#technology-stack)
+6. [Repository Structure](#repository-structure)
+7. [AI Architecture](#ai-architecture)
+8. [Computer Vision](#computer-vision)
+9. [Offline First](#offline-first)
+10. [Database Design](#database-design)
+11. [Installation](#installation)
+12. [Environment Variables](#environment-variables)
+13. [API Documentation](#api-documentation)
+14. [Testing](#testing)
+15. [Deployment](#deployment)
+16. [Security & Privacy](#security--privacy)
+17. [Research Contributions](#research-contributions)
+18. [Future Roadmap](#future-roadmap)
+19. [Contributing](#contributing)
+20. [Citation](#citation)
+21. [Acknowledgements](#acknowledgements)
 
 ---
 
 ## 🔭 Product Overview
 
-PAWPHILE operates at the intersection of **Veterinary Informatics**, **Clinical Decision Support**, and **Vision AI**. The platform strictly enforces safety boundaries: it does not diagnose or prescribe, but rather triages and educates.
+PAWPHILE is an **India-first, AI-assisted preventive healthcare and digital health platform for companion dogs**. It operates at the intersection of veterinary informatics, clinical decision support, and computer vision.
 
-Core capabilities include:
-- **Preventive Healthcare Tracking**: Longitudinal monitoring of nutrition, activity, sleep, and behavioral biometrics.
-- **Explainable PAW AI**: A deterministic, rule-bound NLP assistant utilizing RAG-based context injection to answer breed-specific health queries.
-- **Vision AI Pipelines**: Deep learning models for triaging dermatological (DermAI™), ocular (EyeScan AI™), and auditory (EarSense AI™) conditions.
-- **Safety Guardrails**: Hardcoded emergency bypass rules that immediately direct users to emergency veterinary care upon detecting critical symptom keywords.
-- **Offline-First Engine**: Complete functionality via IndexedDB and Service Workers, ensuring uninterrupted access in low-connectivity areas (e.g., dog parks, rural areas).
+The platform is designed to help dog parents:
 
----
+1. **Recognize early warning signs** before they become emergencies
+2. **Understand their dog's health** through breed-specific, contextual intelligence
+3. **Respond safely** during emergencies via deterministic triage — bypassing AI during critical symptom detection
+4. **Maintain a longitudinal health record** for meaningful veterinary consultations
+5. **Make informed care decisions** rather than reactive, fear-driven ones
 
-## ⭐ Key Features
-
-| Feature | Description | Technology | Status |
-|---------|-------------|------------|--------|
-| **PAW AI Assistant** | Context-aware, breed-specific LLM triage. | FastAPI + Local Ollama / Llama 3 | Locally Working |
-| **DermAI™ Vision** | Detection of skin lesions, ticks, and hotspots. | PyTorch + ResNet/EfficientNet | Experimental |
-| **Offline Synchronization** | Zero-latency interactions with background sync. | React + IndexedDB (Dexie) | Implemented & Tested |
-| **Vet Reports Generation** | Export longitudinal health data to PDF for vets. | React-PDF | Planned |
-| **Deterministic Guardrails**| Rule-engine that preempts AI hallucination. | Python Rule Engine | Implemented & Tested |
-| **Breed Intelligence** | 100+ breed profiles governing expected biometrics. | PostgreSQL (Neon) | Implemented & Tested |
+> **Geographic Focus:** India-first. Accounts for Indian indigenous breeds (Pariah, Kombai, Mudhol, Rajapalayam), tick-fever prevalence, heatstroke risk in Indian summers, and WSAVA guidelines adapted for high-exposure environments.
 
 ---
 
-## 🏛️ Complete System Architecture
+## ⭐ Core Capabilities
 
-### Three-Tier Architecture
+| Module | Description | Status |
+|--------|-------------|--------|
+| **PAW AI — Chat** | Breed-specific LLM triage powered by Groq (Llama 3). Deterministic guardrails fire before LLM for any emergency signal. | ✅ Implemented |
+| **PAW AI — Triage Engine** | Structured symptom assessment engine with hardcoded emergency rules and breed-context injection. | 🟡 Locally Working (Ollama) |
+| **Vision Scan (DermAI™)** | Roboflow Inference SDK wrapper for canine skin and lesion screening. | ✅ Implemented (Bin 1) |
+| **Vision (PyTorch/YOLO)** | EfficientNet B0 breed classification and YOLOv8 detection — experimental pipelines. | 🔵 Experimental |
+| **Clinical Vision (Bin 2C)** | Native skin lesion classification pipeline. Blocked pending Tier-A veterinary annotated data. | 🔒 Blocked |
+| **Preventive Care** | Vaccine and deworming schedule tracking with WSAVA-calculated due dates. | ✅ Implemented |
+| **Nutrition & BCS** | Food logging, calorie tracking, and 9-point WSAVA Body Condition Score assessment. | ✅ Implemented |
+| **Behavior Log** | Mood and behavioral anomaly tracking for longitudinal pattern recognition. | ✅ Implemented |
+| **Vet Locator** | Map-based nearby veterinary clinic finder (Leaflet + React-Leaflet). | ✅ Implemented |
+| **PAWNEWS** | Contextual pet health news feed aggregating validated external sources with breed/season relevance. | ✅ Implemented |
+| **Reports & PDF Export** | Longitudinal health summary generation for veterinary consultations. | ✅ Implemented |
+| **Offline-First PWA** | IndexedDB-backed offline data entry with background sync on reconnection. | ✅ Implemented |
+| **Push Notifications** | Firebase Cloud Messaging (FCM) for reminder and alert delivery. | ✅ Implemented |
+| **Weather Alerts** | OpenWeather API integration for breed-specific heatstroke/cold risk guidance. | 🟡 Experimental |
+
+---
+
+## 🚦 Safety Architecture
+
+Safety is not a feature in PAWPHILE — it is the foundation.
+
+### Triage Tiers
+
+Every AI output is categorized into a deterministic Action Tier **before** the LLM is ever consulted:
+
+| Tier | Trigger | Response |
+|------|---------|----------|
+| 🔴 **RED — Emergency** | Hardcoded emergency keyword match (seizure, bloat, pale gums, bloody vomit, collapse, unresponsiveness, poisoning, heatstroke, etc.) | AI dialogue halted immediately. User directed to nearest emergency vet. No LLM response generated. |
+| 🟡 **YELLOW — Monitor** | Non-critical concern signals (mild lethargy, localized scratching, appetite changes) | 24–48 hour monitoring protocol with clear escalation criteria. |
+| 🟢 **GREEN — General** | Wellness, nutrition, behavioral, preventive care queries | Full LLM capability engaged with veterinary disclaimer appended to all responses. |
+
+### Structural Constraints
+
+- The AI is **architecturally prevented** from generating dosage recommendations or explicit diagnostic claims.
+- All outputs append mandatory veterinary disclaimers.
+- Emergency keyword detection is **deterministic string-matching**, not LLM inference — it cannot hallucinate.
+- A dedicated **Toxin Guardrail** (`TOXIC_FOOD_KEYWORDS`) intercepts food safety queries and routes them to the deterministic food safety database.
+
+---
+
+## 🏛️ System Architecture
+
+### Three-Service Monorepo
 
 ```mermaid
 graph TD
-    Client[Frontend PWA<br/>React + Vite + TypeScript]
-    API[Core Backend<br/>FastAPI + SQLAlchemy]
-    Vision[Vision Inference Service<br/>FastAPI + PyTorch]
-    DB[(Neon PostgreSQL)]
+    Client[Frontend PWA<br/>React 18 + Vite + TypeScript<br/>Vercel]
+    API[Core Backend<br/>FastAPI + SQLAlchemy<br/>Render]
+    Vision[Vision Inference Service<br/>FastAPI + PyTorch + Roboflow<br/>Dedicated GPU Instance]
+    DB[(PostgreSQL<br/>Neon / Supabase)]
     Storage[Cloudinary<br/>Image Store]
     Auth[Clerk Identity]
+    IDB[(IndexedDB<br/>localforage)]
+    FCM[Firebase Cloud Messaging<br/>Push Notifications]
 
-    Client -- JWT Bearer --> API
-    Client -- Sync --> IndexedDB[(Local IndexedDB)]
+    Client -- Clerk JWT Bearer --> API
+    Client -- Supabase JS Direct --> DB
+    Client -- Offline Queue --> IDB
+    IDB -- Background Sync --> DB
     Client -- OAuth --> Auth
-    API -- Read/Write --> DB
+    Client -- Push --> FCM
+    API -- SQLAlchemy ORM --> DB
     API -- Upload --> Storage
-    API -- Inference Request --> Vision
+    API -- Roboflow SDK --> Vision
     Vision -- Return Triage --> API
 ```
 
-### Request Lifecycle (Vision AI Flow)
+> **Split-Brain Database Architecture:** The frontend communicates directly with Supabase/PostgreSQL via `@supabase/supabase-js` for offline sync, while the FastAPI backend uses SQLAlchemy (psycopg2) against the same database for AI retrieval and complex queries.
+
+### Vision Scan Request Lifecycle
 
 ```mermaid
 sequenceDiagram
@@ -132,19 +173,19 @@ sequenceDiagram
     participant Auth as Clerk
     participant API as Core Backend (FastAPI)
     participant Storage as Cloudinary
-    participant Vision as Vision API (FastAPI)
-    participant DB as Neon PostgreSQL
+    participant Vision as Roboflow Vision SDK
+    participant DB as PostgreSQL (Neon)
 
     User->>Auth: Authenticate
     Auth-->>User: Return JWT Token
     User->>API: POST /api/vision/scan (Image + JWT)
     API->>Auth: Validate JWT Signature
-    API->>Storage: Upload Secure Image
+    API->>Storage: Upload Secure Image (server-side only)
     Storage-->>API: Return secure_url
-    API->>Vision: POST /predict (secure_url)
+    API->>Vision: Roboflow Inference SDK (pawphile-screening-prototype)
     Vision-->>API: Return {prediction, confidence, explanation}
     API->>DB: Save VisionScanRecord
-    API-->>User: Return 200 OK (Scan Results)
+    API-->>User: Return Triage Result
 ```
 
 ---
@@ -152,26 +193,57 @@ sequenceDiagram
 ## 🛠️ Technology Stack
 
 ### Frontend
-- **Framework**: React 18, Vite, TypeScript 5.x
-- **State & Sync**: IndexedDB, Dexie.js, Service Workers (PWA)
-- **UI & Styling**: Tailwind CSS, Radix UI, Framer Motion
+| Layer | Technology |
+|-------|-----------|
+| Framework | React 18, Vite, TypeScript 5.x |
+| Styling | Tailwind CSS |
+| Routing | React Router DOM v7 |
+| State | React Context API (`PawphileDataContext`, `ThemeContext`) |
+| Offline Storage | `localforage` (IndexedDB wrapper) |
+| Auth | Clerk React (`@clerk/clerk-react`) |
+| Database Client | Supabase JS (`@supabase/supabase-js`) |
+| Push Notifications | Firebase Cloud Messaging (FCM) |
+| Maps | Leaflet + React-Leaflet |
+| Charts | Recharts |
+| PDF Generation | jsPDF + jsPDF-AutoTable + html2canvas |
+| Icons | Lucide React |
 
-### Backend & Core Services
-- **Framework**: FastAPI (Python 3.11)
-- **ORM**: SQLAlchemy 2.0
-- **AI/LLM**: Groq API (Llama 3), LangChain
-- **Validation**: Pydantic
+### Backend
+| Layer | Technology |
+|-------|-----------|
+| Framework | FastAPI (Python 3.12) |
+| ORM | SQLAlchemy 2.0 |
+| Database Driver | psycopg2-binary (PostgreSQL) |
+| Migrations | Alembic |
+| Validation | Pydantic v2 |
+| Auth | Clerk JWT verification (python-jose) |
+| Image Storage | Cloudinary Python SDK |
+| Email | Resend API |
+| PDF Reports | ReportLab |
+| Vision SDK | Roboflow Inference SDK (`inference-sdk`) |
+| Streaming | SSE-Starlette (Server-Sent Events) |
+| LLM (Chat) | Groq Cloud API (Llama 3, `llama3-70b-8192`) |
+| LLM (Triage) | Local Ollama (Llama 3, `localhost:11434`) |
 
-### Computer Vision (Inference)
-- **Framework**: FastAPI + PyTorch
-- **Models**: ResNet50 / EfficientNet (Pre-trained + Fine-tuned)
-- **Processing**: OpenCV, PIL, Grad-CAM (Explainability)
+### Computer Vision Service
+| Layer | Technology |
+|-------|-----------|
+| Framework | FastAPI |
+| Primary Pipeline | Roboflow Serverless Inference (Bin 1) |
+| Experimental Pipeline | PyTorch + EfficientNet B0, YOLOv8 (Bin 2A/2B) |
+| Explainability | Grad-CAM heatmap overlays |
+| Image Processing | OpenCV, Albumentations |
+| Experiment Tracking | Weights & Biases (wandb) |
 
-### Infrastructure & DevOps
-- **Database**: Neon (Serverless PostgreSQL)
-- **Authentication**: Clerk (JWT, OAuth)
-- **Storage**: Cloudinary (Secure Image Blob)
-- **Containerization**: Docker, Docker Compose (for local dev/future deployments)
+### Infrastructure
+| Service | Provider |
+|---------|---------|
+| Database | Neon Serverless PostgreSQL / Supabase PostgreSQL |
+| Authentication | Clerk (JWT, OAuth, JWKS) |
+| Image Storage | Cloudinary |
+| Frontend Hosting | Vercel |
+| Backend Hosting | Render |
+| Push Notifications | Firebase Cloud Messaging |
 
 ---
 
@@ -179,161 +251,179 @@ sequenceDiagram
 
 ```text
 PAWPHILE/
-├── frontend/               # React + Vite + TypeScript PWA
+├── frontend/                   # React 18 + Vite + TypeScript PWA
 │   ├── src/
-│   │   ├── components/     # Reusable UI elements (Tailwind + Radix)
-│   │   ├── hooks/          # Custom React hooks (IndexedDB sync)
-│   │   ├── services/       # API integration layers
-│   │   └── utils/          # Offline-first logic & helpers
-│   ├── public/             # Static assets, PWA manifest, Service Workers
-│   └── package.json        # Frontend dependencies
-├── backend/                # Core FastAPI Service
+│   │   ├── components/         # Layout, UI, Chat, PAWNEWS components
+│   │   ├── context/            # PawphileDataContext, ThemeContext, etc.
+│   │   ├── engines/            # Client-side rule engines
+│   │   ├── features/           # Feature-scoped logic
+│   │   ├── hooks/              # Custom React hooks
+│   │   ├── pages/              # Route-level page components
+│   │   ├── services/           # API client, SyncManager, chatEngine, etc.
+│   │   ├── types/              # TypeScript interfaces
+│   │   └── utils/              # Helpers and utilities
+│   ├── public/
+│   │   ├── pawphile-logo.png   # PAWPHILE brand logo
+│   │   └── firebase-messaging-sw.js  # FCM service worker
+│   ├── .env.example            # Sanitized environment template
+│   └── package.json
+├── backend/                    # FastAPI core service
 │   ├── app/
-│   │   ├── api/            # API routing and endpoints
-│   │   ├── core/           # Config, Security, JWT validation
-│   │   ├── models/         # SQLAlchemy schemas
-│   │   ├── schemas/        # Pydantic validation models
-│   │   └── services/       # Business logic (LLM integrations)
-│   └── requirements.txt    # Python dependencies
-├── vision/                 # Dedicated Vision AI Microservice
+│   │   ├── api/routes/         # All API endpoints (17 route files)
+│   │   ├── core/               # Config, Security, JWT validation
+│   │   ├── db/                 # SQLAlchemy session management
+│   │   ├── models/             # SQLAlchemy ORM models
+│   │   ├── schemas/            # Pydantic validation schemas
+│   │   └── services/           # PAW AI Engine, Vision Service, Cloudinary
+│   ├── migrations/             # Alembic database migrations
+│   ├── tests/                  # Backend pytest suite
+│   ├── .env.example            # Sanitized environment template
+│   └── requirements.txt
+├── vision/                     # Dedicated Vision AI microservice
 │   ├── app/
-│   │   ├── models/         # PyTorch weights & definitions
-│   │   ├── inference.py    # Prediction pipelines & Grad-CAM
-│   │   └── main.py         # FastAPI entry point for Vision
-│   └── requirements.txt    # Heavy ML dependencies
-├── docs/                   # Architectural & Developer Documentation
-├── archive/                # Legacy implementations (Supabase, old Docker configs)
-├── README.md               # You are here
-└── LICENSE                 # Apache 2.0
+│   │   ├── routers/            # Analysis endpoints
+│   │   ├── services/           # PyTorch inference pipelines
+│   │   ├── triage/             # VetPriority™ triage logic
+│   │   └── explainability/     # Grad-CAM / ExplainVet™
+│   ├── training/               # Model training scripts
+│   ├── models/                 # PyTorch weights (gitignored)
+│   ├── .env.example            # Sanitized environment template
+│   └── requirements.txt
+├── cv/                         # Computer Vision research pipeline
+│   ├── skin_lesion/            # Bin 2C — clinical CV (blocked)
+│   └── models/                 # Trained weights (gitignored)
+├── tests/                      # Cross-service integration tests
+├── README.md
+└── LICENSE                     # Apache 2.0
 ```
-
----
-
-## 🧩 Platform Modules
-
-- **Dashboard**: Centralized command center providing an at-a-glance view of the dog's health vectors, recent activities, and pending triage actions.
-- **PAW AI**: The NLP conversational agent designed strictly around veterinary triage. Features a safety rule-engine that bypasses the LLM during identified emergencies.
-- **Vision AI**: Analyzes user-uploaded images of skin anomalies, ocular discharge, or physical trauma to offer risk stratification and confidence scoring.
-- **Health Summary**: Longitudinal data visualization charting weight trends, vaccination schedules, and chronic condition management.
-- **Offline Engine**: Ensures the platform remains functional when the user is off the grid (e.g., hiking). Uses a Background Sync Queue that flushes changes to the backend upon reconnection.
 
 ---
 
 ## 🧠 AI Architecture
 
-PAWPHILE implements a **Guardrail-First AI Architecture**. 
+### PAW AI — Guardrail-First Design
 
-1. **Intent Classification**: Before querying the LLM, the system runs a deterministic NLP check against a proprietary database of emergency keywords (e.g., "bloat", "unresponsive", "pale gums").
-2. **Context Injection**: Breed-specific data, age, and recent medical history are automatically injected into the system prompt via RAG (Retrieval-Augmented Generation).
-3. **Local Ollama Integration**: Currently relies on local Ollama inference (`localhost:11434`). Cloud production readiness (e.g., Groq) is pending.
-4. **Safety Layers**: Outputs are post-processed to append mandatory veterinary disclaimers. The AI is structurally prevented from generating dosages or explicit diagnostic terms.
+PAWPHILE implements a **Guardrail-First AI Architecture** where deterministic safety checks are always evaluated before any LLM call:
+
+**Pipeline (Chat Route `/api/paw-ai/chat`):**
+1. **Emergency Keyword Check** — Deterministic string match against `EMERGENCY_KEYWORDS` list. If triggered: halt, generate Red Alert, return emergency vet directive. No LLM contacted.
+2. **Toxin Guard** — Intercepts food safety queries and routes to deterministic toxin database.
+3. **Intent Classification** — Classifies query into: triage, breed, nutrition, vaccine, deworming, BCS, behavior, or general.
+4. **Breed Context Injection** — Dog's breed, age, weight, and recent records auto-injected into system prompt.
+5. **Groq LLM Call** — `llama3-70b-8192` via Groq Cloud API for low-latency, low-cost inference.
+6. **Output Sanitization** — Mandatory veterinary disclaimer appended. Dosage and diagnostic terms structurally excluded.
+
+**Pipeline (Triage Route `/api/paw-ai/triage`):**
+- Uses `paw_ai_engine.py` with local Ollama inference.
+- Breed-specific risk profiles for 15+ breeds including Indian indigenous breeds (Kombai, Mudhol, Rajapalayam).
+- Returns structured JSON: severity tier, explanation, recommended actions.
+
+> **RAG Pipeline Status:** The RAG (Retrieval-Augmented Generation) endpoint exists as a stub (`POST /api/knowledge/ingest`) but is **not implemented**. pgvector embeddings are planned for a future phase.
 
 ---
 
-## 👁️ Vision AI Architecture
+## 👁️ Computer Vision
 
-Our vision pipeline is split into specialized sub-modules:
-- **DermAI™**: Optimized for canine dermatology (e.g., identifying hot spots, tick engorgement, ringworm indicators).
-- **EyeScan AI™**: Detects early signs of corneal opacity, cataract progression, and severe conjunctivitis.
+### Vision Tier Architecture
 
-### Explainability (Grad-CAM)
-Trust in AI requires transparency. Our vision service generates Heatmap Overlays (Grad-CAM) to highlight the specific pixel regions that contributed most to the model's triage decision, helping pet owners understand the focal point of the anomaly.
+| Tier | Pipeline | Status |
+|------|---------|--------|
+| **Bin 1** | Roboflow Serverless Inference SDK — `pawphile-screening-prototype` workflow | ✅ Active |
+| **Bin 2A** | PyTorch EfficientNet B0 — breed phenotype classification | 🔵 Experimental |
+| **Bin 2B** | YOLOv8 — canine object detection | 🔵 Experimental |
+| **Bin 2C** | Custom clinical skin lesion classifier — DermAI™ native model | 🔒 Blocked (awaiting Tier-A veterinary data) |
+
+### Vision Modules
+- **DermAI™** — Skin anomaly, hot spot, and lesion screening
+- **EyeScan AI™** — Ocular condition preliminary screening
+- **EarSense AI™** — Ear condition preliminary screening
+- **VetPriority™** — Post-inference risk stratification
+- **ExplainVet™** — Grad-CAM heatmap overlays for model transparency
+
+> **Clinical Safety Note:** Vision results are risk-stratification outputs, not diagnoses. All vision results include confidence scores, recommended actions, and mandatory veterinary review prompts.
 
 ---
 
-## 📊 Machine Learning
+## 📶 Offline First
 
-- **Training Datasets**: Aggregated, anonymized, and vetted open-source veterinary image datasets. *(Note: Proprietary clinical data is rigorously sanitized).*
-- **Metrics**: Optimized for High Recall (Sensitivity) over Precision. In a healthcare triage context, false positives (recommending a vet visit unnecessarily) are vastly preferable to false negatives (missing a critical emergency).
-- **Future Improvements**: Transitioning to Vision Transformers (ViT) and expanding the dataset to cover rarer breed-specific phenotypic expressions.
+PAWPHILE is a **Progressive Web App (PWA)** designed for reliability in low-connectivity environments — dog parks, hiking trails, rural India.
+
+**Offline Architecture (`SyncManager.tsx`):**
+1. All user writes are intercepted and saved to **IndexedDB** via `localforage`.
+2. A `SYNC_QUEUE` marker is appended to the pending record.
+3. On reconnection, `SyncManager` triggers `syncService.ts`.
+4. `syncService.ts` performs a differential upsert comparing `updated_at` timestamps to prevent overwrite conflicts.
+5. **Firebase Service Worker** (`firebase-messaging-sw.js`) handles background sync and push notification delivery.
 
 ---
 
 ## 🗄️ Database Design
 
-We utilize **Neon PostgreSQL** as our primary relational store.
+**Primary Database:** Neon Serverless PostgreSQL (accessed via both Supabase JS and SQLAlchemy ORM)
 
-### Key Entities
-- **Users**: Mapped strictly to `clerk_user_id`. Handles profile and subscription tiers.
-- **Dogs**: Core demographic data, breed references, age, and baseline weight.
-- **Health_Logs**: Polymorphic table storing discrete events (meals, walks, symptoms, medications).
-- **Vision_Scan_Records**: Stores Cloudinary `secure_url`, model confidence scores, and raw inference JSON.
+### Core Entities
+| Entity | Description |
+|--------|-------------|
+| `users` | Mapped to `clerk_user_id`. Profile, preferences, subscription. |
+| `dog_profiles` | Breed, age, weight, sex, baseline health context. |
+| `vaccine_records` | Vaccination history with WSAVA-calculated due dates. |
+| `deworming_records` | Deworming schedule and completion tracking. |
+| `nutrition_logs` | Food entries, calorie and macro tracking. |
+| `bcs_bmi_records` | 9-point WSAVA Body Condition Score assessments. |
+| `behavior_logs` | Behavioral event recording for longitudinal analysis. |
+| `vision_scan_records` | Cloudinary `secure_url`, confidence scores, raw Roboflow inference JSON. |
+| `paw_ai_sessions` | Conversation history, guardrail trigger logs. |
+| `reminders` | Scheduled health reminders with FCM push targeting. |
+| `vet_clinics` | Geospatial vet clinic data. |
 
-**Security**: While previously utilizing Supabase RLS, our current architecture enforces multi-tenancy at the ORM layer. Every query mandates `WHERE clerk_user_id = :id`.
-
----
-
-## 🔌 API Documentation
-
-All backend interactions require a valid Clerk JWT in the `Authorization: Bearer <token>` header.
-
-### Sample Request (Vision Inference Trigger)
-
-```http
-POST /api/vision/scan HTTP/1.1
-Host: api.pawphile.com
-Authorization: Bearer eyJhbGciOiJSUzI1...
-Content-Type: multipart/form-data
-
-image_file=@/local/path/to/lesion.jpg
-dog_id=uuid-1234
-```
-
-### Sample Response
-
-```json
-{
-  "scan_id": "uuid-9876",
-  "status": "success",
-  "prediction": "Potential Hot Spot (Acute Moist Dermatitis)",
-  "confidence": 0.92,
-  "action_tier": "YELLOW",
-  "recommendation": "Monitor for 24 hours. Prevent scratching. Seek veterinary care if spreading occurs.",
-  "image_url": "https://res.cloudinary.com/..."
-}
-```
-
-Full Swagger/OpenAPI documentation is available locally at `http://localhost:8001/docs`.
+**Multi-tenancy:** Enforced at ORM layer — every query mandates `WHERE clerk_user_id = :id`.
 
 ---
 
 ## 🚀 Installation
 
 ### Prerequisites
-- **Node.js**: v18+ 
-- **Python**: 3.11+
-- **PostgreSQL**: Neon account (or local Postgres instance)
-- **Clerk & Cloudinary**: Active developer accounts.
+- Node.js v18+
+- Python 3.12+
+- Clerk account — [clerk.com](https://clerk.com)
+- Neon PostgreSQL account — [neon.tech](https://neon.tech)
+- Cloudinary account — [cloudinary.com](https://cloudinary.com)
+- Groq API key — [console.groq.com](https://console.groq.com)
+- Roboflow account — [roboflow.com](https://roboflow.com)
 
-### 1. Clone the Repository
+### 1. Clone
 ```bash
 git clone https://github.com/ESSAKKI-RAJA/PAWPHILE.git
 cd PAWPHILE
 ```
 
-### 2. Frontend Setup
+### 2. Frontend
 ```bash
 cd frontend
 npm install
-cp .env.example .env
+cp .env.example .env   # fill in your keys
 npm run dev
 ```
 
-### 3. Core Backend Setup
+### 3. Core Backend
 ```bash
 cd backend
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+# Windows:
+venv\Scripts\activate
+# macOS/Linux:
+source venv/bin/activate
+
 pip install -r requirements.txt
-cp .env.example .env
+cp .env.example .env   # fill in your keys
 uvicorn app.main:app --host 0.0.0.0 --port 8001 --reload
 ```
 
-### 4. Vision Service Setup
+### 4. Vision Service
 ```bash
 cd vision
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+venv\Scripts\activate  # or source venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env
 uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
@@ -343,185 +433,197 @@ uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
 ## 🔐 Environment Variables
 
-### Frontend (`frontend/.env`)
+All real `.env` files are **gitignored**. Only sanitized `.env.example` files are tracked.
+
+### Frontend (`frontend/.env.example`)
 ```env
-VITE_CLERK_PUBLISHABLE_KEY=pk_test_...    # Clerk Auth Key
-VITE_API_BASE_URL=http://localhost:8001   # Backend routing
+VITE_CLERK_PUBLISHABLE_KEY=pk_test_...
+VITE_SUPABASE_URL=https://your-project-ref.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJ...
+VITE_FIREBASE_API_KEY=AIzaSy...
+VITE_FIREBASE_AUTH_DOMAIN=...
+VITE_FIREBASE_PROJECT_ID=...
+VITE_FIREBASE_MESSAGING_SENDER_ID=...
+VITE_FIREBASE_APP_ID=...
+VITE_FIREBASE_VAPID_KEY=BG...
+VITE_API_BASE_URL=http://localhost:8001
 ```
 
-### Core Backend (`backend/.env`)
+### Core Backend (`backend/.env.example`)
 ```env
-DATABASE_URL=postgresql://user:pass@ep-rest-of-host.neon.tech/neondb
-CLERK_SECRET_KEY=sk_test_...              # JWT Validation
-CLERK_PEM_PUBLIC_KEY=                     # Optional JWT fallback
-CLOUDINARY_URL=cloudinary://key:secret@cloud_name
-GROQ_API_KEY=gsk_...                      # LLM Provider
-VISION_SERVICE_URL=http://localhost:8000  # Internal routing
+DATABASE_URL=postgresql://USER:PASSWORD@HOST/DBNAME?sslmode=require
+CLERK_SECRET_KEY=sk_test_...
+CLERK_JWKS_URL=https://YOUR-CLERK-DOMAIN/.well-known/jwks.json
+CLOUDINARY_CLOUD_NAME=...
+CLOUDINARY_API_KEY=...
+CLOUDINARY_API_SECRET=...
+FRONTEND_ORIGIN=http://localhost:5173
+ROBOFLOW_API_KEY=...
+GROQ_API_KEY=gsk_...
+RESEND_API_KEY=re_...
+GUARDIAN_API_KEY=...     # Optional — PAWNEWS feeds fallback to internal seeds if absent
+GNEWS_API_KEY=...        # Optional
+NEWSDATA_API_KEY=...     # Optional
+SUPABASE_URL=...
+SUPABASE_SERVICE_ROLE_KEY=...
+SUPABASE_ANON_KEY=...
+```
+
+### Vision Service (`vision/.env.example`)
+```env
+VISION_MODEL_PATH=./models
+VISION_API_HOST=0.0.0.0
+VISION_API_PORT=8000
 ```
 
 ---
 
-## 🛡️ Security & Privacy
+## 🔌 API Documentation
 
-We adhere to enterprise healthcare security standards:
-- **Authentication**: Delegated entirely to Clerk. Passwords never touch our servers.
-- **Stateless Authorization**: JWTs validated on every backend request.
-- **Data Privacy**: No tracking pixels. Telemetry is strictly anonymized.
-- **Responsible AI**: Clear delineation between AI suggestions and clinical diagnostics. Output deterministic logging for auditability.
-- **OWASP Compliance**: Secure headers, CSRF protection, and sanitized inputs.
+All backend requests require a valid Clerk JWT in the `Authorization: Bearer <token>` header.
 
----
+Interactive Swagger/OpenAPI documentation is available at:
+- **Backend:** `http://localhost:8001/docs`
+- **Vision Service:** `http://localhost:8000/docs`
 
-## 🚦 Safety Architecture (Triage Tiers)
-
-To ensure clinical safety, PAWPHILE categorizes all AI outputs into deterministic Action Tiers:
-
-- 🔴 **RED (Emergency)**: Triggered by keywords (seizure, bloat, pale gums, unresponsiveness). Immediate cessation of AI dialogue. Prompts user to route to nearest emergency vet.
-- 🟡 **YELLOW (Monitor)**: Non-critical symptoms (mild lethargy, localized scratching). Provides 24-48 hour observation protocols.
-- 🟢 **GREEN (General)**: Wellness queries, nutritional advice, behavioral training. Fully utilizing LLM capabilities.
-
----
-
-## 📶 Offline First
-
-We utilize a **Progressive Web App (PWA)** architecture to guarantee functionality in zero-connectivity environments (e.g., remote trails, dog parks).
-
-- **IndexedDB**: The source of truth for the React frontend.
-- **Sync Queue**: Any mutation (adding a log, updating a profile) made offline is serialized and pushed to a local sync queue.
-- **Background Sync**: Upon restoring connectivity, the Service Worker drains the queue, executing API requests with conflict resolution strategies.
-
----
-
-## ⚡ Performance
-
-- **Frontend**: Sub-second First Contentful Paint (FCP) utilizing Vite bundling and React Suspense.
-- **LLM Latency**: Powered by Groq, Time-To-First-Token (TTFT) is consistently `< 250ms`.
-- **Vision Inference**: Batched PyTorch inference returns classification and heatmaps in `< 800ms`.
+### Key Endpoints
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/api/paw-ai/chat` | Groq LLM triage chat (streamed SSE) |
+| `POST` | `/api/paw-ai/triage` | Structured symptom triage engine |
+| `POST` | `/api/vision/scan` | Upload image → Roboflow inference → save result |
+| `GET` | `/api/vision/scans/{dog_id}` | Retrieve all vision scan records for a dog |
+| `GET` | `/api/pawnews` | Fetch curated pet health news feed |
+| `GET` | `/api/vet-clinics` | Nearby vet clinic search |
+| `GET` | `/api/weather` | Weather-based breed risk alerts |
+| `POST` | `/api/reports/generate` | Generate PDF health summary |
+| `GET` | `/api/dogs` | Dog profile CRUD |
 
 ---
 
 ## 🧪 Testing
 
-- **Unit Tests**: PyTest for backend logic and FastAPI routes. Jest for React components.
-- **Integration**: Validating Clerk JWT flows and Cloudinary uploads.
-- **Model Validation**: Evaluating Vision AI F1 scores, Precision, and Recall on holdout datasets.
-
-*To run tests locally (Backend):*
 ```bash
-pytest backend/tests/
+# Backend — Pytest
+cd backend
+pytest tests/ -v
+
+# Frontend — TypeScript typecheck
+cd frontend
+npm run typecheck
+
+# Frontend — Build validation
+cd frontend
+npm run build
+
+# Safety gate — Computer Vision Bin 2C readiness
+cd cv
+python skin_lesion/infrastructure/bin2c_readiness_gate.py
 ```
 
 ---
 
 ## 📦 Deployment
 
-### Current Target Architecture
-- **Frontend**: Vercel (Edge-optimized PWA delivery).
-- **Core API**: Render or Railway (Standard FastAPI deployment).
-- **Vision API**: Dedicated GPU-backed instance (AWS EC2 / RunPod / Render Compute).
-- **Database**: Neon Serverless Postgres.
+| Service | Platform | Notes |
+|---------|---------|-------|
+| Frontend | Vercel (Edge CDN) | PWA with Vercel config |
+| Core Backend API | Render | FastAPI on standard instance |
+| Vision Service | Render / AWS EC2 / RunPod | GPU instance recommended for Bin 2 pipelines |
+| Database | Neon Serverless PostgreSQL | Scales to zero; Supabase also connected |
 
-*Note: The project previously utilized Docker Compose and Supabase. These architectures are archived under `/archive/` for reference.*
+---
+
+## 🛡️ Security & Privacy
+
+- **Authentication:** Delegated to Clerk. Passwords never reach PAWPHILE servers.
+- **Stateless Authorization:** JWT validated on every backend request via JWKS.
+- **Multi-tenancy:** All ORM queries enforce `clerk_user_id` isolation.
+- **Image Privacy:** Vision scan images upload server-side via Cloudinary; the client never receives API credentials.
+- **No Tracking:** No telemetry pixels. Analytics strictly anonymized.
+- **Responsible AI:** Structural constraints prevent dosage recommendations and diagnostic claims.
+- **Secret Management:** Real `.env` files are gitignored. Firebase service account credentials are never committed.
 
 ---
 
 ## 🔬 Research Contributions
 
-PAWPHILE is structured not just as a commercial product, but as an engine for **Veterinary Research**:
-- **Phenotypic Correlation**: Establishing longitudinal links between specific diets and dermatological outcomes across specific breeds.
-- **AI Triage Validation**: Providing academic proof-of-concept for the safety of deterministic guardrails in non-human medical NLP.
-- **Vision Diagnostic Baselines**: Curating an expanding dataset of pet-owner-captured imagery for improved computer vision resilience against varied lighting and angles.
+PAWPHILE is structured as both a consumer product and a research platform:
 
----
-
-## ⚖️ Comparison Matrix
-
-| Feature | PAWPHILE | Traditional Apps (e.g., 11Pets) | Telehealth (e.g., VetTriage) |
-|---------|----------|---------------------------------|------------------------------|
-| **AI LLM Triage** | ✅ Yes (Groq/Llama3) | ❌ No | ❌ No (Human Only) |
-| **Vision Diagnostics** | ✅ Yes (PyTorch) | ❌ No | ❌ No |
-| **Offline First** | ✅ Yes (IndexedDB) | ⚠️ Partial | ❌ No |
-| **Vet Data Export** | ✅ Yes (Longitudinal) | ✅ Yes | ⚠️ Contextual |
-| **Cost** | Open Source / Free Tier | Freemium | High (Per Consult) |
+- **Veterinary Informatics:** Proof-of-concept for deterministic safety guardrails in non-human medical NLP systems — demonstrating that LLM hallucination risks can be mitigated through pre-inference rule engines.
+- **Computer Vision:** Building a canine dermatological screening pipeline from user-captured (non-clinical) imagery, establishing baselines for vision model robustness under varied lighting and angles.
+- **Breed-Specific Health Intelligence:** Curating a structured dataset linking breed phenotypes to health risk profiles, with specific coverage of Indian indigenous breeds underrepresented in global veterinary datasets.
+- **Offline-First Healthcare UX:** Demonstrating a viable PWA architecture for healthcare decision-support in low-connectivity environments.
 
 ---
 
 ## 🗺️ Future Roadmap
 
-- [x] **Phase 1: Foundation** - React PWA, FastAPI Backend, Neon Database, Clerk Auth.
-- [x] **Phase 2: Intelligence** - PAW AI Integration (Groq), Deterministic Guardrails.
-- [ ] **Phase 3: Vision** - Deploy and integrate PyTorch Vision microservice.
-- [ ] **Phase 4: Ecosystem** - Vet clinic portal for direct longitudinal data export.
-- [ ] **Phase 5: Research** - Opt-in anonymized telemetry dataset publication.
+- [x] **Phase 1** — React PWA, FastAPI Backend, PostgreSQL, Clerk Auth
+- [x] **Phase 2** — Offline-First IndexedDB Architecture, Supabase SyncManager
+- [x] **Phase 3** — PAW AI Engine with deterministic safety guardrails (Groq Chat + Ollama Triage)
+- [x] **Phase 4** — Roboflow Vision Integration (Bin 1), PyTorch/YOLO experimental pipelines
+- [x] **Phase 5** — Repository hardening, documentation, security audit
+- [ ] **Phase 6** — Cloud-native Triage Engine (remove Ollama local dependency)
+- [ ] **Phase 7** — Tier-A veterinary data ingestion → Clinical DermAI™ training
+- [ ] **Phase 8** — Vet clinic portal for direct longitudinal data export
+- [ ] **Phase 9** — Opt-in anonymized research telemetry
 
 ---
 
 ## 🤝 Contributing
 
-We welcome contributions from full-stack engineers, ML researchers, and veterinary professionals!
+We welcome contributions from full-stack engineers, ML researchers, and veterinary professionals.
 
-1. Fork the Project.
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`).
-3. Commit your Changes (`git commit -m 'feat: Add some AmazingFeature'`).
-4. Push to the Branch (`git push origin feature/AmazingFeature`).
-5. Open a Pull Request.
+1. Fork the repository
+2. Create your feature branch: `git checkout -b feature/your-feature`
+3. Commit your changes: `git commit -m 'feat: Add your feature'`
+4. Push to the branch: `git push origin feature/your-feature`
+5. Open a Pull Request
 
-Please read our [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, commit conventions, and submission process.
-
----
-
-## 📚 Documentation
-
-- [Master Product Dossier](docs/PAWPHILE_MASTER_PRODUCT_DOSSIER.md)
-- [Core Architecture](docs/PAWPHILE_ARCHITECTURE.md)
-- [API Reference](docs/PAWPHILE_API_REFERENCE.md)
-- [Setup & Development Guide](docs/PAWPHILE_SETUP_AND_DEVELOPMENT.md)
-- [CV Overview](docs/cv/CV_OVERVIEW.md)
-
----
-
-## ❓ FAQ
-
-**Q: Does PAWPHILE replace my veterinarian?**  
-**A:** Absolutely not. PAWPHILE is an educational and triage tool. It empowers you to give your vet better data, and alerts you when you need to see them immediately.
-
-**Q: Can I run this completely locally?**  
-**A:** Yes. The backend and vision service run locally via Python. You will need external API keys for Clerk (Auth), Neon (Database), and Cloudinary (Images), though these can be swapped for local alternatives with codebase modifications.
-
-**Q: How accurate is the Vision AI?**  
-**A:** The Vision AI is currently in Beta. It is tuned to flag potential issues for veterinary review rather than provide definitive medical diagnoses.
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for code of conduct and submission guidelines.
 
 ---
 
 ## 🎓 Citation
 
-If you utilize PAWPHILE for academic research or clinical studies, please cite:
+If you use PAWPHILE for academic research or build upon this work, please cite:
 
 ```bibtex
 @software{pawphile_2026,
-  author = {Essakki Raja},
-  title = {PAWPHILE: AI-Powered Preventive Healthcare Platform for Companion Dogs},
-  year = {2026},
-  publisher = {GitHub},
-  journal = {GitHub repository},
+  author       = {Essakki Raja},
+  title        = {PAWPHILE: AI-Assisted Preventive Healthcare Platform for Companion Dogs},
+  year         = {2026},
+  publisher    = {GitHub},
+  journal      = {GitHub repository},
   howpublished = {\url{https://github.com/ESSAKKI-RAJA/PAWPHILE}}
 }
 ```
-*See [CITATION.cff](CITATION.cff) for more formats.*
+
+*See [CITATION.cff](CITATION.cff) for additional citation formats.*
 
 ---
 
 ## 🙏 Acknowledgements
 
-- [FastAPI](https://fastapi.tiangolo.com/) for the blazing fast Python backend.
-- [Clerk](https://clerk.com/) for seamless identity management.
-- [Groq](https://groq.com/) for enabling real-time LLM inference.
-- The open-source veterinary and AI communities.
+- [FastAPI](https://fastapi.tiangolo.com/) — Python API framework
+- [Clerk](https://clerk.com/) — Identity and authentication
+- [Groq](https://groq.com/) — Low-latency LLM inference
+- [Roboflow](https://roboflow.com/) — Computer vision inference infrastructure
+- [Neon](https://neon.tech/) — Serverless PostgreSQL
+- [Firebase](https://firebase.google.com/) — Push notification delivery
+- The open-source veterinary AI and canine health communities
+
+---
 
 <div align="center">
-  <p>Made with ❤️ for dogs everywhere.</p>
+
+<img src="frontend/public/pawphile-logo.png" alt="PAWPHILE" width="100" />
+
+<br/>
+
+*Built for dogs. Designed for the people who love them.*
+
+**PAWPHILE &nbsp;·&nbsp; .Know Them Better &nbsp;·&nbsp; .Care Them Better**
+
 </div>
-
-
-## PAWPHILE CV Status
-PAWPHILE CV engineering is complete. Clinical skin model training is blocked by missing Tier-A veterinary data.

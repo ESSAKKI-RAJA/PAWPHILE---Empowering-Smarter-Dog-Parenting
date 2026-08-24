@@ -37,7 +37,7 @@ We follow a structured branching model. Please do not commit directly to `main`.
 Use clear, descriptive branch names indicating the type of work:
 - `feat/feature-name` (New features)
 - `fix/issue-description` (Bug fixes)
-- `docs/documentation-update` (Documentation changes)
+- `documentation-update` (Documentation changes)
 - `chore/task-name` (Maintenance, dependencies)
 - `research/model-update` (ML/Vision specific updates)
 
@@ -80,7 +80,7 @@ We enforce [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/
    - Frontend: `npm test`
    - Backend: `pytest`
 4. **Code Quality**: Ensure the code adheres to ESLint/Prettier standards (frontend) and PEP 8 / Flake8 (backend).
-5. **Update Documentation**: If you change the API or architecture, update the corresponding markdown files in `docs/`.
+5. **Update Documentation**: If you change the API or architecture, update the corresponding markdown files or README.
 6. **Create the PR**: Use our Pull Request Template to describe your changes clearly. Wait for a maintainer to review and approve your code.
 
 ---

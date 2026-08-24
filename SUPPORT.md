@@ -7,9 +7,7 @@ We are dedicated to building a strong community and providing support for PAWPHI
 ### 1. Documentation
 Before asking a question, please ensure you have read through our comprehensive documentation:
 - [README.md](README.md) - For a high-level overview, architecture, and feature set.
-- [docs/architecture.md](docs/architecture.md) - For detailed system design.
-- [docs/setup.md](docs/setup.md) - For local environment configuration.
-- [docs/api.md](docs/api.md) - For interacting with the backend and Vision services.
+
 
 ### 2. GitHub Issues
 If you have found a bug or have a feature request, please open a [GitHub Issue](https://github.com/ESSAKKI-RAJA/PAWPHILE/issues).
