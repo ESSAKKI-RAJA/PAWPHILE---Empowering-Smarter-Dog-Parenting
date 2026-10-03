@@ -26,6 +26,15 @@ def sanitize_database_url(url: str) -> str:
     if url.startswith("postgres://"):
         url = url.replace("postgres://", "postgresql://", 1)
 
+    # 3b. Pin the driver to psycopg2, the dependency actually installed
+    # (backend/requirements.txt provides psycopg2-binary, not psycopg).
+    # Some providers supply postgresql+psycopg:// URLs; without this,
+    # SQLAlchemy selects the psycopg (v3) dialect and startup crashes with
+    # ModuleNotFoundError: No module named 'psycopg'.
+    head, sep, tail = url.partition("://")
+    if sep and head in ("postgresql+psycopg", "postgres+psycopg"):
+        url = head.replace("+psycopg", "+psycopg2") + sep + tail
+
     # 4. Parse the URL safely
     try:
         parsed = urlparse(url)

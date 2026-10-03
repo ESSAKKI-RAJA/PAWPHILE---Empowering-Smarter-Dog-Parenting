@@ -24,9 +24,13 @@ config = context.config
 # Dynamically set sqlalchemy.url from .env
 db_url = os.getenv("DATABASE_URL")
 if db_url:
-    # Handle the postgres:// vs postgresql:// discrepancy for SQLAlchemy if needed
-    if db_url.startswith("postgres://"):
-        db_url = db_url.replace("postgres://", "postgresql://", 1)
+    # Reuse the canonical normalizer: legacy postgres:// scheme and the
+    # +psycopg driver qualifier (installed driver is psycopg2-binary).
+    from app.db.database import sanitize_database_url
+    try:
+        db_url = sanitize_database_url(db_url)
+    except ValueError:
+        pass  # leave alembic's own error handling to report it
     config.set_main_option("sqlalchemy.url", db_url)
 
 # add your model's MetaData object here
