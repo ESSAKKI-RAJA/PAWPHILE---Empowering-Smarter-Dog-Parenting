@@ -4,6 +4,7 @@ import { PersonalizationProvider } from './context/PersonalizationContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { ToastProvider } from './context/ToastContext';
 import Layout from './components/layout/Layout';
+import RequireAuth from './components/layout/RequireAuth';
 import ErrorBoundary from './components/layout/ErrorBoundary';
 import Profile from './pages/Profile';
 import Dashboard from './pages/Dashboard';
@@ -39,6 +40,9 @@ import AdminNews from './pages/admin/AdminNews';
 import SyncManager from './services/SyncManager';
 
 export default function App() {
+  // Build-time constant: when no Clerk key is configured the app runs
+  // without the auth gate, exactly matching the previous behavior.
+  const HAS_CLERK = !!import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
   return (
     <ThemeProvider>
       <ToastProvider>
@@ -50,19 +54,30 @@ export default function App() {
               {/* Auth page — public */}
               <Route path="/auth" element={<Auth />} />
 
-              {/* Front page — public product story, own navigation */}
+              {/* Front page — public product story, own navigation.
+                  Root alias: production entry point renders Welcome. */}
+              <Route path="/" element={<Welcome />} />
               <Route path="/welcome" element={<Welcome />} />
 
-              {/* Protected Routes */}
-              <Route 
-                path="*" 
+              {/* Protected Routes — RequireAuth sends logged-out visits to /auth */}
+              <Route
+                path="*"
                 element={
                   <ErrorBoundary>
-                    <Layout />
+                    {HAS_CLERK ? (
+                      <RequireAuth>
+                        <Layout />
+                      </RequireAuth>
+                    ) : (
+                      <Layout />
+                    )}
                   </ErrorBoundary>
                 }
               >
-                <Route index element={<Navigate to="/dashboard" replace />} />
+                {/* NOTE: no index route here. The splat parent's index used to
+                    outrank the explicit "/" route and bounce the root into the
+                    app shell. "/" and "/welcome" are declared above; unknown
+                    paths fall through to the inner "*" redirect below. */}
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="timeline" element={<Timeline />} />
                 <Route path="care-plan" element={<CarePlan />} />

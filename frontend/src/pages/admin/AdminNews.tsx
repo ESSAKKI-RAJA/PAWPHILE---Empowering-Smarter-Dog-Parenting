@@ -110,7 +110,7 @@ export const AdminNews: React.FC = () => {
 
   // Redirect to login if not logged in
   if (!user) {
-    navigate("/");
+    navigate("/auth");
     return null;
   }
 
@@ -131,7 +131,7 @@ export const AdminNews: React.FC = () => {
                   administrators can manage articles.
                 </p>
                 <button
-                  onClick={() => navigate("/")}
+                  onClick={() => navigate("/dashboard")}
                   className="inline-block px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors"
                 >
                   Go Home
@@ -150,7 +150,7 @@ export const AdminNews: React.FC = () => {
         {/* Header */}
         <div className="mb-8">
           <button
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/dashboard")}
             className="flex items-center gap-2 text-blue-500 hover:text-blue-600 dark:text-blue-400 mb-4"
           >
             <ArrowLeft className="w-5 h-5" />

@@ -1,8 +1,19 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { SignIn, SignUp } from '@clerk/clerk-react';
+import { Link, Navigate } from 'react-router-dom';
+import { SignIn, SignUp, useAuth } from '@clerk/clerk-react';
 import { ArrowRight, Sparkles, HeartPulse, Stethoscope, ClipboardList, MapPin } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
+
+const HAS_CLERK = !!import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+
+/** Signed-in visits to /auth bounce straight into the application.
+ *  Rendered only when the Clerk provider exists (see usages below). */
+function SignedInRedirect() {
+  const { isLoaded, isSignedIn } = useAuth();
+  if (!isLoaded) return null;
+  if (isSignedIn) return <Navigate to="/dashboard" replace />;
+  return null;
+}
 
 export default function Auth() {
   const [authMode, setAuthMode] = useState<'splash' | 'signin' | 'signup'>('splash');
@@ -15,6 +26,7 @@ export default function Auth() {
   if (authMode === 'signin' || authMode === 'signup') {
     return (
       <PageWrapper className="bg-slate-900 min-h-screen flex flex-col items-center justify-center p-4 antialiased selection:bg-teal-500/30">
+        {HAS_CLERK && <SignedInRedirect />}
         
         {/* Subtle Ambient Background */}
         <div className="fixed top-0 left-0 w-full h-full pointer-events-none z-0 overflow-hidden">
@@ -48,7 +60,7 @@ export default function Auth() {
 
         <div className="z-10 w-full max-w-md flex justify-center drop-shadow-2xl">
           {authMode === 'signin' ? (
-            <SignIn routing="hash" appearance={{
+            <SignIn routing="hash" afterSignInUrl="/dashboard" appearance={{
               elements: {
                 card: "bg-slate-800 border border-white/10 shadow-2xl rounded-2xl",
                 headerTitle: "text-white font-heading text-2xl",
@@ -65,7 +77,7 @@ export default function Auth() {
               }
             }} />
           ) : (
-            <SignUp routing="hash" appearance={{
+            <SignUp routing="hash" afterSignUpUrl="/dashboard" appearance={{
               elements: {
                 card: "bg-slate-800 border border-white/10 shadow-2xl rounded-2xl",
                 headerTitle: "text-white font-heading text-2xl",
@@ -89,10 +101,11 @@ export default function Auth() {
 
   // SPLASH SCREEN (Premium Entry Experience)
   return (
-    <div 
+    <div
       className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-x-hidden antialiased selection:bg-teal-500/30"
       style={{ backgroundColor: '#0F172A', fontFamily: "'Outfit', sans-serif" }}
     >
+      {HAS_CLERK && <SignedInRedirect />}
       <style>
         {`
           @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
