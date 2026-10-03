@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.app.json"
   },
   "dependencies": {
-    "@clerk/clerk-react": "^5.61.6",
+    "@clerk/clerk-react": "^5.61.10",
     "@supabase/supabase-js": "^2.106.1",
     "@types/leaflet": "^1.9.21",
     "firebase": "^12.14.0",
