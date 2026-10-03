@@ -32,6 +32,8 @@ _RULES = [
     ("/api/uploads", "upload", lambda: settings.RATE_LIMIT_SYNC_PER_MINUTE),
     ("/api/vision/scan", "upload", lambda: settings.RATE_LIMIT_SYNC_PER_MINUTE),
     ("/api/reports/generate-pdf", "reports", lambda: settings.RATE_LIMIT_SYNC_PER_MINUTE),
+    ("/api/reports/upload", "reports", lambda: settings.RATE_LIMIT_SYNC_PER_MINUTE),
+    ("/api/paw-ai", "ai", lambda: settings.RATE_LIMIT_SYNC_PER_MINUTE),
     ("/api/v1/pets", "default", lambda: settings.RATE_LIMIT_PER_MINUTE),
     ("/api/", "default", lambda: settings.RATE_LIMIT_PER_MINUTE),
 ]

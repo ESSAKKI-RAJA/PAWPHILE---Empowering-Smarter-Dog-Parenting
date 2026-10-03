@@ -3,13 +3,18 @@ from sqlalchemy.orm import Session
 from typing import List
 from uuid import UUID
 from datetime import datetime
+import logging
 from app.core.security import get_current_user
 from app.db.session import get_db
 from app.models.all_models import User, DogProfile, VisionScanRecord
 from app.schemas.schemas import VisionScanOut
 from app.services import cloudinary_service, vision_service
+from app.api.routes.uploads import _verified_image_bytes
 
+logger = logging.getLogger(__name__)
 router = APIRouter()
+
+MAX_SCAN_TYPE_CHARS = 80
 
 def _verify_dog_ownership(dog_id: UUID, clerk_user_id: str, db: Session) -> DogProfile:
     user = db.query(User).filter(User.clerk_user_id == clerk_user_id).first()
@@ -31,7 +36,14 @@ async def run_vision_scan(
     """Upload image to Cloudinary, call Vision service, save result to Neon."""
     _verify_dog_ownership(dog_id, clerk_user_id, db)
 
+    scan_type_clean = (scan_type or "").strip()
+    if not scan_type_clean or len(scan_type_clean) > MAX_SCAN_TYPE_CHARS:
+        raise HTTPException(status_code=422, detail="scan_type must be 1-80 characters.")
+
     image_bytes = await image.read()
+    # Same policy as /api/uploads/image: MIME allow-list + 15MB cap +
+    # decodability, validated BEFORE any Cloudinary/ML call.
+    _verified_image_bytes(image, image_bytes)
 
     # Upload to Cloudinary (backend only — secret stays server-side)
     try:
@@ -41,8 +53,9 @@ async def run_vision_scan(
         )
         image_url = upload_result["secure_url"]
         public_id = upload_result["public_id"]
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Image upload failed: {str(e)}")
+    except Exception:
+        logger.exception("vision image upload failed")
+        raise HTTPException(status_code=500, detail="Unable to process the image.")
 
     # Call Vision service
     vision_result = await vision_service.run_vision_scan(image_bytes, scan_type, image.filename or "scan.jpg")

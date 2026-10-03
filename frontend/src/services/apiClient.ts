@@ -233,9 +233,9 @@ export async function saveNotificationPreferences(data: Record<string, any>) {
 // mock (see backend). Canonical reports: foundationApi.createReport +
 // generateReport (DRAFT → GENERATING → READY|FAILED).
 /** @deprecated Use foundationApi.createReport/generateReport (canonical /api/v1). */
-export async function uploadPdfReport(userId: string, dogId: string, file: File) {
+export async function uploadPdfReport(_userId: string, dogId: string, file: File) {
   const formData = new FormData();
-  formData.append('user_id', userId);
+  // Identity comes from the verified backend token; never send user_id.
   formData.append('dog_id', dogId);
   formData.append('file', file);
   return apiFetchForm<any>('/api/reports/upload', formData);

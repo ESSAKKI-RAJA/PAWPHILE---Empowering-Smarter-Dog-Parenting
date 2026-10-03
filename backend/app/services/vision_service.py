@@ -36,9 +36,9 @@ async def run_vision_scan(image_bytes: bytes, scan_type: str, filename: str) -> 
             image = Image.open(BytesIO(image_bytes))
             if image.mode != "RGB":
                 image = image.convert("RGB")
-        except Exception as e:
+        except Exception:
             return {
-                "error": f"Failed to process image format: {str(e)}",
+                "error": "Image could not be read. Please upload a valid image file.",
                 "prediction": None,
                 "confidence": None,
                 "explanation": "Image could not be read. Please upload a valid image file.",
@@ -105,8 +105,8 @@ async def run_vision_scan(image_bytes: bytes, scan_type: str, filename: str) -> 
             "disclaimer": screening_data.get("disclaimer")
         }
 
-    except Exception as e:
-        logger.error(f"Vision service error: {str(e)}")
+    except Exception:
+        logger.error("Vision service error")
         return {
             "error": "Vision service unavailable. Please try again later.",
             "prediction": None,

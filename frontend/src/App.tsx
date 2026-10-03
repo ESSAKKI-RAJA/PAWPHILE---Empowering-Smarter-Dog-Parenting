@@ -40,8 +40,10 @@ import AdminNews from './pages/admin/AdminNews';
 import SyncManager from './services/SyncManager';
 
 export default function App() {
-  // Build-time constant: when no Clerk key is configured the app runs
-  // without the auth gate, exactly matching the previous behavior.
+  // Fail closed: without a Clerk key the backend cannot verify users, so
+  // protected routes stay gated (visitors land on /auth) instead of
+  // silently opening the app shell. Public routes (/, /welcome, /auth)
+  // are unaffected.
   const HAS_CLERK = !!import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
   return (
     <ThemeProvider>
@@ -59,7 +61,9 @@ export default function App() {
               <Route path="/" element={<Welcome />} />
               <Route path="/welcome" element={<Welcome />} />
 
-              {/* Protected Routes — RequireAuth sends logged-out visits to /auth */}
+              {/* Protected Routes — RequireAuth sends logged-out visits to /auth.
+                  Without a Clerk key the gate cannot verify anyone, so fail
+                  closed to /auth rather than rendering the app shell. */}
               <Route
                 path="*"
                 element={
@@ -69,7 +73,7 @@ export default function App() {
                         <Layout />
                       </RequireAuth>
                     ) : (
-                      <Layout />
+                      <Navigate to="/auth" replace />
                     )}
                   </ErrorBoundary>
                 }

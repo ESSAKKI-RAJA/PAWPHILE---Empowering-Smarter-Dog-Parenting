@@ -30,6 +30,12 @@ class Settings(BaseSettings):
     DATABASE_URL: str = os.getenv("DATABASE_URL", "")
     CLERK_SECRET_KEY: str = os.getenv("CLERK_SECRET_KEY", "")
     CLERK_JWKS_URL: str = os.getenv("CLERK_JWKS_URL", "")
+    # Expected JWT issuer / audience. Enforced when set; empty = not checked.
+    # Set these in production from the Clerk dashboard values.
+    CLERK_ISSUER: str = os.getenv("CLERK_ISSUER", "")
+    CLERK_AUDIENCE: str = os.getenv("CLERK_AUDIENCE", "")
+    # In-process JWKS cache TTL (seconds). Avoids a Clerk round-trip per request.
+    JWKS_CACHE_TTL_SECONDS: int = _get_int("JWKS_CACHE_TTL_SECONDS", 600)
     CLOUDINARY_CLOUD_NAME: str = os.getenv("CLOUDINARY_CLOUD_NAME", "")
     CLOUDINARY_API_KEY: str = os.getenv("CLOUDINARY_API_KEY", "")
     CLOUDINARY_API_SECRET: str = os.getenv("CLOUDINARY_API_SECRET", "")

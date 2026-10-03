@@ -1,39 +1,54 @@
-"""PAW AI API routes — Phase 3 endpoints."""
-from fastapi import APIRouter, HTTPException
+"""PAW AI API routes — Phase 3 endpoints.
+
+Access model (explicit allow-list):
+- PUBLIC (no user data, no inference cost, static reference content):
+  ``GET /breed-context/{breed}``, ``GET /breeds``, ``POST /food-safety``.
+- PROTECTED (Clerk JWT required): ``/chat``, ``/stream``, ``/triage``,
+  ``/vet-report``, ``/knowledge/ingest`` — these invoke paid AI inference
+  and/or process caller-supplied pet/health context.
+"""
+import logging
+
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Any, Optional
+from app.core.security import get_current_user
 from app.services.paw_ai_engine import (
     paw_ai_supervisor, paw_ai_stream_supervisor, build_dog_context, get_breed_context,
     detect_emergency, BREED_RULES,
 )
 
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
 # ── Request / Response schemas ────────────────────────────────
 
 class GroqMessage(BaseModel):
-    role: str
-    content: str
+    role: str = Field(max_length=20)
+    content: str = Field(max_length=4000)
+
 
 class GroqChatRequest(BaseModel):
-    messages: list[GroqMessage] = []
-    userInput: Optional[str] = None
+    messages: list[GroqMessage] = Field(default_factory=list, max_length=50)
+    userInput: Optional[str] = Field(default=None, max_length=4000)
     context: Optional[dict[str, Any]] = None
 
+
 class ChatRequest(BaseModel):
-    query: str
-    user_id: Optional[str] = None
-    dog_id: Optional[str] = None
+    query: str = Field(max_length=2000)
+    user_id: Optional[str] = Field(default=None, max_length=200)
+    dog_id: Optional[str] = Field(default=None, max_length=200)
     dog_profile: Optional[dict[str, Any]] = None
     records: Optional[dict[str, Any]] = None
 
+
 class TriageRequest(BaseModel):
-    symptoms: list[str]
-    additional_details: Optional[str] = None
-    food_type: Optional[str] = None
-    vaccination_status: Optional[str] = None
-    symptom_duration: Optional[str] = None
+    symptoms: list[str] = Field(max_length=20)
+    additional_details: Optional[str] = Field(default=None, max_length=2000)
+    food_type: Optional[str] = Field(default=None, max_length=200)
+    vaccination_status: Optional[str] = Field(default=None, max_length=200)
+    symptom_duration: Optional[str] = Field(default=None, max_length=200)
     tick_exposure: Optional[bool] = None
     diet_change: Optional[bool] = None
     boarding: Optional[bool] = None
@@ -41,19 +56,22 @@ class TriageRequest(BaseModel):
     dog_profile: Optional[dict[str, Any]] = None
     records: Optional[dict[str, Any]] = None
 
+
 class FoodSafetyRequest(BaseModel):
-    food_name: str
+    food_name: str = Field(max_length=200)
     dog_profile: Optional[dict[str, Any]] = None
+
 
 class VetReportRequest(BaseModel):
     dog_profile: Optional[dict[str, Any]] = None
     records: Optional[dict[str, Any]] = None
 
+
 class KnowledgeIngestRequest(BaseModel):
-    title: str
-    source: str
-    content: str
-    topic_tags: Optional[list[str]] = None
+    title: str = Field(max_length=200)
+    source: str = Field(max_length=500)
+    content: str = Field(max_length=20000)
+    topic_tags: Optional[list[str]] = Field(default=None, max_length=10)
 
 
 # ── Toxic foods reference ─────────────────────────────────────
@@ -83,14 +101,14 @@ TOXIC_FOODS = {
 # ── Endpoints ─────────────────────────────────────────────────
 
 @router.post("/chat")
-def paw_ai_chat(req: GroqChatRequest) -> dict[str, Any]:
+def paw_ai_chat(req: GroqChatRequest, clerk_user_id: str = Depends(get_current_user)) -> dict[str, Any]:
+    """POST /api/paw-ai/chat — protected: invokes paid Groq inference."""
     import httpx
     import os
     import json
-    
+
     GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
     dog_ctx = req.context or {}
-    
     system_prompt = (
         "You are PAW AI, an expert veterinary assistant. "
         "You MUST output ONLY valid JSON. Your JSON must exactly match this structure: "
@@ -128,17 +146,21 @@ def paw_ai_chat(req: GroqChatRequest) -> dict[str, Any]:
         if response.status_code == 200:
             content = response.json()["choices"][0]["message"]["content"]
             parsed = json.loads(content)
-            
+
             disclaimer = "\n\n*PAW AI is a decision-support tool, not a veterinarian. Always consult a licensed vet for diagnosis and treatment.*"
             if disclaimer not in parsed.get("message", ""):
                 parsed["message"] = parsed.get("message", "") + disclaimer
-                
+
             return parsed
         else:
-            raise HTTPException(status_code=500, detail=f"Groq API error: {response.text}")
-    except Exception as e:
+            logger.warning("paw-ai groq upstream error status=%s", response.status_code)
+            raise HTTPException(status_code=502, detail="PAW AI is currently unavailable. Please try again later.")
+    except HTTPException:
+        raise
+    except Exception:
+        logger.exception("paw-ai chat failed")
         return {
-            "message": f"Sorry, I am currently unavailable. Please try again later. (Error: {str(e)})",
+            "message": "Sorry, I am currently unavailable. Please try again later.",
             "severity": "Green",
             "confidence": 0.5,
             "dataUsed": [],
@@ -149,7 +171,8 @@ def paw_ai_chat(req: GroqChatRequest) -> dict[str, Any]:
         }
 
 @router.post("/stream")
-async def paw_ai_stream(req: ChatRequest):
+async def paw_ai_stream(req: ChatRequest, clerk_user_id: str = Depends(get_current_user)):
+    """POST /api/paw-ai/stream — protected SSE endpoint (auth before generation)."""
     """POST /api/paw-ai/stream — SSE Async Streaming endpoint."""
     dog_ctx = build_dog_context(req.dog_profile or {}, req.records or {})
     return StreamingResponse(
@@ -159,7 +182,8 @@ async def paw_ai_stream(req: ChatRequest):
 
 
 @router.post("/triage")
-def paw_ai_triage(req: TriageRequest) -> dict[str, Any]:
+def paw_ai_triage(req: TriageRequest, clerk_user_id: str = Depends(get_current_user)) -> dict[str, Any]:
+    """POST /api/paw-ai/triage — protected structured symptom triage."""
     """POST /api/paw-ai/triage — Structured symptom triage."""
     # Augment query with structured risk flags
     extra = []
@@ -242,7 +266,8 @@ def check_food_safety(req: FoodSafetyRequest) -> dict[str, Any]:
 
 
 @router.post("/vet-report")
-def generate_vet_report(req: VetReportRequest) -> dict[str, Any]:
+def generate_vet_report(req: VetReportRequest, clerk_user_id: str = Depends(get_current_user)) -> dict[str, Any]:
+    """POST /api/paw-ai/vet-report — protected structured health summary."""
     """POST /api/paw-ai/vet-report — Structured health summary."""
     dog_ctx = build_dog_context(req.dog_profile or {}, req.records or {})
     vaccines = dog_ctx.get("vaccine_records", [])
@@ -279,7 +304,8 @@ def list_breeds() -> dict[str, Any]:
 
 
 @router.post("/knowledge/ingest")
-def ingest_knowledge(req: KnowledgeIngestRequest) -> dict[str, Any]:
+def ingest_knowledge(req: KnowledgeIngestRequest, clerk_user_id: str = Depends(get_current_user)) -> dict[str, Any]:
+    """POST /api/knowledge/ingest — protected stub (not publicly writable)."""
     """POST /api/knowledge/ingest — Stub for RAG ingestion pipeline."""
     # In production: chunk → embed via sentence-transformers → store in pgvector
     return {
