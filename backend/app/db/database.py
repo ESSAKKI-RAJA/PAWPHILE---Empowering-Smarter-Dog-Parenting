@@ -22,18 +22,18 @@ def sanitize_database_url(url: str) -> str:
     if url.startswith("DATABASE_URL="):
         url = url[len("DATABASE_URL="):].strip('"\'')
 
-    # 3. Replace legacy postgres:// with postgresql:// which is required by SQLAlchemy 2.x
-    if url.startswith("postgres://"):
-        url = url.replace("postgres://", "postgresql://", 1)
-
-    # 3b. Pin the driver to psycopg2, the dependency actually installed
-    # (backend/requirements.txt provides psycopg2-binary, not psycopg).
-    # Some providers supply postgresql+psycopg:// URLs; without this,
-    # SQLAlchemy selects the psycopg (v3) dialect and startup crashes with
-    # ModuleNotFoundError: No module named 'psycopg'.
+    # 3. Normalize any postgres-family scheme to the one driver this
+    # application ships and verifies: psycopg2 (psycopg2-binary is the
+    # dependency in backend/requirements.txt; psycopg v3 is NOT installed).
+    # This covers legacy postgres:// as well as provider-supplied driver
+    # qualifiers (postgresql+psycopg://, any case, any +driver variant).
+    # Without this, SQLAlchemy selects whatever dialect the URL names and
+    # startup crashes with ModuleNotFoundError for the missing driver.
+    # NOTE: this codebase is sync-only; async drivers could never work here,
+    # so forcing psycopg2 for the postgres family is always correct.
     head, sep, tail = url.partition("://")
-    if sep and head in ("postgresql+psycopg", "postgres+psycopg"):
-        url = head.replace("+psycopg", "+psycopg2") + sep + tail
+    if sep and head.split("+")[0].lower() in ("postgres", "postgresql"):
+        url = "postgresql+psycopg2://" + tail
 
     # 4. Parse the URL safely
     try:

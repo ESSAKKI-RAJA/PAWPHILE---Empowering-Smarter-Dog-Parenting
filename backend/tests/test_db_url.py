@@ -16,8 +16,8 @@ from app.db.database import sanitize_database_url  # noqa: E402
 
 def test_legacy_postgres_scheme_normalized():
     out = sanitize_database_url("postgres://u:p@host:5432/db")
-    assert out.startswith("postgresql://")
-    assert "+psycopg" not in out.split("://")[0]
+    assert out.startswith("postgresql+psycopg2://")
+    assert "+psycopg:" not in out and out.count("+psycopg2://") == 1
 
 
 def test_psycopg_driver_pinned_to_psycopg2():
@@ -28,12 +28,27 @@ def test_psycopg_driver_pinned_to_psycopg2():
 
 def test_postgres_psycopg_driver_pinned_to_psycopg2():
     out = sanitize_database_url("postgres+psycopg://u:p@host/db")
-    assert out.startswith("postgres+psycopg2://") or out.startswith("postgresql+psycopg2://")
+    assert out.startswith("postgresql+psycopg2://")
 
 
-def test_plain_postgresql_untouched():
-    url = "postgresql://u:p@host:5432/db"
-    assert sanitize_database_url(url) == url
+def test_driver_qualifier_always_forced_to_psycopg2():
+    """Any postgres-family qualifier (any case, any driver, incl. async-only
+    drivers this sync codebase could never use) resolves to psycopg2."""
+    for raw in (
+        "postgresql+psycopg://u:p@host/db",
+        "POSTGRESQL+PSYCOPG://u:p@host/db",
+        "postgres+psycopg2://u:p@host/db",
+        "postgresql+asyncpg://u:p@host/db",
+        "postgresql://u:p@host/db",
+        "postgres://u:p@host/db",
+    ):
+        out = sanitize_database_url(raw)
+        assert out.startswith("postgresql+psycopg2://"), (raw, out)
+
+
+def test_plain_postgresql_gets_explicit_psycopg2_driver():
+    out = sanitize_database_url("postgresql://u:p@host:5432/db")
+    assert out == "postgresql+psycopg2://u:p@host:5432/db"
 
 
 def test_sqlite_passthrough():
