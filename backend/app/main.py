@@ -1,9 +1,14 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from contextlib import asynccontextmanager
+import logging
 from app.core.config import settings
 from app.core.observability import RequestIDMiddleware, get_request_id
 from app.core.rate_limit import RateLimitMiddleware
+from app.core.security import startup_check as auth_startup_check
+
+logger = logging.getLogger(__name__)
 from app.api.routes import auth, users, dogs, vaccines, medical_history, vision, uploads
 from app.api.routes import deworming, triage, reports, reminders, settings as settings_routes
 from app.api.routes import paw_ai, pawnews, vet_clinics, weather, foundation, worker
@@ -15,6 +20,18 @@ from app.api.routes import ecosystem, partner
 # disabled so route schemas are not advertised to anonymous clients.
 _is_prod = (settings.ENVIRONMENT or "").strip().lower() == "production"
 
+
+@asynccontextmanager
+async def _lifespan(_app: FastAPI):
+    # Warn-only: surfaces JWKS misconfiguration in deploy logs without
+    # ever blocking boot or logging secrets.
+    try:
+        auth_startup_check()
+    except Exception:
+        logger.warning("auth startup check failed (non-fatal)")
+    yield
+
+
 app = FastAPI(
     title="PAWPHILE API",
     description="India-first AI preventive healthcare companion for dog owners. Not a diagnostic tool.",
@@ -22,6 +39,7 @@ app = FastAPI(
     docs_url=None if _is_prod else "/docs",
     redoc_url=None if _is_prod else "/redoc",
     openapi_url=None if _is_prod else "/openapi.json",
+    lifespan=_lifespan,
 )
 
 # CORS — allow local dev + production frontends

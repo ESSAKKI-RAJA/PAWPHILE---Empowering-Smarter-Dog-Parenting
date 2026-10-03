@@ -158,3 +158,26 @@ def get_optional_user(
     except HTTPException:
         return None
     return payload.get("sub")
+
+
+def startup_check() -> None:
+    """Warn-only boot diagnostic for the Clerk chain. Confirms the JWKS
+    endpoint answers and reports which checks are active. Never raises,
+    never blocks boot, never logs tokens, keys, or full URLs — only the
+    endpoint host and key count, which are not secrets."""
+    try:
+        if not settings.CLERK_JWKS_URL:
+            logger.warning("auth config: CLERK_JWKS_URL unset — all bearer calls will 401")
+            return
+        host = settings.CLERK_JWKS_URL.split("://", 1)[-1].split("/", 1)[0]
+        resp = httpx.get(settings.CLERK_JWKS_URL, timeout=JWKS_TIMEOUT_SECONDS)
+        keys = resp.json().get("keys", []) if resp.status_code == 200 else []
+        logger.info(
+            "auth config: jwks_host=%s keys=%d issuer_check=%s audience_check=%s",
+            host, len(keys) if isinstance(keys, list) else -1,
+            bool(settings.CLERK_ISSUER), bool(settings.CLERK_AUDIENCE),
+        )
+        if resp.status_code != 200 or not keys:
+            logger.warning("auth config: JWKS fetch unhealthy — bearer calls will 401")
+    except Exception:
+        logger.warning("auth config: JWKS preflight failed — bearer calls may 401")
