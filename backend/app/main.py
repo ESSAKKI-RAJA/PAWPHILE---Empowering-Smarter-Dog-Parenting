@@ -11,12 +11,17 @@ from app.api.routes import analytics, supervisor
 from app.api.routes import collaboration
 from app.api.routes import ecosystem, partner
 
+# Interactive API docs are a development aid. In production they stay
+# disabled so route schemas are not advertised to anonymous clients.
+_is_prod = (settings.ENVIRONMENT or "").strip().lower() == "production"
+
 app = FastAPI(
     title="PAWPHILE API",
     description="India-first AI preventive healthcare companion for dog owners. Not a diagnostic tool.",
     version="2.0.0",
-    docs_url="/docs",
-    redoc_url="/redoc",
+    docs_url=None if _is_prod else "/docs",
+    redoc_url=None if _is_prod else "/redoc",
+    openapi_url=None if _is_prod else "/openapi.json",
 )
 
 # CORS — allow local dev + production frontends
@@ -24,6 +29,7 @@ origins = [
     "http://localhost:5173",                          # local dev
     "http://localhost:3000",                          # alternate local dev
     "https://pawphile.vercel.app",                    # production frontend (Vercel)
+    "https://pawphile-empowering-smarter-dog-par.vercel.app",  # production frontend (Vercel, current)
     settings.FRONTEND_ORIGIN,                         # from .env (fallback / custom)
 ]
 
