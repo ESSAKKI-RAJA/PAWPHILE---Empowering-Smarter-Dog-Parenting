@@ -3,7 +3,10 @@ import logging
 import asyncio
 from io import BytesIO
 from PIL import Image
-from inference_sdk import InferenceHTTPClient
+try:
+    from inference_sdk import InferenceHTTPClient  # type: ignore
+except Exception:  # pragma: no cover - optional dep for tests/offline
+    InferenceHTTPClient = None  # type: ignore
 from app.core.config import settings
 
 logger = logging.getLogger(__name__)
@@ -14,6 +17,8 @@ _client = None
 
 def get_roboflow_client():
     global _client
+    if InferenceHTTPClient is None:
+        raise RuntimeError("inference-sdk not installed; vision service unavailable")
     if _client is None:
         _client = InferenceHTTPClient(
             api_url="https://serverless.roboflow.com",

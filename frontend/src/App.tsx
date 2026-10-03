@@ -21,6 +21,15 @@ import Reports from './pages/Reports';
 import Auth from './pages/Auth';
 import BMICalculator from './pages/BMICalculator';
 
+import Timeline from './pages/Timeline';
+import CarePlan from './pages/CarePlan';
+import Welcome from './pages/Welcome';
+import ShareView from './pages/ShareView';
+import VeterinaryCare from './pages/VeterinaryCare';
+import VetPortal from './pages/VetPortal';
+import Connections from './pages/Connections';
+import Organizations from './pages/Organizations';
+import HealthIntelligence from './pages/HealthIntelligence';
 import ConsentCenter from './pages/ConsentCenter';
 import DataExport from './pages/DataExport';
 import PawAiCenter from './pages/PawAiCenter';
@@ -41,6 +50,9 @@ export default function App() {
               {/* Auth page — public */}
               <Route path="/auth" element={<Auth />} />
 
+              {/* Front page — public product story, own navigation */}
+              <Route path="/welcome" element={<Welcome />} />
+
               {/* Protected Routes */}
               <Route 
                 path="*" 
@@ -52,6 +64,14 @@ export default function App() {
               >
                 <Route index element={<Navigate to="/dashboard" replace />} />
                 <Route path="dashboard" element={<Dashboard />} />
+                <Route path="timeline" element={<Timeline />} />
+                <Route path="care-plan" element={<CarePlan />} />
+                <Route path="share" element={<ShareView />} />
+                <Route path="veterinary" element={<VeterinaryCare />} />
+                <Route path="vet" element={<VetPortal />} />
+                <Route path="connections" element={<Connections />} />
+                <Route path="organizations" element={<Organizations />} />
+                <Route path="intelligence" element={<HealthIntelligence />} />
                 <Route path="triage" element={<DogHealthTriage />} />
                 <Route path="emergency" element={<EmergencyClassifier />} />
                 {/* Preventive Care — consolidated page */}

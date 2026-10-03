@@ -36,13 +36,16 @@ async def upload_report(
     
     # Mock Supabase Storage upload
     print(f"[SUPABASE MOCK] Uploading file to bucket path: {bucket_path}")
-    
+
     return {
         "status": "success",
         "message": "Report uploaded to Supabase storage successfully.",
         "report_id": report_id,
         "bucket_path": bucket_path,
-        "public_url": f"https://mock.supabase.co/storage/v1/object/public/{bucket_path}"
+        "public_url": f"https://mock.supabase.co/storage/v1/object/public/{bucket_path}",
+        # BIN1 honesty label: legacy mock path. Canonical reports live at /api/v1/pets/{id}/reports.
+        "mock": True,
+        "warning": "Legacy mock endpoint: no bytes were persisted. Use POST /api/v1/pets/{pet_id}/reports + /generate for authoritative reports.",
     }
 
 @router.post("/generate-pdf")

@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode, useCallback, useMemo } from 'react';
 import { loadFromStorage, saveToStorage, deleteFromStorage } from '../lib/storage';
 import * as api from '../services/apiClient';
+import { enqueueOperation } from '../services/syncQueue';
 import type {
   DogProfile, OwnerProfile, SymptomLog, TriageResult, VaccineRecord, DewormingRecord,
   VetVisit, FoodCheck, NutritionLog, BehaviorLog, ImageScan, Report, ConsentLog, AuditLog, Medication
@@ -94,6 +95,20 @@ const KEYS = {
 /** Normalize breed name for lookup: "Labrador Retriever" -> "labrador retriever" */
 function normalizeBreedName(name: string): string {
   return name.toLowerCase().trim().replace(/[_-]/g, ' ');
+}
+
+/**
+ * Best-effort op-level sync to the canonical server (POST /api/v1/.../sync/operations).
+ * Fire-and-forget: the queue persists the op with a stable idempotency key and
+ * the UI must treat the write as pending until the server ACKs. Never throws.
+ */
+function queueServerSync(dogId: string | undefined, entity_type: string, payload: Record<string, unknown>) {
+  if (!dogId) return;
+  try {
+    void enqueueOperation(dogId, entity_type, payload).catch(() => undefined);
+  } catch {
+    /* queue persistence failed — local state remains source of display, sync stays pending */
+  }
 }
 
 /** Build a Record<normalizedName, BreedKnowledge> from an array */
@@ -204,6 +219,18 @@ export function PawphileDataProvider({ children }: { children: ReactNode }) {
       saveToStorage(KEYS.symptomLogs, next);
       return next;
     });
+    // Canonical sync: symptom op (idempotent). UI stays pending until server ACK.
+    const severity = log.energyLevel === 'collapsed' || log.energyLevel === 'weak'
+      ? 'severe'
+      : log.energyLevel === 'lethargic' || (log.vomitingCount ?? 0) > 1
+        ? 'moderate'
+        : 'mild';
+    queueServerSync(log.dogId, 'symptom', {
+      name: log.mainConcern || 'symptom',
+      severity,
+      onset_at: log.onsetTime || new Date().toISOString(),
+      notes: log.notes,
+    });
   }, []);
 
   const addTriageResult = useCallback((result: TriageResult) => {
@@ -227,6 +254,13 @@ export function PawphileDataProvider({ children }: { children: ReactNode }) {
       saveToStorage(KEYS.vaccineRecords, next);
       return next;
     });
+    queueServerSync(record.dogId, 'vaccine', {
+      name: record.vaccineName,
+      date_given: record.dateGiven || undefined,
+      next_due_date: record.nextDueDate || undefined,
+      clinic_name: record.clinicName,
+      notes: record.adverseReactionNotes,
+    });
   }, [selectedDogId]);
 
   const addDewormingRecord = useCallback((record: DewormingRecord) => {
@@ -235,6 +269,12 @@ export function PawphileDataProvider({ children }: { children: ReactNode }) {
       saveToStorage(KEYS.dewormingRecords, next);
       return next;
     });
+    queueServerSync(record.dogId, 'deworming', {
+      product_name: record.productName,
+      date_given: record.dateGiven || undefined,
+      next_due_date: record.nextDueDate || undefined,
+      weight_at_treatment: record.weightAtTreatment,
+    });
   }, []);
 
   const addVetVisit = useCallback((visit: VetVisit) => {
@@ -242,6 +282,13 @@ export function PawphileDataProvider({ children }: { children: ReactNode }) {
       const next = [...prev, visit];
       saveToStorage(KEYS.vetVisits, next);
       return next;
+    });
+    queueServerSync(visit.dogId, 'vet_visit', {
+      visit_date: visit.visitDate || new Date().toISOString(),
+      vet_name: visit.vetName,
+      clinic_name: visit.clinicName,
+      reason_for_visit: visit.visitType,
+      diagnosis: visit.diagnosis,
     });
   }, []);
 
@@ -266,6 +313,14 @@ export function PawphileDataProvider({ children }: { children: ReactNode }) {
       const next = [...prev, med];
       saveToStorage(KEYS.medications, next);
       return next;
+    });
+    queueServerSync(med.dogId, 'medication', {
+      name: med.name,
+      dose: med.dosage,
+      frequency: med.frequency,
+      start_at: med.startDate || undefined,
+      end_at: med.endDate || undefined,
+      notes: med.instructions,
     });
   }, []);
 
@@ -299,6 +354,11 @@ export function PawphileDataProvider({ children }: { children: ReactNode }) {
       saveToStorage(KEYS.behaviorLogs, next);
       return next;
     });
+    queueServerSync(log.dogId, 'behavior', {
+      behavior_type: log.mood || 'normal',
+      observed_at: new Date().toISOString(),
+      notes: log.notes,
+    });
   }, []);
 
   const addNutritionLog = useCallback((log: NutritionLog) => {
@@ -306,6 +366,13 @@ export function PawphileDataProvider({ children }: { children: ReactNode }) {
       const next = [...prev, log];
       saveToStorage(KEYS.nutritionLogs, next);
       return next;
+    });
+    queueServerSync(log.dogId, 'nutrition', {
+      food_name: log.foodName || log.mealDescription || 'meal',
+      amount_g: log.portionGrams,
+      calories: log.calories ?? log.caloriesCal,
+      fed_at: new Date().toISOString(),
+      notes: log.notes,
     });
   }, []);
 

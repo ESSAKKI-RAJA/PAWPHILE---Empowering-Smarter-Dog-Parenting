@@ -1,3 +1,9 @@
+/**
+ * @deprecated Supabase-direct reminder preferences are superseded by the
+ * canonical server path (Care Plan page → foundationApi reminders on /api/v1,
+ * plus /api/settings/notifications for delivery prefs). No production page
+ * imports this module. Retained for compatibility only. Do not add new callers.
+ */
 import { getSupabaseClient } from './supabaseClientWithClerk';
 
 export interface ReminderPreferences {

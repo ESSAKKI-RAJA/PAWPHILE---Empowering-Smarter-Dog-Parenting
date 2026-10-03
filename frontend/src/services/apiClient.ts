@@ -205,15 +205,34 @@ export async function pawAiFoodSafety(data: Record<string, any>) {
 }
 
 // ─── Reminders ───────────────────────────────────────────────────────────────
+// LEGACY (compat only): writes Supabase-backed reminder_preferences via the
+// old backend path. New code must use server-authoritative per-pet reminders
+// via foundationApi (POST /api/v1/pets/:petId/reminders). Kept for backward
+// compatibility with existing Settings flows.
+/** @deprecated Use foundationApi.createReminder/listReminders (canonical /api/v1). */
 export async function saveReminderPreferences(data: Record<string, any>) {
   return apiFetch<any>('/api/reminders/save-preferences', { method: 'POST', body: JSON.stringify(data) });
 }
 
+/** @deprecated Reminder delivery status now comes from /api/v1 worker + notifications. */
 export async function testReminderEmail(data: Record<string, any>) {
   return apiFetch<any>('/api/reminders/test-email', { method: 'POST', body: JSON.stringify(data) });
 }
 
+// ─── Notification preferences (canonical v1-stack: PostgreSQL via /api/settings) ──
+export async function getNotificationPreferences() {
+  return apiFetch<any>('/api/settings/notifications');
+}
+
+export async function saveNotificationPreferences(data: Record<string, any>) {
+  return apiFetch<any>('/api/settings/notifications', { method: 'PUT', body: JSON.stringify(data) });
+}
+
 // ─── Reports ─────────────────────────────────────────────────────────────────
+// LEGACY upload (compat only): the old /api/reports/upload path is a labeled
+// mock (see backend). Canonical reports: foundationApi.createReport +
+// generateReport (DRAFT → GENERATING → READY|FAILED).
+/** @deprecated Use foundationApi.createReport/generateReport (canonical /api/v1). */
 export async function uploadPdfReport(userId: string, dogId: string, file: File) {
   const formData = new FormData();
   formData.append('user_id', userId);

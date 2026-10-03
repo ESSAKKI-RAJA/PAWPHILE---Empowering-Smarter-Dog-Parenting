@@ -15,6 +15,7 @@ sys.path.insert(0, os.path.realpath(os.path.join(os.path.dirname(__file__), ".."
 
 from app.models.all_models import Base
 import app.models.paw_ai_models
+import app.models.foundation_models
 load_dotenv(os.path.join(os.path.dirname(__file__), "..", ".env"))
 
 # this is the Alembic Config object

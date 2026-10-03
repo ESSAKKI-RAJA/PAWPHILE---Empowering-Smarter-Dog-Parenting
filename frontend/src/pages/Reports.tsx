@@ -1,10 +1,105 @@
 import { useMemo, useState } from 'react';
 import { usePawphileData } from '../context/PawphileDataContext';
 import { usePersonalization } from '../context/PersonalizationContext';
-import { Download, FileText, Printer, Stethoscope, AlertTriangle, CheckCircle, Info } from 'lucide-react';
+import { Download, FileText, Printer, Stethoscope, AlertTriangle, CheckCircle, Info, Server, RefreshCw } from 'lucide-react';
 import { generatePdfFromElement } from '../services/pdfGenerator';
+import { foundationApi } from '../services/foundationApi';
+import { EmptyState, ErrorState, LoadingState } from '../components/foundation/DataStates';
 import { daysUntil } from '../lib/dateUtils';
 import { calculateBCS } from '../utils/bcsUtils';
+
+interface ServerReport {
+  id: string;
+  report_type: string;
+  status: 'DRAFT' | 'GENERATING' | 'READY' | 'FAILED';
+  storage_ref?: string | null;
+  error?: string | null;
+  created_at: string;
+}
+
+function ServerReportSection({ dogId, dogName }: { dogId: string; dogName: string }) {
+  const [reports, setReports] = useState<ServerReport[]>([]);
+  const [state, setState] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle');
+  const [error, setError] = useState('');
+  const [working, setWorking] = useState(false);
+  const [reportType, setReportType] = useState('monthly_summary');
+
+  async function load() {
+    setState('loading');
+    try {
+      const rows = (await foundationApi.listReports?.(dogId)) as ServerReport[] | undefined;
+      // listReports may not exist on older clients — fall back to empty.
+      setReports(rows ?? []);
+      setState('ready');
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : 'Could not load server reports.');
+      setState('error');
+    }
+  }
+
+  async function createAndGenerate() {
+    setWorking(true);
+    setError('');
+    try {
+      // Server acknowledgement gates every step: only READY is shown as ready.
+      const created = (await foundationApi.createReport(dogId, { report_type: reportType })) as ServerReport;
+      const ready = (await foundationApi.generateReport(dogId, created.id)) as ServerReport;
+      if (ready.status !== 'READY') {
+        throw new Error(ready.error || 'Report generation did not complete.');
+      }
+      await load();
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : 'Report generation failed.');
+      setState('error');
+    } finally {
+      setWorking(false);
+    }
+  }
+
+  return (
+    <div className="rounded-2xl border border-teal-200 dark:border-teal-900 bg-teal-50/50 dark:bg-teal-950/20 p-5 mb-4">
+      <h2 className="text-sm font-black uppercase tracking-widest text-teal-800 dark:text-teal-200 flex items-center gap-2">
+        <Server className="w-4 h-4" /> Server-verified report (authoritative)
+      </h2>
+      <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
+        Generated from {dogName}&rsquo;s server health record. A report is only shown as ready after the server confirms READY.
+      </p>
+      <div className="flex flex-wrap gap-2 mt-3">
+        <select value={reportType} onChange={(e) => setReportType(e.target.value)} className="rounded-lg border px-2 py-1.5 text-sm bg-white dark:bg-slate-900" aria-label="Report type">
+          <option value="monthly_summary">Monthly summary</option>
+          <option value="vet_visit_summary">Vet visit summary</option>
+          <option value="full_record">Full record</option>
+        </select>
+        <button onClick={() => void load()} className="rounded-lg border px-3 py-1.5 text-sm font-bold bg-white dark:bg-slate-900 flex items-center gap-1">
+          <RefreshCw className="w-3.5 h-3.5" /> Refresh
+        </button>
+        <button onClick={() => void createAndGenerate()} disabled={working} className="rounded-lg px-3 py-1.5 text-sm font-bold bg-teal-600 text-white disabled:opacity-50">
+          {working ? 'Generating…' : 'Generate server report'}
+        </button>
+      </div>
+      <div className="mt-3">
+        {state === 'idle' ? <EmptyState title="Not loaded yet" hint="Press Refresh to list server reports for this pet." /> : null}
+        {state === 'loading' ? <LoadingState label="Loading server reports…" /> : null}
+        {state === 'error' ? <ErrorState message={error} onRetry={() => void load()} /> : null}
+        {state === 'ready' ? (
+          reports.length === 0 ? (
+            <EmptyState title="No server reports yet" hint="Generate one above — it becomes visible only when the server reports READY." />
+          ) : (
+            <ul className="space-y-2">
+              {reports.map((r) => (
+                <li key={r.id} className="rounded-xl border bg-white dark:bg-slate-900 p-3 text-sm">
+                  <p className="font-bold">{r.report_type} <span className="ml-1 rounded-full border px-2 py-0.5 text-xs">{r.status}</span></p>
+                  <p className="text-xs text-slate-500 mt-0.5">Created {new Date(r.created_at).toLocaleString()}</p>
+                  {r.status === 'FAILED' ? <p className="text-xs text-red-600 mt-1">{r.error || 'Generation failed.'}</p> : null}
+                </li>
+              ))}
+            </ul>
+          )
+        ) : null}
+      </div>
+    </div>
+  );
+}
 
 export default function Reports() {
   const {
@@ -78,6 +173,8 @@ export default function Reports() {
 
       {/* The Printable Report Container */}
       <div className="p-4 max-w-4xl mx-auto mt-4">
+        {dogId ? <ServerReportSection dogId={dogId} dogName={selectedDog.name} /> : null}
+        <p className="text-xs italic text-slate-500 mb-3 px-1">Below: on-device printable view built from local data (for printing/sharing a snapshot). The authoritative record is the server report above.</p>
         <div id="master-health-report" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-200 shadow-sm border border-slate-200 dark:border-slate-800 rounded-2xl p-8 overflow-hidden">
           
           {/* Header */}

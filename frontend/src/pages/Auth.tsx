@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { SignIn, SignUp } from '@clerk/clerk-react';
 import { ArrowRight, Sparkles, HeartPulse, Stethoscope, ClipboardList, MapPin } from 'lucide-react';
 import PageWrapper from '../components/layout/PageWrapper';
@@ -223,6 +224,11 @@ export default function Auth() {
             >
               Sign In
             </button>
+            <div className="mt-3">
+              <Link to="/welcome" className="text-sm hover:underline transition-all" style={{ color: '#94A3B8' }}>
+                What is PAWPHILE?
+              </Link>
+            </div>
           </div>
         </div>
 

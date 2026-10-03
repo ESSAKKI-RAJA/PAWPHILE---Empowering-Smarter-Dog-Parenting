@@ -36,10 +36,13 @@ class DogProfile(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, index=True)
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), index=True)
     name = Column(String, nullable=False)
+    species = Column(String, default="dog")
     breed = Column(String, nullable=True)
     breed_type = Column(String, nullable=True)
     dob = Column(String, nullable=True)
+    date_of_birth = Column(String, nullable=True)
     gender = Column(String, nullable=True)
+    sex = Column(String, nullable=True)
     neutered = Column(Boolean, default=False)
     weight_kg = Column(Float, nullable=True)
     body_condition_status = Column(String, nullable=True)
@@ -48,17 +51,29 @@ class DogProfile(Base):
     health_goal = Column(String, nullable=True)
     allergies = Column(JSON, nullable=True)
     past_illnesses = Column(JSON, nullable=True)
-    medical_history = Column(Text, nullable=True)
+    # NOTE (BIN1 fix): ORM attribute renamed to avoid shadowing by relationship.
+    # DB column name stays "medical_history" so no migration is required.
+    medical_history_text = Column("medical_history", Text, nullable=True)
     vaccine_status = Column(String, nullable=True)
     deworming_status = Column(String, nullable=True)
     photo_url = Column(String, nullable=True)
+    profile_image_ref = Column(String, nullable=True)
+    is_archived = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    @property
+    def medical_history(self):  # backward-compat alias for API/schemas
+        return self.medical_history_text
+
+    @medical_history.setter
+    def medical_history(self, value):
+        self.medical_history_text = value
 
     user = relationship("User", back_populates="dogs")
     vaccines = relationship("VaccineRecord", back_populates="dog")
     deworming_records = relationship("DewormingRecord", back_populates="dog")
-    medical_history = relationship("MedicalHistory", back_populates="dog")
+    medical_history_entries = relationship("MedicalHistory", back_populates="dog")
     vet_visits = relationship("VetVisitSummary", back_populates="dog")
     vision_scans = relationship("VisionScanRecord", back_populates="dog")
     reports = relationship("Report", back_populates="dog")
@@ -116,7 +131,7 @@ class MedicalHistory(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-    dog = relationship("DogProfile", back_populates="medical_history")
+    dog = relationship("DogProfile", back_populates="medical_history_entries")
 
 class VetVisitSummary(Base):
     __tablename__ = "vet_visit_summaries"

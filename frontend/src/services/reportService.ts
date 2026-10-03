@@ -1,3 +1,9 @@
+/**
+ * @deprecated Supabase-direct report persistence is superseded by the canonical
+ * server path (services/foundationApi.ts → /api/v1/pets/:id/reports with
+ * DRAFT → GENERATING → READY|FAILED). No production page imports this module.
+ * Retained for compatibility only. Do not add new callers.
+ */
 import { getSupabaseClient } from './supabaseClientWithClerk';
 
 export interface ReportMetadata {

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { AlertTriangle, Cloud, Download, Moon, Shield, User, Building2, Dog, Mail, Send, LogOut, LogIn, Loader2 } from 'lucide-react';
 import { usePawphileData } from '../context/PawphileDataContext';
 import { useTheme } from '../context/ThemeContext';
-import { saveReminderPreferences, testReminderEmail } from '../services/apiClient';
+import { saveNotificationPreferences, getNotificationPreferences, testReminderEmail } from '../services/apiClient';
 import { useToast } from '../context/ToastContext';
 import { useSyncState, triggerManualSync } from '../services/SyncManager';
 
@@ -75,6 +75,21 @@ export default function Settings() {
     }
   }, [ownerProfile]);
 
+  // Canonical server prefs (PostgreSQL via /api/settings). Loaded once when online.
+  useEffect(() => {
+    if (!navigator.onLine) return;
+    getNotificationPreferences()
+      .then((prefs: any) => {
+        if (!prefs || typeof prefs !== 'object') return;
+        if (prefs.reminder_email) setLocalEmail(prefs.reminder_email);
+        if (typeof prefs.email_enabled === 'boolean') setLocalEmailEnabled(prefs.email_enabled);
+        if (typeof prefs.vaccines === 'boolean') setLocalVaccines(prefs.vaccines);
+        if (typeof prefs.vet_visits === 'boolean') setLocalVetVisits(prefs.vet_visits);
+        if (typeof prefs.nutrition === 'boolean') setLocalNutrition(prefs.nutrition);
+      })
+      .catch(() => undefined);
+  }, []);
+
   const [loadingToggles, setLoadingToggles] = useState<Record<string, boolean>>({});
 
   const handleControlledToggle = async (
@@ -85,18 +100,19 @@ export default function Settings() {
     const newValue = !currentValue;
     setLoadingToggles(prev => ({ ...prev, [key]: true }));
 
-    // Mandate 2: Controlled Settings & Resend API Integration
+    // Canonical delivery preferences (PostgreSQL via /api/settings).
+    // Per-pet reminders themselves are server-authoritative in Care Plan (/care-plan).
     try {
       const payload = {
-        user_id: userEmail || "local_user",
-        email_address: localEmail || userEmail,
-        vaccinations_enabled: key === 'vaccines' ? newValue : localVaccines,
-        deworming_enabled: true, // simplified for sprint
-        vet_visits_enabled: key === 'vetVisits' ? newValue : localVetVisits,
-        report_review_enabled: true
+        email_enabled: key === 'emailEnabled' ? newValue : localEmailEnabled,
+        reminder_email: localEmail || userEmail,
+        vaccines: key === 'vaccines' ? newValue : localVaccines,
+        deworming: true, // simplified for sprint
+        vet_visits: key === 'vetVisits' ? newValue : localVetVisits,
+        nutrition: key === 'nutrition' ? newValue : localNutrition,
       };
 
-      await saveReminderPreferences(payload);
+      await saveNotificationPreferences(payload);
       
       setter(newValue);
       if (ownerProfile) {
@@ -220,6 +236,11 @@ export default function Settings() {
         </Card>
 
         <Card title="Email Reminders" icon={Mail}>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            Delivery address and categories are stored on the server. Individual due-date reminders live in{' '}
+            <button onClick={() => navigate('/care-plan')} className="underline font-bold">Care Plan</button>
+            {' '}— the server, not this device, decides what is due.
+          </p>
           <div className="space-y-4">
             <div className="bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 space-y-4">
               <ToggleRow
@@ -325,11 +346,15 @@ export default function Settings() {
         <Card title="Data & Privacy" icon={Shield}>
           <div className="rounded-2xl border border-slate-200 dark:border-slate-800 p-4 bg-slate-50 dark:bg-slate-950/40">
             <p className="text-sm font-extrabold text-slate-900 dark:text-white">
-              All data stored locally in your browser.
+              Health records sync to your private server record.
             </p>
             <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-              Cloud sync is being migrated to new Neon backend. Data stays on-device until backend is connected.
+              Changes queue offline and are marked synced only after the server confirms. Manage consent in Consent Center and download your record in Export.
             </p>
+            <div className="flex gap-2 mt-3">
+              <button onClick={() => navigate('/consent')} className="btn !w-auto px-4 !py-2 text-xs">Consent Center</button>
+              <button onClick={() => navigate('/export')} className="btn !w-auto px-4 !py-2 text-xs">Export</button>
+            </div>
           </div>
         </Card>
 

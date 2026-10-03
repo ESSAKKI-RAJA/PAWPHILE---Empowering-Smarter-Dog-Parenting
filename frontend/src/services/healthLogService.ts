@@ -1,3 +1,9 @@
+/**
+ * @deprecated Supabase-direct health logs are superseded by the canonical
+ * server path (PawphileDataContext → syncQueue → /api/v1/.../sync/operations).
+ * No production page imports this module. Retained for compatibility only.
+ * Do not add new callers.
+ */
 import { getSupabaseClient } from './supabaseClientWithClerk';
 
 export interface HealthLog {

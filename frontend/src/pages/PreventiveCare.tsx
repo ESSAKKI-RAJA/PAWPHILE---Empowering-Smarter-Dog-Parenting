@@ -318,6 +318,10 @@ export default function PreventiveCare() {
         ═══════════════════════════════════════ */}
         {activeTab === 'reminders' && (
           <>
+            <div className="pw-card p-4 mb-3 text-xs font-semibold" style={{ color: 'var(--text-2)' }}>
+              Estimates below are computed on this device from local dates. The authoritative schedule — what the
+              server has confirmed and will notify you about — lives in <a href="/care-plan" className="underline font-bold">Care Plan</a>.
+            </div>
             <UpcomingReminders vaccines={myVaccines} deworming={myDeworming} ownerProfile={ownerProfile} />
           </>
         )}

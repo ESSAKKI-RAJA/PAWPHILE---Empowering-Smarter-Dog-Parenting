@@ -323,5 +323,7 @@ def trigger_due_reminders(background_tasks: BackgroundTasks) -> dict[str, Any]:
     return {
         "status": "success",
         "triggered_count": 1,   # In real code, the actual number of queued tasks
-        "timestamp": now.isoformat()
+        "timestamp": now.isoformat(),
+        # BIN1 honesty label: legacy cron placeholder. Authoritative sweep: POST /api/v1/reminders/process-due.
+        "mock": True,
     }

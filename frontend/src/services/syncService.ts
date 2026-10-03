@@ -3,6 +3,11 @@ import { getSupabaseClient } from './supabaseClientWithClerk';
 export type SyncState = 'local only' | 'syncing' | 'synced' | 'sync failed' | 'offline mode' | 'conflict found';
 
 /**
+ * @deprecated Bulk Supabase-direct sync is superseded by the canonical
+ * op-level queue (services/syncQueue.ts → POST /api/v1/.../sync/operations),
+ * which is server-authorized, validated, and idempotent per operation.
+ * This class is retained for compatibility only and is no longer invoked by
+ * SyncManager or any production page. Do not add new callers.
  * Service to sync local Pawphile data to Supabase.
  * Gracefully degrades if offline or no token is provided.
  */

@@ -1,8 +1,11 @@
 # backend/app/utils/email.py
+import os
+
 import resend
 
-# TODO: Replace "re_xxxxxxxxx" with your actual Resend API key.
-resend.api_key = "re_xxxxxxxxx"
+
+def _resend_key() -> str:
+    return os.getenv("RESEND_API_KEY", "")
 
 def send_resend_email(
     subject: str,
@@ -11,14 +14,13 @@ def send_resend_email(
     from_email: str = "onboarding@resend.dev",
 ):
     """
-    Send an email via Resend API.
-
-    Parameters:
-        subject: Email subject.
-        html: HTML content of the email.
-        to_email: Recipient email address.
-        from_email: Sender email address (defaults to Resend onboarding address).
+    Send an email via Resend API. API key comes from RESEND_API_KEY env;
+    raises RuntimeError with a truthful message when unconfigured.
     """
+    key = _resend_key()
+    if not key:
+        raise RuntimeError("failed_missing_config: RESEND_API_KEY not configured")
+    resend.api_key = key
     return resend.Emails.send(
         {
             "from": from_email,

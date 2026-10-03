@@ -1,6 +1,12 @@
 import { getSupabaseClient } from './supabaseClientWithClerk';
 
 /**
+ * NOTE: direct Supabase Storage uploads bypass server authorization and
+ * validation. Health-file metadata must go through the canonical server path
+ * (foundationApi.registerFile → /api/v1/pets/:id/files); raw bytes via the
+ * server-mediated /api/uploads/image endpoint. This module has no production
+ * importers; keep it that way.
+ *
  * Supabase Storage Planning & Placeholders
  * 
  * Bucket Definitions:

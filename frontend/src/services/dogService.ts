@@ -1,3 +1,8 @@
+/**
+ * @deprecated Supabase-direct dog persistence is superseded by the canonical
+ * server path (apiClient /api/dogs + foundationApi /api/v1). No production
+ * page imports this module. Retained for compatibility only. Do not add new callers.
+ */
 import { getSupabaseClient } from './supabaseClientWithClerk';
 
 export interface Dog {

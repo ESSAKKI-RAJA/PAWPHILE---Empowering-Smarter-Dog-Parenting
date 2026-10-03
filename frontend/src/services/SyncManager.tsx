@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { useAuth, useUser } from '@clerk/clerk-react';
 import { usePawphileData } from '../context/PawphileDataContext';
-import { SyncService, SyncState } from './syncService';
-import { StorageKeys, loadFromStorageAsync, saveToStorageAsync } from '../lib/storage';
+import type { SyncState } from './syncService';
+import { flushQueue, getPendingCount } from './syncQueue';
+import { StorageKeys, loadFromStorageAsync } from '../lib/storage';
 
 // Global hooks for manual sync trigger and state observing
 // eslint-disable-next-line react-refresh/only-export-components
@@ -19,23 +20,29 @@ export function useSyncState() {
   useEffect(() => {
     const handleUpdate = (e: any) => {
       if (e.detail?.state) setSyncState(e.detail.state);
-      if (e.detail?.pendingCount !== undefined) setPendingCount(e.detail.pendingCount);
+      if (e.detail?.pendingCount !== undefined) {
+        setPendingCount(e.detail.pendingCount);
+      } else {
+        // Op-level queue (syncQueue) dispatches bare events — refresh count.
+        getPendingCount().then(setPendingCount).catch(() => undefined);
+      }
       if (e.detail?.lastSyncedAt) setLastSyncedAt(e.detail.lastSyncedAt);
     };
-    window.addEventListener('pawphile:sync-update', handleUpdate);
+    window.addEventListener('pawphile:sync-update', handleUpdate as EventListener);
     
-    // Init queue count
+    // Init queue count (legacy markers + op-level queue)
     const initQ = async () => {
       try {
         const q = await loadFromStorageAsync<any[]>(StorageKeys.SYNC_QUEUE, []);
-        setPendingCount(q.length);
+        const ops = await getPendingCount();
+        setPendingCount(q.length + ops);
       } catch (e) {
         console.warn('Init queue error:', e);
       }
     };
     initQ();
 
-    return () => window.removeEventListener('pawphile:sync-update', handleUpdate);
+    return () => window.removeEventListener('pawphile:sync-update', handleUpdate as EventListener);
   }, []);
 
   return { syncState, pendingCount, lastSyncedAt };
@@ -48,37 +55,12 @@ export default function SyncManager() {
   
   const isSyncing = useRef(false);
 
-  // 1. Optimistic Updates -> Persist to IDB Queue
+  // Local data changed -> attempt an op-level flush. The canonical queue
+  // (syncQueue, per-operation idempotency keys) flushes itself on enqueue as
+  // well; this covers changes that predate the queue. No legacy markers are
+  // written: the bulk-marker queue is deprecated.
   useEffect(() => {
-    // We queue a timestamp marker to signify a change happened
-    const updateQueue = async () => {
-      try {
-        const q = await loadFromStorageAsync<any[]>(StorageKeys.SYNC_QUEUE, []);
-        q.push({
-          status: 'pending',
-          retry_count: 0,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        });
-        await saveToStorageAsync(StorageKeys.SYNC_QUEUE, q);
-        
-        window.dispatchEvent(new CustomEvent('pawphile:sync-update', { 
-          detail: { pendingCount: q.length } 
-        }));
-        
-        // Request Background Sync if supported
-        if ('serviceWorker' in navigator && 'SyncManager' in window) {
-          navigator.serviceWorker.ready.then((reg: any) => {
-            return reg.sync.register('pawphile-sync');
-          }).catch(console.error);
-        }
-        
-        processQueue();
-      } catch (err) {
-        console.error("Queue persist error:", err);
-      }
-    };
-    updateQueue();
+    processQueue();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [localData]);
 
@@ -86,62 +68,50 @@ export default function SyncManager() {
     if (!isSignedIn || !user || isSyncing.current || !navigator.onLine) {
       return;
     }
-    
-    let q: any[] = [];
+
+    let pending = 0;
     try {
-      q = await loadFromStorageAsync<any[]>(StorageKeys.SYNC_QUEUE, []);
+      pending = await getPendingCount();
     } catch (e) {
       console.warn('Load queue error:', e);
     }
 
-    if (q.length === 0) return;
+    if (pending === 0) return;
 
     isSyncing.current = true;
-    let attempt = 0;
-    const maxAttempts = 3;
+    window.dispatchEvent(new CustomEvent('pawphile:sync-update', {
+      detail: { state: 'syncing' as SyncState },
+    }));
+    try {
+      // Canonical path: op-level idempotent sync (POST /api/v1/.../sync/operations).
+      // Each op carries a stable client_operation_id; retries return the original
+      // ACK and never duplicate records. The legacy bulk SyncService path is
+      // deprecated and no longer invoked here.
+      const token = await getToken();
+      if (!token) throw new Error('No token available');
 
-    const trySync = async (): Promise<void> => {
-      try {
-        const token = await getToken();
-        if (!token) throw new Error("No token available");
-        
-        console.log('[Analytics] sync_queue_pending', { count: q.length });
+      const result = await flushQueue();
 
-        const syncService = new SyncService(token, user.id, (state) => {
-          window.dispatchEvent(new CustomEvent('pawphile:sync-update', { 
-            detail: { state } 
-          }));
-        });
-
-        // 2. Comprehensive Sync Upsert (which uses updated_at natively)
-        await syncService.syncAll(localData);
-
-        // Success -> Clear queue and update lastSynced
-        isSyncing.current = false;
-        await saveToStorageAsync(StorageKeys.SYNC_QUEUE, []);
-        const now = new Date().toISOString();
+      const remaining = await getPendingCount();
+      const now = new Date().toISOString();
+      if (remaining === 0) {
         localStorage.setItem('pawphile_last_synced', now); // kept synchronous for instant read
-        
-        window.dispatchEvent(new CustomEvent('pawphile:sync-update', { 
-          detail: { pendingCount: 0, lastSyncedAt: now, state: 'synced' } 
-        }));
-
-      } catch {
-        attempt++;
-        if (attempt < maxAttempts) {
-          const delay = Math.pow(2, attempt) * 1000;
-          setTimeout(trySync, delay);
-        } else {
-          console.error("Sync repeatedly failed. Queue preserved.");
-          isSyncing.current = false;
-          window.dispatchEvent(new CustomEvent('pawphile:sync-update', { 
-            detail: { state: 'sync failed' } 
-          }));
-        }
       }
-    };
-    
-    trySync();
+      window.dispatchEvent(new CustomEvent('pawphile:sync-update', {
+        detail: {
+          pendingCount: remaining,
+          lastSyncedAt: remaining === 0 ? now : undefined,
+          state: (remaining === 0 ? 'synced' : result.conflicts > 0 ? 'conflict found' : 'sync failed') as SyncState,
+        },
+      }));
+    } catch {
+      console.error('Sync failed. Queue preserved for retry.');
+      window.dispatchEvent(new CustomEvent('pawphile:sync-update', {
+        detail: { state: 'sync failed' as SyncState },
+      }));
+    } finally {
+      isSyncing.current = false;
+    }
   };
 
   // Listen for manual trigger

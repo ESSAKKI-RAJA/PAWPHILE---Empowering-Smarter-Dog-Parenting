@@ -20,9 +20,13 @@ class UserOut(UserBase):
 # ─── Dog Profile Schemas ───────────────────────
 class DogCreate(BaseModel):
     name: str
+    species: Optional[str] = "dog"
     breed: Optional[str] = None
+    breed_type: Optional[str] = None
     dob: Optional[str] = None
+    date_of_birth: Optional[str] = None
     gender: Optional[str] = None
+    sex: Optional[str] = None
     neutered: Optional[bool] = False
     weight_kg: Optional[float] = None
     body_condition_status: Optional[str] = None
@@ -33,6 +37,7 @@ class DogCreate(BaseModel):
     past_illnesses: Optional[list] = []
     medical_history: Optional[str] = None
     photo_url: Optional[str] = None
+    profile_image_ref: Optional[str] = None
 
 class DogUpdate(DogCreate):
     name: Optional[str] = None
@@ -41,9 +46,12 @@ class DogOut(BaseModel):
     id: UUID
     user_id: UUID
     name: str
+    species: Optional[str] = None
     breed: Optional[str]
     dob: Optional[str]
+    date_of_birth: Optional[str] = None
     gender: Optional[str]
+    sex: Optional[str] = None
     neutered: Optional[bool]
     weight_kg: Optional[float]
     body_condition_status: Optional[str]
@@ -54,6 +62,7 @@ class DogOut(BaseModel):
     past_illnesses: Optional[list]
     medical_history: Optional[str]
     photo_url: Optional[str]
+    profile_image_ref: Optional[str] = None
     vaccine_status: Optional[str]
     deworming_status: Optional[str]
     created_at: datetime

@@ -4,6 +4,8 @@ import { ClerkProvider, useAuth } from "@clerk/clerk-react";
 import App from "./App.tsx";
 import "./index.css";
 import { registerTokenProvider } from "./services/apiClient";
+import { registerFoundationTokenProvider } from "./services/foundationApi";
+import { flushQueue } from "./services/syncQueue";
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -21,6 +23,7 @@ function ClerkBridge() {
 
   useEffect(() => {
     registerTokenProvider(() => getToken());
+    registerFoundationTokenProvider(() => getToken());
   }, [getToken]);
 
   return null;
@@ -46,4 +49,11 @@ if ("serviceWorker" in navigator) {
     .catch((error) => {
       console.warn("[PAWPHILE] Service Worker registration failed:", error);
     });
+}
+
+// BIN1: flush idempotent sync queue when connectivity returns.
+if (typeof window !== "undefined") {
+  window.addEventListener("online", () => {
+    flushQueue().catch(() => undefined);
+  });
 }

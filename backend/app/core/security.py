@@ -5,6 +5,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from app.core.config import settings
 
 security = HTTPBearer()
+optional_security = HTTPBearer(auto_error=False)
 
 def verify_clerk_token(token: str) -> dict:
     if not settings.CLERK_JWKS_URL:
@@ -55,3 +56,16 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(securit
     if clerk_user_id is None:
         raise HTTPException(status_code=401, detail="Invalid auth token")
     return clerk_user_id
+
+
+def get_optional_user(
+    credentials: HTTPAuthorizationCredentials | None = Depends(optional_security),
+) -> str | None:
+    """Bearer identity or None (never raises). Honors dependency overrides in tests."""
+    if credentials is None:
+        return None
+    try:
+        payload = verify_clerk_token(credentials.credentials)
+    except HTTPException:
+        return None
+    return payload.get("sub")
