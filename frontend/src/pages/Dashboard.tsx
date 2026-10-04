@@ -21,7 +21,6 @@ import {
   Flame,
   Info,
   Bell,
-  MapPin,
   FileText,
   Calendar,
   History,
@@ -1052,12 +1051,6 @@ export default function Dashboard() {
               label: "Food Safe",
               path: "/food-safety",
               color: "#f97316",
-            },
-            {
-              icon: MapPin,
-              label: "Vet Locator",
-              path: "/vet-locator",
-              color: "#ef4444",
             },
             {
               icon: FileText,

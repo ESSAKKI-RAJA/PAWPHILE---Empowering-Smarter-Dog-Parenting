@@ -151,7 +151,7 @@ Suites: `test_foundation.py` (11: isolation, CRUD, validation, 409s, timeline, s
 
 - IMPLEMENTED: everything in §2–§21.
 - CONFIGURATION REQUIRED: actual email delivery (needs RESEND_API_KEY or SMTP_*), cron scheduling (needs WORKER_CRON_TOKEN + external scheduler).
-- ENVIRONMENT DEPENDENT: vision scans (Roboflow key), weather/vet-locator/pawnews externals (unchanged legacy behavior).
+- ENVIRONMENT DEPENDENT: vision scans (Roboflow key), weather/pawnews externals (unchanged legacy behavior).
 - DEPRECATED (compat only, unimported by production flows): `syncService.SyncService` bulk sync, Supabase-direct `reportService/reminderService/dogService/healthLogService/storageService`, legacy `apiClient.saveReminderPreferences/testReminderEmail/uploadPdfReport`, legacy mock-flagged `/api/reports/upload` + `/api/reminders/send-due`.
 - MOCK / DEMO: none on any primary production path.
 

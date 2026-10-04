@@ -165,67 +165,11 @@ CREATE TABLE reminder_events (
   updated_at TIMESTAMPTZ DEFAULT now()
 );
 
--- 11. Vet Clinics (PostGIS Dynamic Data Moat)
-CREATE EXTENSION IF NOT EXISTS postgis;
-
-CREATE TABLE vet_clinics (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name TEXT NOT NULL,
-  phone TEXT,
-  address TEXT,
-  area TEXT,
-  city TEXT,
-  open_24_7 BOOLEAN DEFAULT false,
-  emergency_available BOOLEAN DEFAULT false,
-  verified BOOLEAN DEFAULT false,
-  location geography(POINT, 4326),
-  created_at TIMESTAMPTZ DEFAULT now(),
-  updated_at TIMESTAMPTZ DEFAULT now()
-);
-
-CREATE INDEX idx_vet_clinics_location ON vet_clinics USING GIST(location);
-
--- 11b. RPC Function for Geospatial Search
-CREATE OR REPLACE FUNCTION search_clinics(user_lat float, user_lng float, radius_km float)
-RETURNS TABLE (
-  id UUID,
-  name TEXT,
-  phone TEXT,
-  address TEXT,
-  area TEXT,
-  city TEXT,
-  open_24_7 BOOLEAN,
-  emergency_available BOOLEAN,
-  verified BOOLEAN,
-  distance_km float,
-  lat float,
-  lng float
-) AS $$
-BEGIN
-  RETURN QUERY
-  SELECT 
-    v.id,
-    v.name,
-    v.phone,
-    v.address,
-    v.area,
-    v.city,
-    v.open_24_7,
-    v.emergency_available,
-    v.verified,
-    (ST_Distance(v.location, ST_SetSRID(ST_MakePoint(user_lng, user_lat), 4326)) / 1000.0) AS distance_km,
-    ST_Y(v.location::geometry) AS lat,
-    ST_X(v.location::geometry) AS lng
-  FROM vet_clinics v
-  WHERE ST_DWithin(
-    v.location, 
-    ST_SetSRID(ST_MakePoint(user_lng, user_lat), 4326), 
-    radius_km * 1000
-  )
-  ORDER BY v.location <-> ST_SetSRID(ST_MakePoint(user_lng, user_lat), 4326)
-  LIMIT 50;
-END;
-$$ LANGUAGE plpgsql;
+-- 11. Vet Clinics — REMOVED (Vet Locator permanently removed from the product).
+-- The vet_clinics table, its GIST index, and the search_clinics RPC below
+-- are intentionally deleted. Existing deployments may DROP TABLE
+-- vet_clinics and DROP FUNCTION search_clinics at their discretion; no
+-- application code references them.
 
 -- PAWNEWS SCHEMA
 -- 12. PawNews Sources
@@ -315,10 +259,8 @@ CREATE POLICY "Reminder Events - all access" ON reminder_events FOR ALL USING (p
 CREATE POLICY "Pawnews Interactions - all access" ON pawnews_user_interactions FOR ALL USING (profile_id = get_my_profile_id());
 CREATE POLICY "PAW AI Events - all access" ON paw_ai_events FOR ALL USING (profile_id = get_my_profile_id());
 
--- Vet Clinics & PawNews Articles (Public read)
-ALTER TABLE vet_clinics ENABLE ROW LEVEL SECURITY;
+-- PawNews (Public read)
 ALTER TABLE pawnews_sources ENABLE ROW LEVEL SECURITY;
 ALTER TABLE pawnews_articles ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Vet Clinics - read all" ON vet_clinics FOR SELECT USING (true);
 CREATE POLICY "Pawnews Sources - read all" ON pawnews_sources FOR SELECT USING (true);
 CREATE POLICY "Pawnews Articles - read all" ON pawnews_articles FOR SELECT USING (true);

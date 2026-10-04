@@ -11,7 +11,7 @@ from app.core.security import startup_check as auth_startup_check
 logger = logging.getLogger(__name__)
 from app.api.routes import auth, users, dogs, vaccines, medical_history, vision, uploads
 from app.api.routes import deworming, triage, reports, reminders, settings as settings_routes
-from app.api.routes import paw_ai, pawnews, vet_clinics, weather, foundation, worker
+from app.api.routes import paw_ai, pawnews, weather, foundation, worker
 from app.api.routes import analytics, supervisor
 from app.api.routes import collaboration
 from app.api.routes import ecosystem, partner
@@ -107,9 +107,6 @@ app.include_router(paw_ai.router, prefix="/api/paw-ai", tags=["paw-ai"])
 
 # PAWNEWS — Validated Feeds
 app.include_router(pawnews.router, prefix="/api/pawnews", tags=["pawnews"])
-
-# Vet Clinics — PostGIS PostGIS
-app.include_router(vet_clinics.router, prefix="/api/vet-clinics", tags=["vet-clinics"])
 
 # BIN1 Foundation — canonical longitudinal record (versioned)
 app.include_router(foundation.router, prefix="/api/v1", tags=["foundation-v1"])

@@ -345,8 +345,8 @@ export default function VisionScan() {
                 <button onClick={handleMarkEmergency} className="flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400 hover:opacity-80">
                   <AlertTriangle className="w-4 h-4" /> Emergency
                 </button>
-                <button onClick={() => navigate('/vet-locator')} className="flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold bg-teal-50 text-teal-700 dark:bg-teal-900/20 dark:text-teal-400 hover:opacity-80">
-                  <Stethoscope className="w-4 h-4" /> Find Vet
+                <button onClick={() => navigate('/vet-records')} className="flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold bg-teal-50 text-teal-700 dark:bg-teal-900/20 dark:text-teal-400 hover:opacity-80">
+                  <Stethoscope className="w-4 h-4" /> My Vet
                 </button>
                 <button onClick={() => navigate('/paw-ai')} className="flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold bg-violet-50 text-violet-700 dark:bg-violet-900/20 dark:text-violet-400 hover:opacity-80">
                   <Phone className="w-4 h-4" /> Ask PAW AI

@@ -1,7 +1,7 @@
 import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import {
   Home, Activity, UtensilsCrossed, Settings as SettingsIcon,
-  Eye, MapPin, FileText, Scale, Footprints, User, Brain,
+  Eye, FileText, Scale, Footprints, User, Brain,
   Shield, Newspaper
 } from 'lucide-react';
 import BottomNav from './BottomNav';
@@ -19,7 +19,6 @@ const NAV_ITEMS = [
   { label: 'Behavior',        path: '/behavior',         icon: Footprints },
   { label: 'Vision Scan',     path: '/vision',           icon: Eye },
   { label: 'PAWNEWS',         path: '/pawnews',          icon: Newspaper },
-  { label: 'Vet Locator',     path: '/vet-locator',      icon: MapPin },
   { label: 'Reports',         path: '/reports',          icon: FileText },
   { label: 'Profile',         path: '/profile',          icon: User },
   { label: 'Settings',        path: '/settings',         icon: SettingsIcon },

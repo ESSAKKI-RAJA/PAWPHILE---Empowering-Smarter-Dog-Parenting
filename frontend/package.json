@@ -13,17 +13,14 @@
   "dependencies": {
     "@clerk/clerk-react": "^5.61.10",
     "@supabase/supabase-js": "^2.106.1",
-    "@types/leaflet": "^1.9.21",
     "firebase": "^12.14.0",
     "html2canvas": "^1.4.1",
     "jspdf": "^4.2.1",
     "jspdf-autotable": "^5.0.7",
-    "leaflet": "^1.9.4",
     "localforage": "^1.10.0",
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-leaflet": "^4.2.1",
     "react-router-dom": "^7.14.2",
     "recharts": "^3.8.1"
   },

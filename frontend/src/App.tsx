@@ -14,7 +14,6 @@ import EmergencyClassifier from './pages/EmergencyClassifier';
 import VetRecords from './pages/VetRecords';
 import Nutrition from './pages/Nutrition';
 import Behavior from './pages/Behavior';
-import VetLocator from './pages/VetFinder';
 import FoodSafety from './pages/FoodSafety';
 import VisionScan from './pages/VisionScan';
 import Settings from './pages/Settings';
@@ -101,9 +100,7 @@ export default function App() {
                 <Route path="vet-summary" element={<Navigate to="/vet-records" replace />} />
                 <Route path="nutrition" element={<Nutrition />} />
                 <Route path="behavior" element={<Behavior />} />
-                <Route path="vet-locator" element={<VetLocator />} />
                 <Route path="food-safety" element={<FoodSafety />} />
-                <Route path="vets" element={<VetLocator />} />
                 <Route path="vision" element={<VisionScan />} />
                 <Route path="pawnews" element={<PawNewsPage />} />
                 <Route path="admin/news" element={<AdminNews />} />

@@ -64,8 +64,8 @@ const LAYERS = [
   {
     n: '03',
     name: 'Vet-ready',
-    line: 'Reports summarize visits, reminders keep prevention on schedule, and the locator finds care nearby.',
-    chips: ['Vet reports', 'Reminders', 'Vet locator', 'Vision scan'],
+    line: 'Reports summarize visits and reminders keep prevention on schedule.',
+    chips: ['Vet reports', 'Reminders', 'Vision scan'],
   },
   {
     n: '04',
@@ -95,7 +95,7 @@ const NOTDO = [
 const CAPS: Array<[string, string[]]> = [
   ['Record', ['Pet profile', 'Health events', 'Measurements', 'Files', 'Reports']],
   ['Guidance', ['PAW AI', 'Triage', 'Preventive care', 'Nutrition', 'Behavior', 'BCS / BMI']],
-  ['Care', ['Reminders', 'Vet locator', 'Vision scan', 'PAWNEWS']],
+  ['Care', ['Reminders', 'Vision scan', 'PAWNEWS']],
   ['Trust', ['Consent', 'Authorization', 'Audit', 'Provenance', 'Revocation', 'Data export']],
 ];
 
@@ -233,11 +233,11 @@ export default function Welcome() {
           <div className="pw-wrap">
             <Reveal>
               <h2 id="vet-h" className="pw-h-section">Ready for the vet visit</h2>
-              <p className="pw-lede">Walk in prepared: a clear summary of the record, reminders that keep prevention on schedule, and nearby care when you need it.</p>
+              <p className="pw-lede">Walk in prepared: a clear summary of the record and reminders that keep prevention on schedule.</p>
               <ul className="pw-checks">
                 {[['Vet-ready reports', 'Clean summaries of vaccinations, treatments and history to bring along.'],
                   ['Preventive reminders', 'Due dates and notifications so nothing slips.'],
-                  ['Nearby care', 'Find veterinary clinics around you when it matters.'],
+                  ['Visit history', 'Your own vet visits and medications, kept in one place.'],
                 ].map(([t, b]) => (
                   <li key={t}>
                     <Check size={18} strokeWidth={2.5} aria-hidden="true" />
@@ -373,7 +373,7 @@ export default function Welcome() {
               {[
                 ['01 Your record', 'Profile, events and files', 'Complete'],
                 ['02 Guidance', 'PAW AI, triage and preventive care', 'Complete'],
-                ['03 Vet-ready', 'Reports, reminders and nearby care', 'Complete'],
+                ['03 Vet-ready', 'Reports, reminders and visit history', 'Complete'],
                 ['04 Deferred for now', 'Timeline, sharing, vet collaboration, integrations', 'Later'],
               ].map(([t, s, pill]) => (
                 <Reveal key={t}>

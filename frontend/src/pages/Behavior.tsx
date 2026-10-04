@@ -190,11 +190,11 @@ export default function Behavior() {
                 Multiple behavioral concerns detected. This is behavioral guidance, not a diagnosis. Consult your vet.
               </p>
               <button
-                onClick={() => navigate('/vet-locator')}
+                onClick={() => navigate('/vet-records')}
                 className="mt-2 text-xs font-black px-3 py-1.5 rounded-lg"
                 style={{ background: '#ef444420', color: '#ef4444', border: '1px solid #ef444440' }}
               >
-                Find Nearby Vet
+                My Vet Records
               </button>
             </div>
           </div>

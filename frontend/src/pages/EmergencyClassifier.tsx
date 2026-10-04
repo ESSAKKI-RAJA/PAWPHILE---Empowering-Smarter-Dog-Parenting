@@ -116,11 +116,11 @@ export default function EmergencyClassifier() {
           </h1>
         </div>
 
-        {/* RED: Find vet prominent */}
+        {/* RED: review saved vet contacts */}
         {isRed && (
-          <button onClick={() => navigate('/vet-locator')}
+          <button onClick={() => navigate('/vet-records')}
             className="w-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black py-4 rounded-2xl shadow-lg flex items-center justify-center gap-2 animate-bounce">
-            <MapPin className="w-6 h-6" /> Find Nearest Clinic NOW
+            <MapPin className="w-6 h-6" /> My Vet Contacts NOW
           </button>
         )}
 
@@ -237,10 +237,10 @@ export default function EmergencyClassifier() {
                 style={{ background: 'var(--teal-dim)', color: 'var(--teal)', border: '1px solid var(--teal-glow)' }}>
                 <FileText className="w-4 h-4" /> View Emergency Report
               </button>
-              <button onClick={() => navigate('/vet-locator')}
+              <button onClick={() => navigate('/vet-records')}
                 className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-black"
                 style={{ background: 'var(--card-2)', color: 'var(--text-2)', border: '1px solid var(--border)' }}>
-                <MapPin className="w-4 h-4" /> Find Nearby Vet
+                <MapPin className="w-4 h-4" /> My Vet Contacts
               </button>
               <button onClick={() => navigate('/dashboard')}
                 className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-black"
@@ -281,10 +281,10 @@ export default function EmergencyClassifier() {
                 {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                 {saving ? 'Saving...' : buttonLabel}
               </button>
-              <button onClick={() => navigate('/vet-locator')}
+              <button onClick={() => navigate('/vet-records')}
                 className="flex items-center gap-1.5 px-4 py-3 rounded-xl font-black text-xs"
                 style={{ background: 'var(--card-2)', color: 'var(--text-2)', border: '1px solid var(--border)' }}>
-                <MapPin className="w-4 h-4" /> Find Vet
+                <MapPin className="w-4 h-4" /> My Vet
               </button>
             </div>
           </div>
@@ -298,9 +298,9 @@ export default function EmergencyClassifier() {
             <FileText className="w-5 h-5" /> Generate vet report
           </button>
           {!isRed && (
-            <button onClick={() => navigate('/vet-locator')}
+            <button onClick={() => navigate('/vet-records')}
               className="bg-teal-600 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-teal-700 transition-colors">
-              <MapPin className="w-5 h-5" /> Find nearby vet
+              <MapPin className="w-5 h-5" /> My vet records
             </button>
           )}
         </div>

@@ -250,11 +250,6 @@ export async function getPawNewsFeed(feed: 'local' | 'global' | 'guide', zone: s
   return apiFetch<any>(`/api/pawnews/feed?feed=${feed}&zone=${zone}`, {}, false); // Public feed
 }
 
-// ─── VET LOCATOR ─────────────────────────────────────────────────────────────
-export async function searchVetClinics(lat: number, lng: number, radius_km: number = 10.0) {
-  return apiFetch<any>(`/api/vet-clinics/search?lat=${lat}&lng=${lng}&radius_km=${radius_km}`, {}, false);
-}
-
 // ─── WEATHER ALERT ───────────────────────────────────────────
 export async function getWeatherAlert(lat: number, lng: number) {
   return apiFetch<any>(`/api/weather/alert?lat=${lat}&lng=${lng}`, {}, false);

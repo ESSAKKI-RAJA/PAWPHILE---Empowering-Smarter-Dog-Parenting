@@ -1,4 +1,3 @@
-@import 'leaflet/dist/leaflet.css';
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Nunito:wght@400;500;600;700;800;900&display=swap');
 
 @tailwind base;
@@ -251,18 +250,4 @@ html.light {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ── Leaflet dark overrides ──────────────────────────── */
-html.dark .leaflet-popup-content-wrapper {
-  background: var(--card) !important;
-  color: var(--text) !important;
-}
-html.dark .leaflet-container {
-  background: var(--bg) !important;
-}
-.custom-marker { background: none !important; border: none !important; }
-.leaflet-popup-content-wrapper {
-  border-radius: 12px !important;
-  box-shadow: 0 4px 12px var(--shadow) !important;
-}
-.leaflet-popup-content { margin: 10px 14px !important; font-size: 13px !important; line-height: 1.5 !important; }
 
