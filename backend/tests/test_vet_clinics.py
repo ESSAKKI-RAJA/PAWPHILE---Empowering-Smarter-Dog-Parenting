@@ -18,6 +18,7 @@ from app.api.routes import vet_clinics as V
 @pytest.fixture()
 def client(monkeypatch):
     monkeypatch.delenv("GOOGLE_PLACES_API_KEY", raising=False)
+    monkeypatch.delenv("SERP_API_KEY", raising=False)
     app = FastAPI()
     app.include_router(V.router, prefix="/api/vet-clinics")
     return TestClient(app, raise_server_exceptions=False)
@@ -73,21 +74,50 @@ _NOMINATIM_NON_VET = {
 
 
 def _mock_httpx(monkeypatch, google_payload=None, osm_payload=None,
-                google_status=200, osm_status=200):
-    seen = {}
+                google_status=200, osm_status=200,
+                serp_payload=None, serp_status=200):
+    seen = {"serp_calls": 0, "google_calls": 0, "osm_calls": 0}
 
     def _get(url, params=None, headers=None, timeout=None):
         seen["url"] = url
         seen["params"] = params
         if "maps.googleapis.com" in url:
+            seen["google_calls"] += 1
             seen["google_params"] = params
             return _resp(google_status, google_payload)
+        if "serpapi.com" in url:
+            seen["serp_calls"] += 1
+            seen["serp_params"] = params
+            return _resp(serp_status, serp_payload)
+        seen["osm_calls"] += 1
         seen["osm_params"] = params
         return _resp(osm_status, osm_payload)
 
     import httpx
     monkeypatch.setattr(httpx, "get", _get)
     return seen
+
+
+_SERP_VET = {
+    "title": "Paws Veterinary Clinic",
+    "address": "12 Main St, Chennai",
+    "phone": "+91-44-1111-2222",
+    "website": "https://pawsvet.example.com",
+    "rating": 4.6,
+    "reviews": 128,
+    "hours": "Monday: 9:00 AM – 8:00 PM",
+    "open_state": "Open now",
+    "gps_coordinates": {"latitude": 13.06, "longitude": 80.25},
+    "place_id": "ChIJserp123",
+    "type": "Veterinary clinic",
+}
+
+_SERP_NON_VET = {
+    "title": "Coffee Corner",
+    "address": "14 Main St",
+    "gps_coordinates": {"latitude": 13.061, "longitude": 80.251},
+    "type": "Coffee shop",
+}
 
 
 # ── Validation ──
@@ -202,3 +232,127 @@ def test_dedupe_stable_ids():
     b = {"id": "google:x", "name": "A dup", "latitude": 1.0, "longitude": 2.0}
     c = {"id": "nominatim:y", "name": "B", "latitude": 3.0, "longitude": 4.0}
     assert len(V._dedupe([a, b, c])) == 2
+
+
+def test_cross_provider_dedupe_same_clinic_listed_once():
+    g = {"id": "google:ChIJ1", "name": "Paws Veterinary Clinic",
+         "latitude": 13.06, "longitude": 80.25}
+    s = {"id": "serp:ChIJ9", "name": "Paws Veterinary Clinic",
+         "latitude": 13.06001, "longitude": 80.25001}
+    n = {"id": "nominatim:7", "name": "Other Vet Clinic",
+         "latitude": 13.07, "longitude": 80.26}
+    out = V._dedupe([g, s, n])
+    assert len(out) == 2  # google record wins (priority order kept)
+    assert out[0]["id"].startswith("google")
+
+
+def test_similar_names_are_never_merged():
+    a = {"id": "google:1", "name": "Paws Veterinary Clinic",
+         "latitude": 13.06, "longitude": 80.25}
+    b = {"id": "serp:2", "name": "Paws Veterinary Hospital",
+         "latitude": 13.06, "longitude": 80.25}
+    assert len(V._dedupe([a, b])) == 2
+
+
+# ── SERP API provider ──
+
+def test_serp_results_normalized(monkeypatch, client):
+    monkeypatch.setenv("SERP_API_KEY", "serp-test-key")
+    seen = _mock_httpx(monkeypatch, {"status": "OK", "results": []}, [],
+                       serp_payload={"local_results": [_SERP_VET, _SERP_NON_VET]})
+    r = client.get("/api/vet-clinics/search?lat=13.06&lng=80.25")
+    body = r.json()
+    assert r.status_code == 200
+    assert body["status"] == "success" and body["source"] == "serp"
+    assert body["count"] == 1  # coffee shop filtered out
+    v = body["results"][0]
+    assert v["name"] == "Paws Veterinary Clinic"
+    assert v["phone"] == "+91-44-1111-2222"
+    assert v["website"] == "https://pawsvet.example.com"
+    assert v["rating"] == 4.6 and v["review_count"] == 128
+    assert v["open_state"] is True
+    assert v["hours"] == "Monday: 9:00 AM – 8:00 PM"
+    assert "serp-test-key" not in r.text  # key never leaks
+    assert seen["serp_params"]["engine"] == "google_maps"
+
+
+def test_serp_missing_fields_stay_null(monkeypatch, client):
+    monkeypatch.setenv("SERP_API_KEY", "k")
+    bare = {"title": "Village Veterinary Clinic", "address": "Main Rd",
+            "gps_coordinates": {"latitude": 13.0, "longitude": 80.2}, "type": "veterinary"}
+    _mock_httpx(monkeypatch, {"status": "OK", "results": []}, [],
+                serp_payload={"local_results": [bare]})
+    v = client.get("/api/vet-clinics/search?lat=13&lng=80").json()["results"][0]
+    assert v["phone"] is None and v["website"] is None
+    assert v["rating"] is None and v["hours"] is None and v["open_state"] is None
+
+
+def test_serp_not_called_when_google_succeeds(monkeypatch, client):
+    monkeypatch.setenv("GOOGLE_PLACES_API_KEY", "gk")
+    monkeypatch.setenv("SERP_API_KEY", "sk")
+    seen = _mock_httpx(monkeypatch,
+                       {"status": "OK", "results": [_GOOGLE_PLACE]},
+                       [], serp_payload={"local_results": [_SERP_VET]})
+    body = client.get("/api/vet-clinics/search?lat=13.06&lng=80.25").json()
+    assert body["source"] == "google" and body["count"] == 1
+    assert seen["serp_calls"] == 0  # cost control: no redundant provider call
+
+
+def test_serp_serves_with_partial_flag_when_google_fails(monkeypatch, client):
+    monkeypatch.setenv("GOOGLE_PLACES_API_KEY", "gk")
+    monkeypatch.setenv("SERP_API_KEY", "sk")
+    _mock_httpx(monkeypatch, None, [], google_status=500,
+                serp_payload={"local_results": [_SERP_VET]})
+    body = client.get("/api/vet-clinics/search?lat=13.06&lng=80.25").json()
+    assert body["status"] == "success" and body["source"] == "serp"
+    assert body.get("partial") is True
+
+
+def test_serp_unauthorized_falls_through_to_nominatim(monkeypatch, client):
+    monkeypatch.setenv("GOOGLE_PLACES_API_KEY", "gk")
+    monkeypatch.setenv("SERP_API_KEY", "bad-key")
+    _mock_httpx(monkeypatch, None, [_NOMINATIM_VET], google_status=500,
+                serp_payload={"error": "Invalid API key"}, serp_status=401)
+    body = client.get("/api/vet-clinics/search?lat=13.06&lng=80.25").json()
+    assert body["status"] == "success" and body["source"] == "nominatim"
+    assert "bad-key" not in str(body)
+
+
+def test_all_keys_invalid_returns_configuration_error(monkeypatch, client):
+    monkeypatch.setenv("GOOGLE_PLACES_API_KEY", "gk")
+    monkeypatch.setenv("SERP_API_KEY", "bad-key")
+    _mock_httpx(monkeypatch, None, google_status=500,
+                serp_payload={"error": "Invalid API key"}, serp_status=401,
+                osm_payload=[], osm_status=200)
+    body = client.get("/api/vet-clinics/search?lat=13&lng=80").json()
+    # Both keyed providers rejected their keys and open data is empty:
+    # operator-facing misconfiguration, user-safe message, no key leakage.
+    assert body["status"] == "error"
+    assert body["error_code"] == "configuration_error"
+    assert "bad-key" not in str(body)
+
+
+def test_serp_rate_limited_propagates(monkeypatch, client):
+    monkeypatch.setenv("SERP_API_KEY", "sk")
+    _mock_httpx(monkeypatch, {"status": "OK", "results": []}, [],
+                serp_payload=None, serp_status=429, osm_status=429)
+    body = client.get("/api/vet-clinics/search?lat=13&lng=80").json()
+    assert body["error_code"] == "rate_limited"
+
+
+def test_serp_timeout_and_malformed_fall_through(monkeypatch, client):
+    import httpx
+    monkeypatch.setenv("SERP_API_KEY", "sk")
+    calls = {"n": 0}
+    real_osm = [_NOMINATIM_VET]
+
+    def _get(url, params=None, headers=None, timeout=None):
+        if "serpapi.com" in url:
+            raise httpx.ConnectError("dns down")
+        calls["n"] += 1
+        return _resp(200, real_osm)
+
+    monkeypatch.setattr(httpx, "get", _get)
+    body = client.get("/api/vet-clinics/search?lat=13.06&lng=80.25").json()
+    assert body["status"] == "success" and body["source"] == "nominatim"
+    assert calls["n"] == 1

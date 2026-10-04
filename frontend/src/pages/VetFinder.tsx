@@ -80,8 +80,54 @@ const markerIconSelected = createIcon('#0284C7', true);
 
 function sourceLabel(provider: string): string {
   if (provider === 'google') return 'Google Places';
+  if (provider === 'serp') return 'Google via SERP';
   if (provider === 'nominatim') return 'OpenStreetMap';
   return provider || 'Place data';
+}
+
+// ─── Map layer: MapTiler when a browser key is configured, Carto/OSM otherwise.
+// VITE_MAPTILER_API_KEY is a domain-restricted public key (MapTiler dashboard →
+// allowed origins must include the production Vercel origin, no trailing
+// slash). It renders tiles and geocoding only — never veterinary data.
+const MAPTILER_KEY = (import.meta.env.VITE_MAPTILER_API_KEY as string | undefined) || '';
+const TILE_URL = MAPTILER_KEY
+  ? `https://api.maptiler.com/maps/voyager/{z}/{x}/{y}.png?key=${MAPTILER_KEY}`
+  : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
+const TILE_ATTRIBUTION = MAPTILER_KEY
+  ? '&copy; <a href="https://www.maptiler.com/copyright/">MapTiler</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  : '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>';
+
+interface GeocodedPlace {
+  lat: number;
+  lng: number;
+  label: string;
+}
+
+async function geocodePlace(query: string): Promise<GeocodedPlace | null> {
+  if (MAPTILER_KEY) {
+    const res = await fetch(
+      `https://api.maptiler.com/geocoding/${encodeURIComponent(query)}.json?key=${MAPTILER_KEY}&limit=1&types=place,locality,address`
+    );
+    if (!res.ok) throw new Error(`maptiler geocode ${res.status}`);
+    const data = await res.json();
+    const feature = data && Array.isArray(data.features) ? data.features[0] : null;
+    const center = feature && Array.isArray(feature.center) ? feature.center : null;
+    if (feature && center && Number.isFinite(center[1]) && Number.isFinite(center[0])) {
+      return { lat: center[1], lng: center[0], label: String(feature.place_name || query) };
+    }
+    return null;
+  }
+  const geoRes = await fetch(
+    `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`,
+    { headers: { Accept: 'application/json' } }
+  );
+  if (!geoRes.ok) throw new Error(`geocode ${geoRes.status}`);
+  const geoData = await geoRes.json();
+  if (!geoData || geoData.length === 0) return null;
+  const lat = parseFloat(geoData[0].lat);
+  const lng = parseFloat(geoData[0].lon);
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+  return { lat, lng, label: String(geoData[0].display_name || query).split(',').slice(0, 2).join(',') };
 }
 
 export default function VetFinder() {
@@ -196,30 +242,18 @@ export default function VetFinder() {
     setLoading(true);
     setError(null);
     try {
-      const geoRes = await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`,
-        { headers: { Accept: 'application/json' } }
-      );
-      if (!geoRes.ok) throw new Error(`geocode ${geoRes.status}`);
-      const geoData = await geoRes.json();
-      if (!geoData || geoData.length === 0) {
+      const found = await geocodePlace(query);
+      if (!found) {
         setLoading(false);
         setError({ code: 'geocode_failed', message: ERROR_COPY.geocode_failed });
         return;
       }
-      const lat = parseFloat(geoData[0].lat);
-      const lng = parseFloat(geoData[0].lon);
-      if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
-        setLoading(false);
-        setError({ code: 'geocode_failed', message: ERROR_COPY.geocode_failed });
-        return;
-      }
-      setMapCenter([lat, lng]);
+      setMapCenter([found.lat, found.lng]);
       setLocationMode('search');
       // A searched place is approximate until confirmed on the map —
       // never treated as the user's exact position.
-      setLocationLabel(`“${query}” (approximate area)`);
-      await runSearch(lat, lng, radiusKm);
+      setLocationLabel(`“${found.label}” (approximate area)`);
+      await runSearch(found.lat, found.lng, radiusKm);
     } catch {
       setLoading(false);
       setError({ code: 'geocode_failed', message: ERROR_COPY.geocode_failed });
@@ -331,10 +365,7 @@ export default function VetFinder() {
         <div className="h-[260px] md:h-[320px] w-full rounded-2xl overflow-hidden border-4 border-white dark:border-slate-800 shadow-sm bg-slate-100 dark:bg-slate-800 flex-shrink-0 z-0">
           <MapContainer center={mapCenter} zoom={12} className="h-full w-full" zoomControl={false}>
             <MapUpdater center={mapCenter} />
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
-              url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-            />
+            <TileLayer attribution={TILE_ATTRIBUTION} url={TILE_URL} />
             {filtered.map((v) => (
               <Marker
                 key={v.id}

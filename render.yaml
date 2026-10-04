@@ -1,0 +1,60 @@
+# PAWPHILE — Render deployment blueprint (authoritative repo-side config).
+#
+# Service settings that must match the Render dashboard:
+# - Root Directory: backend   (commands below assume the service root IS backend/;
+#   if the dashboard sets Root Directory=backend, strip the "backend/" prefix
+#   from build/start commands is NOT needed — Render runs them inside rootDir.
+#   This blueprint declares rootDir explicitly so dashboard and file agree.)
+# - Health Check Path: /health  (must return 200; see app.main health_check)
+# - Python version pinned via PYTHON_VERSION (matches .python-version: 3.12).
+#
+# PORT handling: Render injects $PORT (default 10000). The start command MUST
+# honor $PORT — a hardcoded port is the classic cause of a live 503 while
+# local boot (fixed port) works fine.
+services:
+  - type: web
+    name: pawphile-backend
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: ENVIRONMENT
+        value: production
+      # ── Required (sync: false → values live ONLY in the Render dashboard) ──
+      - key: DATABASE_URL
+        sync: false
+      - key: CLERK_SECRET_KEY
+        sync: false
+      - key: CLERK_JWKS_URL
+        sync: false
+      - key: FRONTEND_ORIGIN
+        sync: false
+      # ── PAW AI provider (at least one path must be configured) ──
+      - key: PAW_AI_PROVIDER
+        value: auto
+      - key: MUSE_GLIMMER_API_KEY
+        sync: false
+      - key: MUSE_GLIMMER_BASE_URL
+        sync: false
+      - key: MUSE_GLIMMER_MODEL
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      # ── Vet Locator place discovery (open-data fallback works keyless) ──
+      - key: GOOGLE_PLACES_API_KEY
+        sync: false
+      - key: SERP_API_KEY
+        sync: false
+      # ── Storage / misc (configure the ones the deployment uses) ──
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: ROBOFLOW_API_KEY
+        sync: false

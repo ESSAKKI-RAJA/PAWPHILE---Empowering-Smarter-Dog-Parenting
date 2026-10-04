@@ -100,7 +100,7 @@ The platform is designed to help dog parents:
 | **Preventive Care** | Vaccine and deworming schedule tracking with WSAVA-calculated due dates. | ✅ Implemented |
 | **Nutrition & BCS** | Food logging, calorie tracking, and 9-point WSAVA Body Condition Score assessment. | ✅ Implemented |
 | **Behavior Log** | Mood and behavioral anomaly tracking for longitudinal pattern recognition. | ✅ Implemented |
-| **Vet Locator** | Nearby veterinary discovery: Google Places (server-side key, `type=veterinary_care`) when configured, OpenStreetMap Nominatim fallback otherwise. Normalized results with source provenance; no fabricated ratings, hours, or phone numbers. Map: Leaflet + React-Leaflet. | ✅ Implemented |
+| **Vet Locator** | Nearby veterinary discovery in deterministic priority: Google Places (server-side key, `type=veterinary_care`) → SERP API Google Maps local results (server-side `SERP_API_KEY`) → OpenStreetMap Nominatim open data. Normalized results with source provenance and cross-provider dedupe; no fabricated ratings, hours, or phone numbers. Map: MapTiler tiles/geocoding when `VITE_MAPTILER_API_KEY` is set, Leaflet + Carto/OSM otherwise. | ✅ Implemented |
 | **PAWNEWS** | Contextual pet health news feed aggregating validated external sources with breed/season relevance. | ✅ Implemented |
 | **Reports & PDF Export** | Longitudinal health summary generation for veterinary consultations. | ✅ Implemented |
 | **Offline-First PWA** | IndexedDB-backed offline data entry with background sync on reconnection. | ✅ Implemented |
@@ -238,8 +238,20 @@ sequenceDiagram
 | Authentication | Clerk (JWT, OAuth, JWKS) |
 | Image Storage | Cloudinary |
 | Frontend Hosting | Vercel |
-| Backend Hosting | Render |
+| Backend Hosting | Render (see `render.yaml` — uvicorn honors `$PORT`, health check `/health`) |
 | Push Notifications | Firebase Cloud Messaging |
+| Vet place discovery | Google Places → SERP API Google Maps → OpenStreetMap Nominatim |
+| Vet map/geocoding layer | MapTiler (restricted browser key) with Carto/OSM fallback |
+
+> **GeoLite2 decision:** IP-based geolocation is intentionally NOT bundled.
+> MaxMind GeoLite2 requires a license-key download at deploy time, ships a
+> large binary database, and Render's ephemeral filesystem makes it fragile;
+> more importantly, the product's privacy posture favors explicit device
+> permission and user-entered search locations over silent IP inference.
+> The locator therefore uses explicit location first, searched location
+> second, and labels searched areas as approximate. No exact position is
+> ever claimed from approximate input, and locator coordinates are used
+> only to scope the search — never persisted.
 
 ---
 
@@ -467,6 +479,9 @@ MUSE_GLIMMER_MODEL=
 # Vet Locator (optional): Google Places veterinary discovery, server-side only.
 # When absent, the endpoint falls back to OpenStreetMap Nominatim open data.
 GOOGLE_PLACES_API_KEY=
+# SERP API Google Maps local results — second priority after Google Places.
+# Server-side ONLY. When absent/invalid, discovery continues with open data.
+SERP_API_KEY=
 RESEND_API_KEY=re_...
 GUARDIAN_API_KEY=...     # Optional — PAWNEWS feeds fallback to internal seeds if absent
 GNEWS_API_KEY=...        # Optional
