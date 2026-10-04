@@ -15,6 +15,18 @@ export interface SendMessageOptions {
   maxHistoryMessages?: number;
 }
 
+// ─── Auth token provider ──────────────────────────────────────────────
+// Registered once from main.tsx (ClerkBridge). The backend /chat endpoint
+// is protected (Clerk JWT required); without the token every logged-in
+// request would 401 and silently degrade to the local fallback, never
+// reaching the configured Muse/Glimmer provider. When no provider is
+// registered (logged out / key missing) we keep the local fallback.
+let _getChatToken: (() => Promise<string | null>) | null = null;
+
+export function registerChatTokenProvider(fn: () => Promise<string | null>) {
+  _getChatToken = fn;
+}
+
 /**
  * Send a message and get an AI response
  * Falls back to local logic if API is unavailable
@@ -66,10 +78,24 @@ async function callChatAPI(
     context,
   };
 
+  // Attach the Clerk JWT when available: /chat is a protected endpoint and
+  // returns 401 without it. Fail open to an unauthenticated attempt so the
+  // local-fallback path below still works when logged out.
+  let authHeaders: Record<string, string> = {};
+  if (_getChatToken) {
+    try {
+      const token = await _getChatToken();
+      if (token) authHeaders = { Authorization: `Bearer ${token}` };
+    } catch {
+      authHeaders = {};
+    }
+  }
+
   const response = await fetch(`${apiUrl}/api/paw-ai/chat`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      ...authHeaders,
     },
     body: JSON.stringify(payload),
   });

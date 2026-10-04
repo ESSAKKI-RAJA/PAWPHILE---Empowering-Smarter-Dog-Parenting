@@ -68,7 +68,7 @@ export default function Layout() {
                 className="w-full h-full object-cover" />
             ) : (
               <img
-                src="/assets/pawphile-logo.jpeg"
+                src="/assets/pawphile-logo.png"
                 alt="PAWPHILE"
                 className="w-full h-full object-contain"
                 onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}

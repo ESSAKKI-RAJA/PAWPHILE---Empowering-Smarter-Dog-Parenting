@@ -401,6 +401,35 @@ export default function Welcome() {
           </div>
         </section>
 
+        {/* ── Future updates ── */}
+        <section id="future" className="pw-section" aria-labelledby="future-h">
+          <div className="pw-wrap">
+            <Reveal>
+              <p className="pw-eyebrow">Roadmap, not inventory</p>
+              <h2 id="future-h" className="pw-h-section">Introduced in future updates</h2>
+              <p className="pw-lede">
+                The capabilities below are planned — not live in the current MVP.
+                They return only after real-world validation, so the product grows
+                into connected care without pretending to be there today.
+              </p>
+              <ul className="pw-chips pw-cap-chips" aria-label="Planned future capabilities">
+                {[
+                  'Connected health timeline',
+                  'Care planning',
+                  'Controlled health sharing',
+                  'Veterinary collaboration',
+                  'External health connections',
+                  'Organizations / care networks',
+                  'Vet portal',
+                  'Longitudinal intelligence',
+                ].map((c) => (
+                  <li key={c}>{c}</li>
+                ))}
+              </ul>
+            </Reveal>
+          </div>
+        </section>
+
         {/* ── CTA ── */}
         <section id="enter" className="pw-section" aria-labelledby="cta-h">
           <div className="pw-wrap">

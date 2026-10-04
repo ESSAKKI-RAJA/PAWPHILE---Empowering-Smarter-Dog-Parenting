@@ -17,7 +17,7 @@
 [![React](https://img.shields.io/badge/React-18.x-61dafb?style=for-the-badge&logo=react&logoColor=black)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178c6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-Python_3.12-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
-[![AI Powered](https://img.shields.io/badge/AI-Groq_%2B_Ollama-FF6F00?style=for-the-badge&logo=openai&logoColor=white)](#ai-architecture)
+[![AI Powered](https://img.shields.io/badge/AI-Muse_Glimmer_%2B_Groq-FF6F00?style=for-the-badge&logo=openai&logoColor=white)](#ai-architecture)
 [![Vision](https://img.shields.io/badge/Vision_AI-Roboflow_%2B_PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)](#computer-vision)
 [![PWA](https://img.shields.io/badge/PWA-Offline_First-5A0FC8?style=for-the-badge&logo=pwa&logoColor=white)](#offline-first)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg?style=for-the-badge)](CONTRIBUTING.md)
@@ -92,7 +92,7 @@ The platform is designed to help dog parents:
 
 | Module | Description | Status |
 |--------|-------------|--------|
-| **PAW AI — Chat** | Breed-specific LLM triage powered by Groq (Llama 3). Deterministic guardrails fire before LLM for any emergency signal. | ✅ Implemented |
+| **PAW AI — Chat** | Breed-aware LLM guidance via Muse Glimmer 30 when configured (`PAW_AI_PROVIDER=auto`), Groq legacy fallback. Deterministic guardrails fire before LLM for any emergency signal. | ✅ Implemented |
 | **PAW AI — Triage Engine** | Structured symptom assessment engine with hardcoded emergency rules and breed-context injection. | 🟡 Locally Working (Ollama) |
 | **Vision Scan (DermAI™)** | Roboflow Inference SDK wrapper for canine skin and lesion screening. | ✅ Implemented (Bin 1) |
 | **Vision (PyTorch/YOLO)** | EfficientNet B0 breed classification and YOLOv8 detection — experimental pipelines. | 🔵 Experimental |
@@ -100,7 +100,7 @@ The platform is designed to help dog parents:
 | **Preventive Care** | Vaccine and deworming schedule tracking with WSAVA-calculated due dates. | ✅ Implemented |
 | **Nutrition & BCS** | Food logging, calorie tracking, and 9-point WSAVA Body Condition Score assessment. | ✅ Implemented |
 | **Behavior Log** | Mood and behavioral anomaly tracking for longitudinal pattern recognition. | ✅ Implemented |
-| **Vet Locator** | Map-based nearby veterinary clinic finder (Leaflet + React-Leaflet). | ✅ Implemented |
+| **Vet Locator** | Nearby veterinary discovery: Google Places (server-side key, `type=veterinary_care`) when configured, OpenStreetMap Nominatim fallback otherwise. Normalized results with source provenance; no fabricated ratings, hours, or phone numbers. Map: Leaflet + React-Leaflet. | ✅ Implemented |
 | **PAWNEWS** | Contextual pet health news feed aggregating validated external sources with breed/season relevance. | ✅ Implemented |
 | **Reports & PDF Export** | Longitudinal health summary generation for veterinary consultations. | ✅ Implemented |
 | **Offline-First PWA** | IndexedDB-backed offline data entry with background sync on reconnection. | ✅ Implemented |
@@ -218,7 +218,7 @@ sequenceDiagram
 | PDF Reports | ReportLab |
 | Vision SDK | Roboflow Inference SDK (`inference-sdk`) |
 | Streaming | SSE-Starlette (Server-Sent Events) |
-| LLM (Chat) | Groq Cloud API (Llama 3, `llama3-70b-8192`) |
+| LLM (Chat) | Muse Glimmer 30 (`PAW_AI_PROVIDER=auto` when `MUSE_GLIMMER_API_KEY` is set), Groq Cloud fallback (`llama3-70b-8192`) |
 | LLM (Triage) | Local Ollama (Llama 3, `localhost:11434`) |
 
 ### Computer Vision Service
@@ -306,7 +306,7 @@ PAWPHILE implements a **Guardrail-First AI Architecture** where deterministic sa
 2. **Toxin Guard** — Intercepts food safety queries and routes to deterministic toxin database.
 3. **Intent Classification** — Classifies query into: triage, breed, nutrition, vaccine, deworming, BCS, behavior, or general.
 4. **Breed Context Injection** — Dog's breed, age, weight, and recent records auto-injected into system prompt.
-5. **Groq LLM Call** — `llama3-70b-8192` via Groq Cloud API for low-latency, low-cost inference.
+5. **Provider Call** — Muse Glimmer 30 via `MUSE_GLIMMER_BASE_URL`/`MUSE_GLIMMER_MODEL` when configured (`PAW_AI_PROVIDER=auto|glimmer`); Groq `llama3-70b-8192` fallback. Server-side keys only; failures return a controlled unavailable state, never a fabricated answer.
 6. **Output Sanitization** — Mandatory veterinary disclaimer appended. Dosage and diagnostic terms structurally excluded.
 
 **Pipeline (Triage Route `/api/paw-ai/triage`):**
@@ -384,7 +384,9 @@ PAWPHILE is a **Progressive Web App (PWA)** designed for reliability in low-conn
 - Clerk account — [clerk.com](https://clerk.com)
 - Neon PostgreSQL account — [neon.tech](https://neon.tech)
 - Cloudinary account — [cloudinary.com](https://cloudinary.com)
-- Groq API key — [console.groq.com](https://console.groq.com)
+- Groq API key — [console.groq.com](https://console.groq.com) (legacy fallback)
+- Muse Glimmer credentials (`MUSE_GLIMMER_API_KEY/BASE_URL/MODEL`) — preferred PAW AI provider
+- Google Places API key (optional — Vet Locator falls back to OpenStreetMap without it)
 - Roboflow account — [roboflow.com](https://roboflow.com)
 
 ### 1. Clone
@@ -456,6 +458,15 @@ CLOUDINARY_API_SECRET=...
 FRONTEND_ORIGIN=http://localhost:5173
 ROBOFLOW_API_KEY=...
 GROQ_API_KEY=gsk_...
+# PAW AI provider: auto|glimmer|groq. auto selects Muse Glimmer 30 when
+# MUSE_GLIMMER_API_KEY is set, otherwise the legacy Groq path.
+PAW_AI_PROVIDER=auto
+MUSE_GLIMMER_API_KEY=
+MUSE_GLIMMER_BASE_URL=
+MUSE_GLIMMER_MODEL=
+# Vet Locator (optional): Google Places veterinary discovery, server-side only.
+# When absent, the endpoint falls back to OpenStreetMap Nominatim open data.
+GOOGLE_PLACES_API_KEY=
 RESEND_API_KEY=re_...
 GUARDIAN_API_KEY=...     # Optional — PAWNEWS feeds fallback to internal seeds if absent
 GNEWS_API_KEY=...        # Optional
@@ -554,6 +565,12 @@ PAWPHILE is structured as both a consumer product and a research platform:
 ---
 
 ## 🗺️ Future Roadmap
+
+> **Introduced in future updates (planned, not live):** connected health
+> timeline, care planning, controlled health sharing, veterinary
+> collaboration, external health connections, organizations / care networks,
+> vet portal, longitudinal intelligence. These remain deferred from the
+> current MVP and return only after real-world validation.
 
 - [x] **Phase 1** — React PWA, FastAPI Backend, PostgreSQL, Clerk Auth
 - [x] **Phase 2** — Offline-First IndexedDB Architecture, Supabase SyncManager

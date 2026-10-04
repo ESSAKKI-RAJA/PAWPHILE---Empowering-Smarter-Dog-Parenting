@@ -4,6 +4,7 @@ import { ClerkProvider, useAuth } from "@clerk/clerk-react";
 import App from "./App.tsx";
 import "./index.css";
 import { registerTokenProvider } from "./services/apiClient";
+import { registerChatTokenProvider } from "./services/chatEngine";
 import { registerFoundationTokenProvider } from "./services/foundationApi";
 import { flushQueue } from "./services/syncQueue";
 
@@ -23,6 +24,7 @@ function ClerkBridge() {
 
   useEffect(() => {
     registerTokenProvider(() => getToken());
+    registerChatTokenProvider(() => getToken());
     registerFoundationTokenProvider(() => getToken());
   }, [getToken]);
 
