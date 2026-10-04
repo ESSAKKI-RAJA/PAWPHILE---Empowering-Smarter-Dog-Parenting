@@ -102,12 +102,14 @@ TOXIC_FOODS = {
 
 @router.post("/chat")
 def paw_ai_chat(req: GroqChatRequest, clerk_user_id: str = Depends(get_current_user)) -> dict[str, Any]:
-    """POST /api/paw-ai/chat — protected: invokes paid Groq inference."""
-    import httpx
-    import os
+    """POST /api/paw-ai/chat — protected: invokes the configured AI provider
+    (Muse Glimmer 30 when configured, else Groq) behind PAW AI guardrails."""
     import json
+    from app.services.ai_provider import (
+        chat_complete, parse_provider_content,
+        ProviderError, ProviderNotConfigured,
+    )
 
-    GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
     dog_ctx = req.context or {}
     system_prompt = (
         "You are PAW AI, an expert veterinary assistant. "
@@ -119,42 +121,30 @@ def paw_ai_chat(req: GroqChatRequest, clerk_user_id: str = Depends(get_current_u
         "Keep the message friendly, ask clarifying questions, and provide evidence-based guidance. "
         f"Context: {json.dumps(dog_ctx)}"
     )
-    
+
     messages = [{"role": "system", "content": system_prompt}]
     for m in req.messages:
         messages.append({"role": m.role, "content": m.content})
-        
+
     if req.userInput:
         messages.append({"role": "user", "content": req.userInput})
-        
+
     try:
-        response = httpx.post(
-            "https://api.groq.com/openai/v1/chat/completions",
-            headers={
-                "Authorization": f"Bearer {GROQ_API_KEY}",
-                "Content-Type": "application/json"
-            },
-            json={
-                "model": "llama3-70b-8192",
-                "messages": messages,
-                "response_format": { "type": "json_object" },
-                "temperature": 0.7,
-                "max_tokens": 1024
-            },
-            timeout=15.0
-        )
-        if response.status_code == 200:
-            content = response.json()["choices"][0]["message"]["content"]
-            parsed = json.loads(content)
+        result = chat_complete(messages)
+        parsed = parse_provider_content(result.content)
 
-            disclaimer = "\n\n*PAW AI is a decision-support tool, not a veterinarian. Always consult a licensed vet for diagnosis and treatment.*"
-            if disclaimer not in parsed.get("message", ""):
-                parsed["message"] = parsed.get("message", "") + disclaimer
+        disclaimer = "\n\n*PAW AI is a decision-support tool, not a veterinarian. Always consult a licensed vet for diagnosis and treatment.*"
+        if disclaimer not in parsed.get("message", ""):
+            parsed["message"] = parsed.get("message", "") + disclaimer
 
-            return parsed
-        else:
-            logger.warning("paw-ai groq upstream error status=%s", response.status_code)
-            raise HTTPException(status_code=502, detail="PAW AI is currently unavailable. Please try again later.")
+        return parsed
+    except ProviderNotConfigured:
+        logger.warning("paw-ai provider not configured")
+        raise HTTPException(status_code=502, detail="PAW AI is currently unavailable. Please try again later.")
+    except ProviderError as e:
+        if e.status is not None and e.status != 200:
+            logger.warning("paw-ai provider upstream error status=%s", e.status)
+        raise HTTPException(status_code=502, detail="PAW AI is currently unavailable. Please try again later.")
     except HTTPException:
         raise
     except Exception:

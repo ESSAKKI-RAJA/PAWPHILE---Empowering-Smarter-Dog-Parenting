@@ -22,15 +22,11 @@ import Reports from './pages/Reports';
 import Auth from './pages/Auth';
 import BMICalculator from './pages/BMICalculator';
 
-import Timeline from './pages/Timeline';
-import CarePlan from './pages/CarePlan';
 import Welcome from './pages/Welcome';
-import ShareView from './pages/ShareView';
-import VeterinaryCare from './pages/VeterinaryCare';
-import VetPortal from './pages/VetPortal';
-import Connections from './pages/Connections';
-import Organizations from './pages/Organizations';
-import HealthIntelligence from './pages/HealthIntelligence';
+// NOTE (MVP reduction): Timeline, Care Plan, Share, Vet Care, Vet Portal,
+// Connections, Organizations and Intelligence are deferred from user-facing
+// navigation. Their page implementations are preserved untouched for future
+// reactivation; the routes below redirect to Dashboard (safe landing).
 import ConsentCenter from './pages/ConsentCenter';
 import DataExport from './pages/DataExport';
 import PawAiCenter from './pages/PawAiCenter';
@@ -83,14 +79,15 @@ export default function App() {
                     app shell. "/" and "/welcome" are declared above; unknown
                     paths fall through to the inner "*" redirect below. */}
                 <Route path="dashboard" element={<Dashboard />} />
-                <Route path="timeline" element={<Timeline />} />
-                <Route path="care-plan" element={<CarePlan />} />
-                <Route path="share" element={<ShareView />} />
-                <Route path="veterinary" element={<VeterinaryCare />} />
-                <Route path="vet" element={<VetPortal />} />
-                <Route path="connections" element={<Connections />} />
-                <Route path="organizations" element={<Organizations />} />
-                <Route path="intelligence" element={<HealthIntelligence />} />
+                {/* Deferred MVP routes → safe Dashboard landing (implementation preserved) */}
+                <Route path="timeline" element={<Navigate to="/dashboard" replace />} />
+                <Route path="care-plan" element={<Navigate to="/dashboard" replace />} />
+                <Route path="share" element={<Navigate to="/dashboard" replace />} />
+                <Route path="veterinary" element={<Navigate to="/dashboard" replace />} />
+                <Route path="vet" element={<Navigate to="/dashboard" replace />} />
+                <Route path="connections" element={<Navigate to="/dashboard" replace />} />
+                <Route path="organizations" element={<Navigate to="/dashboard" replace />} />
+                <Route path="intelligence" element={<Navigate to="/dashboard" replace />} />
                 <Route path="triage" element={<DogHealthTriage />} />
                 <Route path="emergency" element={<EmergencyClassifier />} />
                 {/* Preventive Care — consolidated page */}

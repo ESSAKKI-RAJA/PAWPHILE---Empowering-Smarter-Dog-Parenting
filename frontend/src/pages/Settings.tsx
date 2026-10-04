@@ -101,7 +101,8 @@ export default function Settings() {
     setLoadingToggles(prev => ({ ...prev, [key]: true }));
 
     // Canonical delivery preferences (PostgreSQL via /api/settings).
-    // Per-pet reminders themselves are server-authoritative in Care Plan (/care-plan).
+    // Server-authoritative reminder state lives behind the Preventive Care
+    // schedule (see Preventive Care page).
     try {
       const payload = {
         email_enabled: key === 'emailEnabled' ? newValue : localEmailEnabled,
@@ -237,9 +238,8 @@ export default function Settings() {
 
         <Card title="Email Reminders" icon={Mail}>
           <p className="text-xs text-slate-500 dark:text-slate-400">
-            Delivery address and categories are stored on the server. Individual due-date reminders live in{' '}
-            <button onClick={() => navigate('/care-plan')} className="underline font-bold">Care Plan</button>
-            {' '}— the server, not this device, decides what is due.
+            Delivery address and categories are stored on the server. Individual due-date reminders follow
+            the Preventive Care schedule — the server, not this device, decides what is due.
           </p>
           <div className="space-y-4">
             <div className="bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 space-y-4">

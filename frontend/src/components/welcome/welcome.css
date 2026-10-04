@@ -403,6 +403,7 @@ html.dark .pw-welcome {
 .pw-mature-row strong { font-family: 'Nunito', sans-serif; font-size: 1.02rem; }
 .pw-mature-row span { font-size: 13px; color: var(--text-2); }
 .pw-done-pill { font-size: 11px; font-weight: 800; letter-spacing: 0.12em; color: var(--forest); border: 1px solid var(--accent-line); background: var(--forest-soft); border-radius: 999px; padding: 4px 12px; white-space: nowrap; }
+.pw-later-pill { font-size: 11px; font-weight: 800; letter-spacing: 0.12em; color: var(--amber); border: 1px dashed currentColor; border-radius: 999px; padding: 4px 12px; white-space: nowrap; }
 .pw-next { margin-top: 26px; }
 .pw-next ul { margin: 12px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; }
 .pw-next li { font-size: 14px; color: var(--text-2); padding-left: 16px; position: relative; }

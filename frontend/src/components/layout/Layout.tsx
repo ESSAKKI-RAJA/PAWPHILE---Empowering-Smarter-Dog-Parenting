@@ -2,7 +2,7 @@ import { Outlet, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import {
   Home, Activity, UtensilsCrossed, Settings as SettingsIcon,
   Eye, MapPin, FileText, Scale, Footprints, User, Brain,
-  Shield, Newspaper, Clock, HeartHandshake, Share2, Sparkles, Stethoscope
+  Shield, Newspaper
 } from 'lucide-react';
 import BottomNav from './BottomNav';
 import ToastHost from '../ui/ToastHost';
@@ -11,14 +11,6 @@ import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-reac
 
 const NAV_ITEMS = [
   { label: 'Home',            path: '/dashboard',        icon: Home },
-  { label: 'Timeline',        path: '/timeline',         icon: Clock },
-  { label: 'Care Plan',       path: '/care-plan',        icon: HeartHandshake },
-  { label: 'Share',           path: '/share',            icon: Share2 },
-  { label: 'Vet Care',        path: '/veterinary',       icon: Stethoscope },
-  { label: 'Connections',     path: '/connections',      icon: Share2 },
-  { label: 'Organizations',   path: '/organizations',    icon: MapPin },
-  { label: 'Vet Portal',      path: '/vet',              icon: Stethoscope },
-  { label: 'Intelligence',    path: '/intelligence',     icon: Sparkles },
   { label: 'PAW AI',          path: '/paw-ai',           icon: Brain },
   { label: 'Triage',          path: '/triage',           icon: Activity },
   { label: 'Nutrition',       path: '/nutrition',        icon: UtensilsCrossed },

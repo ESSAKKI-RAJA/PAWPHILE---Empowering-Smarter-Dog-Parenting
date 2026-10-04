@@ -13,10 +13,10 @@ export function DemoTag() {
 
 const JOURNEY = [
   { icon: ClipboardList, label: 'Record', sub: 'Owner-recorded' },
-  { icon: LineChart, label: 'Baseline', sub: 'Personal history' },
-  { icon: Activity, label: 'Change flagged', sub: 'With evidence' },
-  { icon: Share2, label: 'Shared', sub: 'Scope + expiry' },
-  { icon: BellRing, label: 'Follow-up', sub: 'Reminder set' },
+  { icon: LineChart, label: 'Pattern', sub: 'Personal history' },
+  { icon: Activity, label: 'Guidance', sub: 'With safety bounds' },
+  { icon: Share2, label: 'Report', sub: 'Vet-ready' },
+  { icon: BellRing, label: 'Reminder', sub: 'Preventive care' },
 ];
 
 export function JourneyStrip() {

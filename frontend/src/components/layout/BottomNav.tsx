@@ -1,11 +1,11 @@
 import { NavLink } from 'react-router-dom';
-import { Home, Brain, FileText, User, ShieldAlert, Stethoscope } from 'lucide-react';
+import { Home, Brain, FileText, User, ShieldAlert, Activity } from 'lucide-react';
 
 const ITEMS = [
   { label: 'Home',     path: '/dashboard', icon: Home },
   { label: 'PAW AI',   path: '/paw-ai',    icon: Brain },
   { label: 'Care',     path: '/preventive-care', icon: ShieldAlert },
-  { label: 'Vet',      path: '/veterinary', icon: Stethoscope },
+  { label: 'Triage',   path: '/triage', icon: Activity },
   { label: 'Reports',  path: '/reports',   icon: FileText },
   { label: 'Profile',  path: '/profile',   icon: User },
 ];

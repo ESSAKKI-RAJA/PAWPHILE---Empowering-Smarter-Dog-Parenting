@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Check, Minus, PawPrint } from 'lucide-react';
 import Reveal from '../components/welcome/Reveal';
 import BrandLoader from '../components/welcome/BrandLoader';
-import { JourneyStrip, IntelDemo, LoopFlow, EcoHub, AiPipe } from '../components/welcome/visuals';
+import { JourneyStrip, AiPipe } from '../components/welcome/visuals';
 import '../components/welcome/welcome.css';
 
 const LOGO = '/assets/pawphile-logo.png';
@@ -29,9 +29,8 @@ function Nav() {
         </Link>
         <nav className="pw-nav-links" aria-label="Page sections">
           <a href="#overview">Overview</a>
-          <a href="#intelligence">Intelligence</a>
-          <a href="#veterinary">Veterinary</a>
-          <a href="#ecosystem">Connections</a>
+          <a href="#guidance">Guidance</a>
+          <a href="#visits">Vet visits</a>
         </nav>
         <Link to="/dashboard" className="pw-nav-cta">
           {ENTER}
@@ -42,50 +41,47 @@ function Nav() {
 }
 
 const STEPS = [
-  ['Record', 'Health events, measurements, symptoms and files become one timeline.'],
-  ['Understand', 'Personal baselines and trends surface what changed, with evidence.'],
-  ['Prepare', 'A vet-ready package is drafted from the record, gaps included.'],
-  ['Review', 'You see exactly what would be shared, and edit before approving.'],
-  ['Share', 'Scoped, purposed and expiring access. Nothing sends itself.'],
-  ['Collaborate', 'The veterinarian reviews, notes and answers your questions.'],
-  ['Follow up', 'Recommendations become reminders, then recorded outcomes.'],
-  ['Continue', 'New events refresh the timeline and the intelligence.'],
+  ['Record', 'Profiles, measurements, symptoms and files become one private record.'],
+  ['Understand', 'PAW AI and triage turn records into next steps, with safety boundaries.'],
+  ['Prepare', 'Vet-ready reports summarize what matters before a visit.'],
+  ['Remind', 'Preventive care and notifications keep vaccines and deworming on schedule.'],
+  ['Revisit', 'New checkups and outcomes keep the story current.'],
 ];
 
 const LAYERS = [
   {
     n: '01',
-    name: 'Foundation',
-    line: 'The trusted record underneath everything: identity, ownership, canonical health events, timeline, measurements, files, reports, reminders, consent, sharing, audit and export.',
-    chips: ['Health events', 'Timeline', 'Measurements', 'Files', 'Reports', 'Reminders', 'Consent', 'Audit', 'Export'],
+    name: 'Record',
+    line: 'Profile, health events, measurements, files and reports in one private record you control.',
+    chips: ['Pet profile', 'Health events', 'Measurements', 'Files', 'Reports'],
   },
   {
     n: '02',
-    name: 'Longitudinal intelligence',
-    line: 'Personal baselines, trends, completeness and change detection turn the record into understanding. Descriptive and evidence-linked, never a diagnosis.',
-    chips: ['Baselines', 'Trends', 'Change detection', 'Evidence lineage', 'PAW AI'],
+    name: 'Guidance',
+    line: 'PAW AI, triage and preventive care turn records into next steps. Helpful, never a diagnosis.',
+    chips: ['PAW AI', 'Triage', 'Preventive care', 'Nutrition', 'Behavior'],
   },
   {
     n: '03',
-    name: 'Veterinary continuity',
-    line: 'Owner records become controlled collaboration: care team, scoped shares, immutable vet packages, consultations, notes, follow-ups and full access history.',
-    chips: ['Care team', 'Vet packages', 'Consultations', 'Notes', 'Follow-ups', 'Access history'],
+    name: 'Vet-ready',
+    line: 'Reports summarize visits, reminders keep prevention on schedule, and the locator finds care nearby.',
+    chips: ['Vet reports', 'Reminders', 'Vet locator', 'Vision scan'],
   },
   {
     n: '04',
-    name: 'Ecosystem',
-    line: 'Structured connections to clinics, labs, imaging, devices and partners through consent, authorization and provenance. Integration-ready, honestly labeled.',
-    chips: ['Organizations', 'Professional identity', 'Labs', 'Devices', 'Partner API', 'Webhooks', 'Emergency continuity'],
+    name: 'Trust',
+    line: 'Consent, authorization, audit and export keep you in control of every byte.',
+    chips: ['Consent', 'Authorization', 'Audit', 'Export'],
   },
 ];
 
 const TRUST = [
   ['Owner control', 'You decide what is shared, with whom, for what purpose and for how long. Revocation is immediate.'],
-  ['Consent first', 'Analysis, sharing and integrations each need explicit consent. Withdrawal blocks what comes next.'],
+  ['Consent first', 'Analysis and reminders each need explicit consent. Withdrawal blocks what comes next.'],
   ['Provenance', 'Every fact keeps its source: owner, veterinarian, clinic, import, device, lab, system or AI-derived.'],
   ['Human oversight', 'PAWPHILE prepares conversations with veterinarians. It does not replace them.'],
   ['No diagnosis claims', 'Patterns are described with evidence. Diseases are never stated, and treatment is never prescribed.'],
-  ['Auditable access', 'Who saw what, when, for what purpose and until when. The owner can inspect it all.'],
+  ['Auditable access', 'Every change is traceable, and the full record exports any time.'],
 ];
 
 const NOTDO = [
@@ -97,14 +93,13 @@ const NOTDO = [
 ];
 
 const CAPS: Array<[string, string[]]> = [
-  ['Record', ['Pet profile', 'Health events', 'Timeline', 'Measurements', 'Files', 'Reports']],
-  ['Intelligence', ['Baselines', 'Trends', 'Change detection', 'Evidence lineage', 'PAW AI']],
-  ['Veterinary', ['Care team', 'Sharing', 'Vet packages', 'Consultations', 'Notes', 'Follow-ups']],
-  ['Ecosystem', ['Organizations', 'Professional identity', 'Integrations', 'Labs', 'Imaging', 'Devices', 'Partner API', 'Webhooks', 'Interoperability', 'Emergency continuity']],
+  ['Record', ['Pet profile', 'Health events', 'Measurements', 'Files', 'Reports']],
+  ['Guidance', ['PAW AI', 'Triage', 'Preventive care', 'Nutrition', 'Behavior', 'BCS / BMI']],
+  ['Care', ['Reminders', 'Vet locator', 'Vision scan', 'PAWNEWS']],
   ['Trust', ['Consent', 'Authorization', 'Audit', 'Provenance', 'Revocation', 'Data export']],
 ];
 
-const ARCH = ['App', 'API', 'Services', 'PostgreSQL', 'Health events', 'Intelligence', 'Continuity', 'Adapters'];
+const ARCH = ['App', 'API', 'Services', 'PostgreSQL', 'Health events', 'Guidance', 'Reports', 'Reminders'];
 
 export default function Welcome() {
   const [ready, setReady] = useState(false);
@@ -124,7 +119,7 @@ export default function Welcome() {
                 Your dog&rsquo;s health story, connected.
               </h1>
               <p className="pw-hero-sub">
-                PAWPHILE keeps records, patterns, vet care and follow-ups in one continuous story you control.
+                PAWPHILE keeps records, patterns, reminders and vet-ready reports in one continuous story you control.
               </p>
               <div className="pw-hero-ctas">
                 <Link to="/dashboard" className="pw-btn-primary">
@@ -148,7 +143,7 @@ export default function Welcome() {
               <h2 id="problem-h" className="pw-band-quote">
                 Health information scatters across memory, paper, photos, messages and clinic files. PAWPHILE keeps the story connected.
               </h2>
-              <p className="pw-lede">One longitudinal record instead of fragments. Every later capability, from baselines to vet handoffs, reads from the same source of truth.</p>
+              <p className="pw-lede">One longitudinal record instead of fragments. Every capability reads from the same source of truth.</p>
               <div className="pw-scatter" aria-label="Fragmented sources PAWPHILE unifies">
                 {['Memory', 'Paper files', 'Phone photos', 'Chat messages', 'Clinic printouts', 'Reminder apps'].map((s) => (
                   <span key={s}>{s}</span>
@@ -164,7 +159,7 @@ export default function Welcome() {
           <div className="pw-wrap">
             <Reveal>
               <h2 id="how-h" className="pw-h-section">How PAWPHILE works</h2>
-              <p className="pw-lede">Eight stages, one loop. The owner reviews before anything is shared, and every follow-up returns to the record.</p>
+              <p className="pw-lede">Five stages, one record. Everything stays under your control, from first entry to vet visit.</p>
             </Reveal>
             <div className="pw-rail">
               {STEPS.map(([title, body], i) => (
@@ -184,9 +179,9 @@ export default function Welcome() {
         <section id="layers" className="pw-section" aria-labelledby="layers-h">
           <div className="pw-wrap">
             <Reveal>
-              <p className="pw-eyebrow">Four layers, one system</p>
-              <h2 id="layers-h" className="pw-h-section">What has been built</h2>
-              <p className="pw-lede">Each layer rests on the one below. Nothing here is a separate product or a mockup.</p>
+              <p className="pw-eyebrow">Four pillars, one product</p>
+              <h2 id="layers-h" className="pw-h-section">What PAWPHILE does today</h2>
+              <p className="pw-lede">Each pillar is live in the product right now. Nothing here is a mockup.</p>
             </Reveal>
             <div className="pw-layers">
               {LAYERS.map((l) => (
@@ -210,21 +205,18 @@ export default function Welcome() {
           </div>
         </section>
 
-        {/* ── Intelligence ── */}
-        <section id="intelligence" className="pw-section" aria-labelledby="intel-h">
-          <div className="pw-wrap pw-split">
+        {/* ── Guidance ── */}
+        <section id="guidance" className="pw-section" aria-labelledby="guide-h">
+          <div className="pw-wrap">
             <Reveal>
-              <IntelDemo />
-            </Reveal>
-            <Reveal delay={100}>
-              <h2 id="intel-h" className="pw-h-section">Understand changes across time</h2>
-              <p className="pw-lede">PAWPHILE compares each dog against its own history and explains what it found, with the records attached.</p>
+              <h2 id="guide-h" className="pw-h-section">Guidance grounded in your records</h2>
+              <p className="pw-lede">PAW AI answers questions, triage checks symptoms with emergency awareness, and preventive care keeps schedules on track. Helpful, never a diagnosis.</p>
               <ul className="pw-checks">
                 {[
-                  ['Personal baselines', 'Normals are learned from this dog, never from breed averages.'],
-                  ['Described change', 'A sustained move is flagged with magnitude, period and evidence.'],
-                  ['Honest gaps', 'Thin records say so plainly instead of guessing.'],
-                  ['Better questions', 'The output is built for the next vet conversation.'],
+                  ['PAW AI guidance', 'Evidence-grounded answers with safety boundaries and honest uncertainty.'],
+                  ['Structured triage', 'Emergency-aware symptom checks that escalate, never diagnose.'],
+                  ['Preventive care', 'Vaccines, deworming and reminders on schedule.'],
+                  ['Honest limits', 'Thin information says so plainly instead of guessing.'],
                 ].map(([t, b]) => (
                   <li key={t}>
                     <Check size={18} strokeWidth={2.5} aria-hidden="true" />
@@ -236,16 +228,16 @@ export default function Welcome() {
           </div>
         </section>
 
-        {/* ── Veterinary loop ── */}
-        <section id="veterinary" className="pw-section" aria-labelledby="vet-h">
-          <div className="pw-wrap pw-split">
+        {/* ── Vet visits ── */}
+        <section id="visits" className="pw-section" aria-labelledby="vet-h">
+          <div className="pw-wrap">
             <Reveal>
-              <h2 id="vet-h" className="pw-h-section">A loop, not a handoff</h2>
-              <p className="pw-lede">The owner prepares, reviews and approves. The veterinarian reviews, notes and recommends. Outcomes return to the timeline, and the story continues.</p>
+              <h2 id="vet-h" className="pw-h-section">Ready for the vet visit</h2>
+              <p className="pw-lede">Walk in prepared: a clear summary of the record, reminders that keep prevention on schedule, and nearby care when you need it.</p>
               <ul className="pw-checks">
-                {[['Scoped sharing', 'Purpose, scope and expiry on every grant. Report-only, selected or full record.'],
-                  ['Immutable packages', 'The vet sees the exact frozen version the owner approved, with a digest.'],
-                  ['Follow-ups that land', 'Recommendations become reminders, then recorded outcomes.'],
+                {[['Vet-ready reports', 'Clean summaries of vaccinations, treatments and history to bring along.'],
+                  ['Preventive reminders', 'Due dates and notifications so nothing slips.'],
+                  ['Nearby care', 'Find veterinary clinics around you when it matters.'],
                 ].map(([t, b]) => (
                   <li key={t}>
                     <Check size={18} strokeWidth={2.5} aria-hidden="true" />
@@ -254,30 +246,7 @@ export default function Welcome() {
                 ))}
               </ul>
               <p style={{ marginTop: 18 }}>
-                <Link to="/veterinary" className="pw-btn-ghost">Open Veterinary Care</Link>
-              </p>
-            </Reveal>
-            <Reveal delay={100}>
-              <LoopFlow />
-            </Reveal>
-          </div>
-        </section>
-
-        {/* ── Ecosystem ── */}
-        <section id="ecosystem" className="pw-section" aria-labelledby="eco-h">
-          <div className="pw-wrap">
-            <Reveal>
-              <h2 id="eco-h" className="pw-h-section">Connected, under control</h2>
-              <p className="pw-lede">Clinics, labs, imaging, devices and partners connect through consent and authorization, with provenance preserved. Integration-ready means exactly that: ready, labeled, revocable.</p>
-            </Reveal>
-            <Reveal delay={80}>
-              <div style={{ marginTop: 30 }}>
-                <EcoHub />
-              </div>
-            </Reveal>
-            <Reveal delay={120}>
-              <p style={{ marginTop: 22 }}>
-                <Link to="/connections" className="pw-btn-ghost">See Connections</Link>
+                <Link to="/reports" className="pw-btn-ghost">Open Reports</Link>
               </p>
             </Reveal>
           </div>
@@ -288,14 +257,14 @@ export default function Welcome() {
           <div className="pw-wrap">
             <Reveal>
               <h2 id="ai-h" className="pw-h-section">PAW AI assists. Humans decide.</h2>
-              <p className="pw-lede">Evidence-grounded help built around the longitudinal record: preparation, explanation and summaries. Labeled as generated, gated by consent, escalated to humans when it matters.</p>
+              <p className="pw-lede">Guided answers with safety boundaries, grounded in the records you share. Labeled as generated, escalated to humans when it matters.</p>
             </Reveal>
             <Reveal delay={80}>
               <AiPipe />
             </Reveal>
             <Reveal delay={120}>
               <ul className="pw-chips pw-cap-chips" aria-label="PAW AI capabilities">
-                {['Vet preparation', 'Follow-up explanation', 'Visit summaries', 'Integration explanation', 'Imported-record explanation', 'Data-gap explanation', 'Package explanation', 'Device summaries'].map((c) => (
+                {['Guided chat', 'Symptom triage', 'Food safety', 'Breed context', 'Owner summaries'].map((c) => (
                   <li key={c}>{c}</li>
                 ))}
               </ul>
@@ -402,18 +371,18 @@ export default function Welcome() {
             </Reveal>
             <div className="pw-mature">
               {[
-                ['01 Foundation', 'Trusted longitudinal record'],
-                ['02 Intelligence', 'Personal patterns with evidence'],
-                ['03 Veterinary', 'Controlled collaboration loop'],
-                ['04 Ecosystem', 'Structured, consented connections'],
-              ].map(([t, s]) => (
+                ['01 Your record', 'Profile, events and files', 'Complete'],
+                ['02 Guidance', 'PAW AI, triage and preventive care', 'Complete'],
+                ['03 Vet-ready', 'Reports, reminders and nearby care', 'Complete'],
+                ['04 Deferred for now', 'Timeline, sharing, vet collaboration, integrations', 'Later'],
+              ].map(([t, s, pill]) => (
                 <Reveal key={t}>
                   <div className="pw-mature-row">
                     <div>
                       <strong>{t}</strong>
                       <div><span>{s}</span></div>
                     </div>
-                    <span className="pw-done-pill">Complete</span>
+                    <span className={pill === 'Later' ? 'pw-later-pill' : 'pw-done-pill'}>{pill}</span>
                   </div>
                 </Reveal>
               ))}
@@ -424,7 +393,7 @@ export default function Welcome() {
                 <ul>
                   <li>Owner validation and usability studies</li>
                   <li>Clinic pilots and veterinarian feedback</li>
-                  <li>Integration pilots with labs and devices</li>
+                  <li>Deferred capabilities return after validation: timeline, sharing, vet collaboration, integrations</li>
                   <li>Partner discovery and commercial hypothesis testing</li>
                 </ul>
               </div>
@@ -438,7 +407,7 @@ export default function Welcome() {
             <Reveal>
               <div className="pw-cta">
                 <h2 id="cta-h">Start with your dog&rsquo;s story.</h2>
-                <p>The record, the patterns, the vet conversations and the follow-ups are waiting in one calm place.</p>
+                <p>The record, the guidance, the reminders and the vet-ready reports are waiting in one calm place.</p>
                 <Link to="/dashboard" className="pw-btn-primary">
                   {ENTER} <ArrowRight size={17} strokeWidth={2.5} aria-hidden="true" style={{ verticalAlign: -3 }} />
                 </Link>
@@ -461,17 +430,17 @@ export default function Welcome() {
             <nav aria-label="Product">
               <h3>Product</h3>
               <ul>
-                <li><Link to="/intelligence">Intelligence</Link></li>
-                <li><Link to="/veterinary">Veterinary care</Link></li>
-                <li><Link to="/connections">Connections</Link></li>
-                <li><Link to="/timeline">Timeline</Link></li>
+                <li><Link to="/paw-ai">PAW AI</Link></li>
+                <li><Link to="/triage">Triage</Link></li>
+                <li><Link to="/reports">Reports</Link></li>
+                <li><Link to="/preventive-care">Preventive care</Link></li>
               </ul>
             </nav>
             <nav aria-label="Trust">
               <h3>Trust</h3>
               <ul>
                 <li><Link to="/consent">Consent center</Link></li>
-                <li><Link to="/share">Sharing</Link></li>
+                <li><Link to="/profile">Profile</Link></li>
                 <li><Link to="/export">Data export</Link></li>
                 <li><a href="#trust">Safety principles</a></li>
               </ul>
